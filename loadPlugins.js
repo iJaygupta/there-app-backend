@@ -3,6 +3,8 @@ to load all plugins one by one and push all service in an object
 */
 
 const fs = require('fs');
+const error =require('./lib/errorHandler');
+const responseFile =require('./lib/response');
 
 const authenticate = function (request, response, next) {
 
@@ -21,8 +23,8 @@ module.exports = function (app, http) {
             let route = require(moduleDir + "/" + plugin);
             plugin = plugin.split(".");
             route = route[plugin[0]];
-            factory = factory[plugin[0]]();    
-            route(app,factory);
+            factory = factory[plugin[0]](responseFile);    
+            route(app,factory ,error);
             console.log(module+" Service Loaded");
         })
     })
