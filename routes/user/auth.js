@@ -2,18 +2,16 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
      
     app.route("user/signup").post(function (request, response) {
         try {
-            // console.log(controller);
-            // controller.auth.login(request, response);
+            controller.signup(request, response);
         }
         catch (err) {       
             error(err, response)
         }
     })
 
-    app.route("/user/login").get(function (request, response) {
+    app.route("/user/login").post(function (request, response) {
         try {
-
-            // controller.auth.login(request, response);
+            controller.login(request, response);
         }
         catch (err) {
             error(err, response)
@@ -22,8 +20,7 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
 
     app.route("/user/logout").post(function (request, response) {
         try {
-       
-            // controller.auth.login(request, response);
+            controller.logout(request, response);
         }
         catch (err) {
             error(err, response)

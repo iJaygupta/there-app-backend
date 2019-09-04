@@ -18,6 +18,7 @@ const authenticate = function (request, response, next) {
 module.exports = function (app, http) {
     fs.readdirSync('./routes').forEach((module) => {
         var moduleDir = './routes/' + module;
+
         fs.readdirSync(moduleDir).forEach((plugin) => {
             let factory = require('./controllers/' + module + "/" + plugin);
             let route = require(moduleDir + "/" + plugin);
@@ -25,8 +26,10 @@ module.exports = function (app, http) {
             route = route[plugin[0]];
             factory = factory[plugin[0]](responseFile);    
             route(app,factory ,error);
-            console.log(module+" Service Loaded");
         })
+        
+        console.log(module+" Service Loaded");
+
     })
 
 }
