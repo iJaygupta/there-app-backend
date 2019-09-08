@@ -18,7 +18,7 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/logout").post(function (request, response) {
+    app.route("/user/logout").post(auth,function (request, response) {
         try {
             controller.logout(request, response);
         }
