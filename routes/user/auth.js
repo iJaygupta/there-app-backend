@@ -1,6 +1,6 @@
 module.exports.auth = function (app, controller, error, auth, middleware) {
      
-    app.route("user/signup").post(function (request, response) {
+    app.route("/user/signup").post(function (request, response) {
         try {
             controller.signup(request, response);
         }
