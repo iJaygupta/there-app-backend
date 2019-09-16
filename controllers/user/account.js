@@ -28,6 +28,7 @@ module.exports.account = function (responseFile) {
         updateUserPassword: (request, response) => {
 
             console.log("updateUserPassword");
+            console.log('working on update');
 
         },
 
