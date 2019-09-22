@@ -27,4 +27,22 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         }
     })
 
+    app.route("/user/send-phone-otp/:id").get(function (request, response) {
+        try {
+            controller.sendPhoneCode(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    })
+
+    app.route("/user/send-email-otp/:id").get(function (request, response) {
+        try {
+            controller.sendEmailCode(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    })
+
 }
