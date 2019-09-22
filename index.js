@@ -14,8 +14,7 @@ app.use(bodyParser.json({limit : '40mb'}));
 
 
 try {
-    plugin = require('./loadPlugins')(app, http);
-
+     require('./loadPlugins')(app, http);
 } catch (error) {
     console.log("Error in Loading Plugins"+error);
 }

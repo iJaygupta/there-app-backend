@@ -20,7 +20,7 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/admin/logout").post(function (request, response) {
+    app.route("/admin/logout").get(function (request, response) {
         try {
             controller.logout(request, response);
         }
