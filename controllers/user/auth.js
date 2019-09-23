@@ -89,13 +89,15 @@ module.exports.auth = function (responseFile) {
         if (userDetails.is_phone_verified) {
           console.log("phone already verified");
         }
-        console.log(userDetails);
-        let paramForMsg = `Dear Customer Your Verification Code is ${Math.floor(100000 + Math.random() * 900000)}`;
+        let OTP = util.generateOTP("phone");
+        let paramForMsg = util.prepareOTPParam("phone", OTP);
 
-        smsService.sendMsg(paramForMsg, "+918808974265", function (err, done) {
+        smsService.sendMsg(paramForMsg, "+919897821299", function (err, done) {
           if (err) {
             console.log("error from sendMsg", err);
           } else {
+            let otpDateTime = new Date();
+            util.putOTPIntoCollection(request.params.id, OTP, otpDateTime, "phone");
             console.log("success", done);
           }
         })
@@ -108,14 +110,14 @@ module.exports.auth = function (responseFile) {
         if (userDetails.is_email_verified) {
           console.log("Email already verified");
         }
-        console.log(userDetails);
-        let paramForMsg = util.prepareOTPParam("email");
+        let OTP = util.generateOTP("email");
+        let paramForMsg = util.prepareOTPParam("email", OTP);
 
-        emailService.sendEmail(email, "Verification", paramForMsg, function (err, result) {
-          if (err) {
-            console.log("Error in Email Service", err);
-          } else {
-            console.log(result);
+        emailService.sendEmail("jayguptazzz@outlook.com", "Verification", paramForMsg, function (output) {
+          response.status(200).send(output);
+          if (!output.error) {
+            let otpDateTime = new Date();
+            util.putOTPIntoCollection(request.params.id, OTP, otpDateTime);
           }
         })
       })

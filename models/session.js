@@ -4,11 +4,10 @@ const dbConfig = require("../dbconfig");
 var userSession = new mongoose.Schema({
     mobile_otp: { type: Number },
     mobile_otp_datetime: { type: Date },
-    mobile: { type: Number, required: true },
-    email: { type: String, required: true, unique: true },
+    mobile: { type: Number },
+    email: { type: String },
     email_otp: { type: String },
-    mobile_otp_datetime: { type: Date },
-    registered_on: { type: Date, default: Date.now },
+    email_otp_datetime: { type: Date },
     verification_token: { type: String },
     token_expiry: { type: Date },
     role: { type: String, default: 'user' },
@@ -16,10 +15,11 @@ var userSession = new mongoose.Schema({
 });
 
 
-module.exports.getModel = function () {
-    let connection = dbConfig.connect();
-    return connection.model("session", userSession);
-};
+module.exports = userSession;
+// module.exports.getModel = function () {
+//     let connection = dbConfig.connect();
+//     return connection.model("session", userSession);
+// };
 
 
 
