@@ -1,21 +1,22 @@
 const random = require("randomstring");
-const User = require("../models/user")
+const User = require("../models/user");
+const emailTemplate = require("../lib/templates")
 
 
 exports.putOTPIntoCollection = function (id, otp, dateTime, type) {
-
-let params = (type == "email") ? { email_otp: otp, email_otp_datetime: dateTime }:{ mobile_otp: otp, mobile_otp_datetime: dateTime } ;
-    User.getModel().updateOne({ _id: id }, { $set: { session: params }}).then((data) => {
-        console.log(data);
-    }).catch((err) => {
-        console.log(err);
+    return new Promise((resolve, reject) => {
+        let params = (type == "email") ? { email_otp: otp, email_otp_datetime: dateTime } : { mobile_otp: otp, mobile_otp_datetime: dateTime };
+        User.getModel().updateOne({ _id: id }, { $set: { session: params } }).then((data) => {
+            resolve()
+        }).catch((err) => {
+            reject();
+        })
     })
-
 }
 
 exports.prepareOTPParam = function (type, otp) {
 
-    return ((type == "phone") ? `Dear Customer Your Verification Code is ${otp}` : `Dear Customer Your Verification Code is ${otp}`);
+    return ((type == "phone") ? `Dear Customer Your Verification Code is ${otp}` : emailTemplate.emailSignup(otp));
 }
 
 

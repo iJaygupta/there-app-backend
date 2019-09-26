@@ -25,6 +25,13 @@ module.exports.auth = function (responseFile) {
           }
           response.json(output);
         }
+      }).catch((error) => {
+        let output = {
+          error: true,
+          msg: responseFile[1000]['msg'],
+          code: responseFile[1000]['code'],
+        }
+        response.status(500).send(output);
       })
     },
 
@@ -43,7 +50,7 @@ module.exports.auth = function (responseFile) {
           bcrypt.compare(password, userDetails.password, async (error, result) => {
             if (error) {
               let output = {
-                error: false,
+                error: true,
                 msg: responseFile[4005]['msg'],
                 code: responseFile[4005]['code']
               }
@@ -57,6 +64,7 @@ module.exports.auth = function (responseFile) {
               response.status(200).send(output);
             } else {
               let payload = {
+                id: userDetails._id,
                 email: userDetails.email,
                 name: userDetails.name,
                 mobile: userDetails.mobile
@@ -75,6 +83,13 @@ module.exports.auth = function (responseFile) {
           });
 
         }
+      }).catch((error) => {
+        let output = {
+          error: true,
+          msg: responseFile[1000]['msg'],
+          code: responseFile[1000]['code'],
+        }
+        response.status(500).send(output);
       })
     },
 
@@ -101,6 +116,13 @@ module.exports.auth = function (responseFile) {
             console.log("success", done);
           }
         })
+      }).catch((error) => {
+        let output = {
+          error: true,
+          msg: responseFile[1000]['msg'],
+          code: responseFile[1000]['code'],
+        }
+        response.status(500).send(output);
       })
     },
     sendEmailCode: (request, response) => {
@@ -113,15 +135,32 @@ module.exports.auth = function (responseFile) {
         let OTP = util.generateOTP("email");
         let paramForMsg = util.prepareOTPParam("email", OTP);
 
-        emailService.sendEmail("jayguptazzz@outlook.com", "Verification", paramForMsg, function (output) {
-          response.status(200).send(output);
+        emailService.sendEmail(email, "Verification", paramForMsg, async function (output) {
           if (!output.error) {
             let otpDateTime = new Date();
-            util.putOTPIntoCollection(request.params.id, OTP, otpDateTime);
+            await util.putOTPIntoCollection(request.params.id, OTP, otpDateTime, "email");
+            response.status(200).send(output);
+          } else {
+            response.status(400).send(output);
           }
         })
+      }).catch((error) => {
+        let output = {
+          error: true,
+          msg: responseFile[1000]['msg'],
+          code: responseFile[1000]['code'],
+        }
+        response.status(500).send(output);
       })
+    },
+
+    verifyEmailCode: function (request, response) {
+      
+      let email= request.body.email;
+      let code = request.body.code;
+  
     }
+
   }
 
 }
