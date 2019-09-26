@@ -1,15 +1,14 @@
 var mongoose = require('mongoose');
 const dbConfig = require("../dbconfig");
 
+
 var userSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    mobile: { type: Number, required: true },
+    mobile: { type: String, required: true },
     password: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    country: { type: String },
+    emailId: { type: String, required: true },
     city: { type: String },
     country: { type: String },
-    city: { type: String },
     is_email_verified: { type: Boolean, default: false },
     is_phone_verified: { type: Boolean, default: false },
     registered_on: { type: Date, default: Date.now },

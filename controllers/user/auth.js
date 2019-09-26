@@ -25,6 +25,13 @@ module.exports.auth = function (responseFile) {
           }
           response.json(output);
         }
+      }).catch((error) => {
+        let output = {
+          error: true,
+          msg: responseFile[1000]['msg'],
+          code: responseFile[1000]['code'],
+        }
+        response.status(500).send(output);
       })
     },
 
@@ -43,7 +50,7 @@ module.exports.auth = function (responseFile) {
           bcrypt.compare(password, userDetails.password, async (error, result) => {
             if (error) {
               let output = {
-                error: false,
+                error: true,
                 msg: responseFile[4005]['msg'],
                 code: responseFile[4005]['code']
               }
@@ -57,6 +64,7 @@ module.exports.auth = function (responseFile) {
               response.status(200).send(output);
             } else {
               let payload = {
+                id: userDetails._id,
                 email: userDetails.email,
                 name: userDetails.name,
                 mobile: userDetails.mobile
@@ -75,6 +83,13 @@ module.exports.auth = function (responseFile) {
           });
 
         }
+      }).catch((error) => {
+        let output = {
+          error: true,
+          msg: responseFile[1000]['msg'],
+          code: responseFile[1000]['code'],
+        }
+        response.status(500).send(output);
       })
     },
 
@@ -89,16 +104,25 @@ module.exports.auth = function (responseFile) {
         if (userDetails.is_phone_verified) {
           console.log("phone already verified");
         }
-        console.log(userDetails);
-        let paramForMsg = `Dear Customer Your Verification Code is ${Math.floor(100000 + Math.random() * 900000)}`;
+        let OTP = util.generateOTP("phone");
+        let paramForMsg = util.prepareOTPParam("phone", OTP);
 
-        smsService.sendMsg(paramForMsg, "+918808974265", function (err, done) {
+        smsService.sendMsg(paramForMsg, "+919897821299", function (err, done) {
           if (err) {
             console.log("error from sendMsg", err);
           } else {
+            let otpDateTime = new Date();
+            util.putOTPIntoCollection(mobile, OTP, otpDateTime, "phone");
             console.log("success", done);
           }
         })
+      }).catch((error) => {
+        let output = {
+          error: true,
+          msg: responseFile[1000]['msg'],
+          code: responseFile[1000]['code'],
+        }
+        response.status(500).send(output);
       })
     },
     sendEmailCode: (request, response) => {
@@ -108,18 +132,37 @@ module.exports.auth = function (responseFile) {
         if (userDetails.is_email_verified) {
           console.log("Email already verified");
         }
-        console.log(userDetails);
-        let paramForMsg = util.prepareOTPParam("email");
+        let OTP = util.generateOTP("email");
+        let paramForMsg = util.prepareOTPParam("email", OTP);
 
-        emailService.sendEmail(email, "Verification", paramForMsg, function (err, result) {
-          if (err) {
-            console.log("Error in Email Service", err);
+        emailService.sendEmail(email, "Verification", paramForMsg, async function (output) {
+          if (!output.error) {
+            let otpDateTime = new Date();
+            await util.putOTPIntoCollection(email, OTP, otpDateTime, "email");
+            response.status(200).send(output);
           } else {
-            console.log(result);
+            response.status(400).send(output);
           }
         })
+      }).catch((error) => {
+        let output = {
+          error: true,
+          msg: responseFile[1000]['msg'],
+          code: responseFile[1000]['code'],
+        }
+        response.status(500).send(output);
       })
+    },
+
+    verifyEmailCode: async function (request, response) {
+
+      let id = request.body.email;
+      let code = request.body.code;
+      let OTP = await util.getUserOTP(id, "email");
+      console.log(OTP);
+
     }
+
   }
 
 }
