@@ -15,11 +15,10 @@ var userSession = new mongoose.Schema({
 });
 
 
-module.exports = userSession;
-// module.exports.getModel = function () {
-//     let connection = dbConfig.connect();
-//     return connection.model("session", userSession);
-// };
+module.exports.getModel = function () {
+    let connection = dbConfig.connect();
+    return connection.model("session", userSession);
+};
 
 
 

@@ -45,4 +45,13 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         }
     })
 
+    app.route("/user/verify-email-otp").post(function (request, response) {
+        try {
+            controller.verifyEmailCode(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    })
+
 }

@@ -112,7 +112,7 @@ module.exports.auth = function (responseFile) {
             console.log("error from sendMsg", err);
           } else {
             let otpDateTime = new Date();
-            util.putOTPIntoCollection(request.params.id, OTP, otpDateTime, "phone");
+            util.putOTPIntoCollection(mobile, OTP, otpDateTime, "phone");
             console.log("success", done);
           }
         })
@@ -138,7 +138,7 @@ module.exports.auth = function (responseFile) {
         emailService.sendEmail(email, "Verification", paramForMsg, async function (output) {
           if (!output.error) {
             let otpDateTime = new Date();
-            await util.putOTPIntoCollection(request.params.id, OTP, otpDateTime, "email");
+            await util.putOTPIntoCollection(email, OTP, otpDateTime, "email");
             response.status(200).send(output);
           } else {
             response.status(400).send(output);
@@ -154,11 +154,13 @@ module.exports.auth = function (responseFile) {
       })
     },
 
-    verifyEmailCode: function (request, response) {
-      
-      let email= request.body.email;
+    verifyEmailCode: async function (request, response) {
+
+      let id = request.body.email;
       let code = request.body.code;
-  
+      let OTP = await util.getUserOTP(id, "email");
+      console.log(OTP);
+
     }
 
   }
