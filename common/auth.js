@@ -1,6 +1,7 @@
 const random = require("randomstring");
+const emailTemplate = require("../lib/templates");
 const Session = require("../models/session");
-const emailTemplate = require("../lib/templates")
+const User = require("../models/user");
 
 
 exports.putOTPIntoCollection = function (id, otp, dateTime, type) {
@@ -9,8 +10,18 @@ exports.putOTPIntoCollection = function (id, otp, dateTime, type) {
         Session.getModel().insertMany(params).then((data) => {
             resolve()
         }).catch((err) => {
-            console.log(err);
             reject();
+        })
+    })
+}
+
+exports.updateVerifyStatus = function (id, type) {
+    return new Promise((resolve, reject) => {
+        let params = (type == "email") ? { is_email_verified: true } : { is_phone_verified: true };
+        User.getModel().updateOne({ _id: id }, { $set:  params  }).then((data) => {
+            resolve()
+        }).catch((error) => {
+            reject(error);
         })
     })
 }
@@ -30,7 +41,7 @@ exports.getUserOTP = function (id, type) {
     return new Promise((resolve, reject) => {
         let params = (type == "phone") ? { mobile: id } : { email: id };
         let sortKey = (type == "phone") ? { mobile_otp_datetime: -1 } : { email_otp_datetime: -1 }
-        Session.getModel().find(params).then((data) => {
+        Session.getModel().find(params).sort(sortKey).limit(1).then((data) => {
             resolve(data);
         }).catch((error) => {
             reject(error);

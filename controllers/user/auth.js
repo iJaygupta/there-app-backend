@@ -117,11 +117,12 @@ module.exports.auth = function (utils) {
 
       let id = request.body.email;
       let code = request.body.code;
+      let _id = request.body.id;
       try {
         let otpData = await util.getUserOTP(id, "email");
-        console.log(otpData)
-        let OTP = otpData[0].email_otp || "";
+        let OTP = otpData[0] ? otpData[0].email_otp : "";
         if (OTP == code) {
+          await util.updateVerifyStatus(_id, "email")
           utils.sendResponse(response, false, 200, 4016);
         } else {
           utils.sendResponse(response, false, 200, 4018);
