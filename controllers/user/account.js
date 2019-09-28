@@ -1,18 +1,16 @@
 let User = require('../../models/user');
 
 
-module.exports.account = function (responseFile) {
+module.exports.account = function (utils) {
 
     return {
 
         getUserAccountDetails: (request, response) => {
             let userId = request.params.id;
             User.getModel().findById({ _id: userId }).then((userData) => {
-                response.json({ error: false, code: responseFile[4000]['code'], msg: responseFile[4000]['msg'], data: userData });
-
+                utils.sendResponse(response, false, 200, 4008, userData);
             });
         },
-
         addUserAccountDetails: (request, response) => {
 
             console.log("addUserAccountDetails");
