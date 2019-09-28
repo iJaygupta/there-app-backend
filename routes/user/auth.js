@@ -54,4 +54,13 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         }
     })
 
+    app.route("/user/verify-mobile-otp").post(function (request, response) {
+        try {
+            controller.verifyMobileCode(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    })
+
 }

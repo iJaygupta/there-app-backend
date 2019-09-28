@@ -71,14 +71,14 @@ module.exports.auth = function (utils) {
       User.getModel().findById(request.params.id).then(async (userDetails) => {
         let { mobile } = userDetails;
         if (userDetails.is_phone_verified) {
-          console.log("phone already verified");
+          return utils.sendResponse(response, false, 200, 4020);
         }
         let OTP = util.generateOTP("phone");
         let paramForMsg = util.prepareOTPParam("phone", OTP);
         let otpDateTime = new Date();
         await util.putOTPIntoCollection(mobile, OTP, otpDateTime, "phone");
 
-        smsService.sendMsg(paramForMsg, "+919897821299", function (err, done) {
+        smsService.sendMsg(paramForMsg, mobile, function (err, done) {
           if (err) {
             utils.sendResponse(response, true, 200, 4010);
           } else {
@@ -94,7 +94,7 @@ module.exports.auth = function (utils) {
       User.getModel().findById(request.params.id).then(async (userDetails) => {
         let { email } = userDetails;
         if (userDetails.is_email_verified) {
-          utils.sendResponse(response, false, 200, 4011);
+          return utils.sendResponse(response, false, 200, 4011);
         }
         let OTP = util.generateOTP("email");
         let paramForMsg = util.prepareOTPParam("email", OTP);
@@ -115,17 +115,36 @@ module.exports.auth = function (utils) {
 
     verifyEmailCode: async function (request, response) {
 
-      let id = request.body.email;
+      let email = request.body.email;
       let code = request.body.code;
-      let _id = request.body.id;
+      let id = request.body.id;
       try {
-        let otpData = await util.getUserOTP(id, "email");
+        let otpData = await util.getUserOTP(email, "email");
         let OTP = otpData[0] ? otpData[0].email_otp : "";
         if (OTP == code) {
-          await util.updateVerifyStatus(_id, "email")
+          await util.updateVerifyStatus(id, "email")
           utils.sendResponse(response, false, 200, 4016);
         } else {
           utils.sendResponse(response, false, 200, 4018);
+        }
+      } catch (error) {
+        utils.sendResponse(response, true, 500, 1000);
+      }
+    },
+    verifyMobileCode: async function (request, response) {
+
+      let mobile = request.body.mobile;
+      let code = request.body.code;
+      let id = request.body.id;
+      try {
+        let otpData = await util.getUserOTP(mobile, "phone");
+        console.log(otpData);
+        let OTP = otpData[0] ? otpData[0].mobile_otp : "";
+        if (OTP == code) {
+          await util.updateVerifyStatus(id, "phone")
+          utils.sendResponse(response, false, 200, 4012);
+        } else {
+          utils.sendResponse(response, false, 200, 4014);
         }
       } catch (error) {
         utils.sendResponse(response, true, 500, 1000);
