@@ -122,7 +122,8 @@ module.exports.auth = function (utils) {
         let otpData = await util.getUserOTP(email, "email");
         let OTP = otpData[0] ? otpData[0].email_otp : "";
         if (OTP == code) {
-          await util.updateVerifyStatus(id, "email")
+          await util.updateVerifyStatus(id, "email");
+          //send Thanks Email
           utils.sendResponse(response, false, 200, 4016);
         } else {
           utils.sendResponse(response, false, 200, 4018);
@@ -138,7 +139,6 @@ module.exports.auth = function (utils) {
       let id = request.body.id;
       try {
         let otpData = await util.getUserOTP(mobile, "phone");
-        console.log(otpData);
         let OTP = otpData[0] ? otpData[0].mobile_otp : "";
         if (OTP == code) {
           await util.updateVerifyStatus(id, "phone")
