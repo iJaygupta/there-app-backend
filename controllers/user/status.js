@@ -15,7 +15,7 @@ exports.status = function (utils) {
 
         getActiveStatus: (request, response) => {
             let email = request.body.email || ""
-            Status.getModel().find({ email: email , is_Active : true}).then((data) => {
+            Status.getModel().find({ email: email, is_Active: true }).then((data) => {
                 utils.sendResponse(response, false, 200, 4022, data);
             })
         },
@@ -45,9 +45,10 @@ exports.status = function (utils) {
         },
 
         hideStatus: (request, response) => {
-
-            console.log("hideStatus");
-
+            let param = { is_Active: false };
+            Status.getModel().updateOne({}, { $set: param }).then((data) => {
+                utils.sendResponse(response, false, 200, 4021);
+            })
         }
     }
 

@@ -19,7 +19,15 @@ module.exports.account = function (utils) {
 
         updateUserAccountDetails: (request, response) => {
 
-            console.log("updateUserAccountDetails");
+            let userId = request.params.id;
+            User.getModel().updateOne({ _id: userId }, { $set: request.body }).then((success) => {
+                response.send("successfully updated")
+
+            }).catch((error) => {
+                console.log("Error while updating user details")
+            })
+
+
 
         },
 
