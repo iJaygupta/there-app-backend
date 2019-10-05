@@ -21,7 +21,7 @@ module.exports.account = function (utils) {
 
             let userId = request.params.id;
             User.getModel().updateOne({ _id: userId }, { $set: request.body }).then((success) => {
-                response.send("successfully updated")
+                utils.sendResponse(response, false, 200, 4023 );
 
             }).catch((error) => {
                 console.log("Error while updating user details")
