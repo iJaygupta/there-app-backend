@@ -1,4 +1,5 @@
 let User = require('../../models/user');
+const bcrypt = require("bcryptjs");
 
 
 module.exports.account = function (utils) {
@@ -21,7 +22,7 @@ module.exports.account = function (utils) {
 
             let userId = request.params.id;
             User.getModel().updateOne({ _id: userId }, { $set: request.body }).then((success) => {
-                utils.sendResponse(response, false, 200, 4023 );
+                utils.sendResponse(response, false, 200, 4023);
 
             }).catch((error) => {
                 console.log("Error while updating user details")
@@ -33,8 +34,27 @@ module.exports.account = function (utils) {
 
         updateUserPassword: (request, response) => {
 
-            console.log("updateUserPassword");
-            console.log('working on update');
+            let email = request.body.email;
+            let password = request.body.password;
+            let hash = bcrypt.hashSync(password);
+            request.body.password = hash;
+            User.getModel().findOne({ email: email }).then((userDetails) => {
+                if (!userDetails) {
+                    utils.sendResponse(response, false, 200, 4002);
+                }
+                else {
+                    User.getModel().updateOne({ 'email': email }, { $set: { 'password': request.body.password } }).then(data => {
+                        if (!data) {
+                            utils.sendResponse(response, false, 200, 4021);
+                        }
+                        else {
+                            utils.sendResponse(response, false, 200, 4020);
+                        }
+                    });
+                }
+            }).catch((error) => {
+                utils.sendResponse(response, true, 500, 1000);
+            });
 
         },
 

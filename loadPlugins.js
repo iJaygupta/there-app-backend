@@ -28,7 +28,6 @@ module.exports = function (app, http) {
             factory = factory[plugin[0]](utils);
             route(app, factory, error, authenticate);
         })
-
         console.log(module + " Service Loaded");
 
     })
