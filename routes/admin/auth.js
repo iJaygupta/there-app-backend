@@ -7,6 +7,7 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
             controller.signup(request, response);
         }
         catch (err) {
+            
             error(err, response)
         }
     })

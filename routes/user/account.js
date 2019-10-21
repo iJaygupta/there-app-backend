@@ -20,7 +20,7 @@ module.exports.account = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/account").put(function (request, response) {
+    app.route("/user/account/:id").put(function (request, response) {
         try {
             controller.updateUserAccountDetails(request, response);
         }
@@ -29,7 +29,7 @@ module.exports.account = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/change-password").put(function (request, response) {
+    app.route("/user/change-password").put(function (request, response) { 
         try {
             controller.updateUserPassword(request, response);
         }

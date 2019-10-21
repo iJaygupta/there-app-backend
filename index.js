@@ -3,7 +3,6 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const http = require("http").Server(app);
-const fs = require("fs");
 const bodyParser = require('body-parser');
 
 
@@ -15,7 +14,6 @@ app.use(bodyParser.json({limit : '40mb'}));
 
 try {
      require('./loadPlugins')(app, http);
-
 } catch (error) {
     console.log("Error in Loading Plugins"+error);
 }
