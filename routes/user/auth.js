@@ -4,7 +4,8 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         try {
             controller.signUp(request, response);
         }
-        catch (err) {       
+        catch (err) {   
+            console.log(err);    
             error(err, response)
         }
     })
