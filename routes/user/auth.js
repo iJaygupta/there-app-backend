@@ -4,7 +4,8 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         try {
             controller.signUp(request, response);
         }
-        catch (err) {       
+        catch (err) {   
+            console.log(err);    
             error(err, response)
         }
     })
@@ -48,6 +49,15 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
     app.route("/user/verify-email-otp").post(function (request, response) {
         try {
             controller.verifyEmailCode(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    })
+
+    app.route("/user/verify-mobile-otp").post(function (request, response) {
+        try {
+            controller.verifyMobileCode(request, response);
         }
         catch (err) {
             error(err, response)
