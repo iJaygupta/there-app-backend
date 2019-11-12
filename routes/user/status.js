@@ -2,7 +2,7 @@
 
 exports.status = function (app, controller, error, auth, middleware) {
 
-    app.route("/user/get-status").post(function (request, response) {
+    app.route("/user/get-status").post(auth, function (request, response) {
         try {
             controller.getStatus(request, response);
         }

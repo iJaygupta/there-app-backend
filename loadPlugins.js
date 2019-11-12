@@ -11,7 +11,7 @@ const auth = require('./lib/auth');
 const authenticate = function (request, response, next) {
     let token = request.headers['authorization'];
     if (!token)
-        response.status(401).send({ auth: false, message: 'No token provided.' });
+        return response.status(401).send({ auth: false, message: 'No token provided.' });
 
     auth.verifyAuthToken(request, response, next);
 }
