@@ -40,9 +40,12 @@ exports.status = function (utils) {
         },
 
         deleteStatus: (request, response) => {
-
+            let id = request.params.id;
+          console.log(request.params.id);
             console.log("deleteStatus");
-
+            Status.getModel().deleteOne({ _id: id }).then((data) => {
+                utils.sendResponse(response, false, 200, 4025, data);
+            })
         },
 
         hideStatus: (request, response) => {
