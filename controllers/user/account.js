@@ -1,5 +1,7 @@
 let User = require('../../models/user');
 const bcrypt = require("bcryptjs");
+const uploader = require("./../../lib/fileHandler");
+const auth = require('../../common/auth');
 
 
 module.exports.account = function (utils) {
@@ -59,9 +61,17 @@ module.exports.account = function (utils) {
         },
 
         addUserProfilePicture: (request, response) => {
-
-            console.log("updateUserPassword");
-
+            uploader.uploadFilesLocal("user", "profile", request, response, function (err, data) {
+                if (err) {
+                    utils.sendResponse(response, true, 500, 1000);
+                } else {
+                    auth.updateProfilePicDetails(request.headers.payload.email, request.files[0].filename).then((data) => {
+                        utils.sendResponse(response, false, 200, 4026)
+                    }).catch((error) => {
+                        utils.sendResponse(response, true, 500, 1000);
+                    })
+                }
+            })
         }
     }
 

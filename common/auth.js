@@ -18,7 +18,7 @@ exports.putOTPIntoCollection = function (id, otp, dateTime, type) {
 exports.updateVerifyStatus = function (id, type) {
     return new Promise((resolve, reject) => {
         let params = (type == "email") ? { is_email_verified: true } : { is_phone_verified: true };
-        User.getModel().updateOne({ _id: id }, { $set:  params  }).then((data) => {
+        User.getModel().updateOne({ _id: id }, { $set: params }).then((data) => {
             resolve()
         }).catch((error) => {
             reject(error);
@@ -45,6 +45,16 @@ exports.getUserOTP = function (id, type) {
             resolve(data);
         }).catch((error) => {
             reject(error);
+        })
+    })
+}
+
+exports.updateProfilePicDetails = function (email, profilePic) {
+    return new Promise((resolve, reject) => {
+        User.getModel().updateOne({ "email": email }, { $set: { "profilePic": profilePic } }).then((data) => {
+            resolve();
+        }).catch((err) => {
+            reject();
         })
     })
 }
