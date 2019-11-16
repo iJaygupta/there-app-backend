@@ -3,11 +3,13 @@ const dbConfig = require("../dbconfig");
 
 var contacts = new mongoose.Schema({
     email: { type: String, required: true },
+    mobile : { type: Number },
     updatedDate: { type: Date, default: new Date() },
     contacts_list: [{
         name: String,
         mobile: Number,
-        email: String
+        email: String,
+        isAvailable: { type: Boolean, default: true },
     }]
 });
 

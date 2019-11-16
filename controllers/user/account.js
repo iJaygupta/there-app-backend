@@ -15,7 +15,6 @@ module.exports.account = function (utils) {
             });
         },
         addUserAccountDetails: (request, response) => {
-
             console.log("addUserAccountDetails");
 
         },

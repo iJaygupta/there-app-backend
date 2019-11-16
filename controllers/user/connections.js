@@ -1,5 +1,4 @@
 const Contacts = require('../../models/contacts');
-const statusCodes = require("../../common/userStatus");
 
 
 exports.connections = function (utils) {
@@ -7,58 +6,60 @@ exports.connections = function (utils) {
     return {
 
         getConnections: (request, response) => {
-
             let email = request.headers.payload.email || "";
             Contacts.getModel().find({ email: email }).then((data) => {
-                utils.sendResponse(response, false, 200, 4022, data);
+                utils.sendResponse(response, false, 200, 4028, data);
             })
         },
 
         getActiveConnections: (request, response) => {
             let email = request.headers.payload.email || ""
-            Contacts.getModel().find({ email: email, is_Active: true }).then((data) => {
+            Contacts.getModel().find({ email: email, isAvailable: true }).then((data) => {
                 utils.sendResponse(response, false, 200, 4022, data);
             })
         },
 
         addConnection: (request, response) => {
+            let email = request.headers.payload.email || "";
             let param = {
                 email: request.body.email,
-                contacts_list: [{
-                    email: request.body.email,
-                    mobile: request.body.mobile,
-                    name: request.body.name
-
-                }
-                ]
+                mobile: request.body.mobile,
+                name: request.body.name
             };
-            Contacts.getModel().insertMany(param).then((data) => {
-                utils.sendResponse(response, false, 200, 4021);
-            })
+            var query = {};
+            query = { $push: { "contacts_list": param } };
 
-        },
-
-        updateStatus: (request, response) => {
-
-            console.log("updateStatus");
-
-        },
-
-        deleteStatus: (request, response) => {
-            let id = request.params.id;
-            console.log(request.params.id);
-            console.log("deleteStatus");
-            Contacts.getModel().deleteOne({ _id: id }).then((data) => {
-                utils.sendResponse(response, false, 200, 4025, data);
+            Contacts.getModel().update({ email: email }, query, { "upsert": true }).then((data) => {
+                utils.sendResponse(response, false, 200, 4027);
+            }).catch((error) => {
+                utils.sendResponse(response, true, 500, 1000);
             })
         },
+        updateConnections: (request, response) => {
+            Contacts.getModel().updateOne().then((updated) => {
+                console.log(updated);
+            }).catch((error) => {
+                console.log(error);
+            });
+        },
 
-        hideStatus: (request, response) => {
-            let param = { is_Active: false };
-            Contacts.getModel().updateOne({}, { $set: param }).then((data) => {
-                utils.sendResponse(response, false, 200, 4021);
+        deleteConnection: (request, response) => {
+            let email = request.headers.payload.email || "";
+            let param = {
+                "email": request.params.email
+            };
+            var query = {};
+            query = { $pull: { "contacts_list": param } };
+
+            Contacts.getModel().update({ email: email }, query).then((data) => {
+                utils.sendResponse(response, false, 200, 4029);
+            }).catch((error) => {
+                utils.sendResponse(response, true, 500, 1000);
             })
-        }
+        },
+
     }
 
 }
+
+

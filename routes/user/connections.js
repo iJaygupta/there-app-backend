@@ -20,7 +20,7 @@ exports.connections = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/add-connection").post(function (request, response) {
+    app.route("/user/add-connection").post(auth, function (request, response) {
         try {
             controller.addConnection(request, response);
         }
@@ -29,16 +29,7 @@ exports.connections = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/update-connection").put(function (request, response) {
-        try {
-            controller.updateConnection(request, response);
-        }
-        catch (err) {
-            error(err, response)
-        }
-    })
-
-    app.route("/user/delete-connection/:id").delete(function (request, response) {
+    app.route("/user/delete-connection/:email").delete(auth, function (request, response) {
         try {
             controller.deleteConnection(request, response);
         }
