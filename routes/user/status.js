@@ -56,8 +56,6 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-<<<<<<< HEAD
-=======
     app.route("/user/add-availability").post(auth, function (request, response) {
         try {
             controller.addAvailability(request, response);
@@ -66,5 +64,4 @@ exports.status = function (app, controller, error, auth, middleware) {
             error(err, response)
         }
     })
->>>>>>> master
 }

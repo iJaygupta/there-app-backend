@@ -7,13 +7,8 @@ exports.status = function (utils) {
     return {
 
         getStatus: (request, response) => {
-<<<<<<< HEAD
-            
-            let email = request.headers.payload.email|| "";
-=======
 
             let email = request.headers.payload.email || "";
->>>>>>> master
             Status.getModel().find({ email: email }).then((data) => {
                 utils.sendResponse(response, false, 200, 4022, data);
             })
@@ -46,11 +41,7 @@ exports.status = function (utils) {
 
         deleteStatus: (request, response) => {
             let id = request.params.id;
-<<<<<<< HEAD
-          console.log(request.params.id);
-=======
             console.log(request.params.id);
->>>>>>> master
             console.log("deleteStatus");
             Status.getModel().deleteOne({ _id: id }).then((data) => {
                 utils.sendResponse(response, false, 200, 4025, data);
@@ -62,8 +53,6 @@ exports.status = function (utils) {
             Status.getModel().updateOne({}, { $set: param }).then((data) => {
                 utils.sendResponse(response, false, 200, 4021);
             })
-<<<<<<< HEAD
-=======
         },
         addAvailability: (request, response) => {
             let email = request.headers.payload.email || "";
@@ -82,7 +71,6 @@ exports.status = function (utils) {
                 response.send(error);
             })
 
->>>>>>> master
         }
     }
 
