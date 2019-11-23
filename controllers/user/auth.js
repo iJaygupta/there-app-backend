@@ -149,7 +149,27 @@ module.exports.auth = function (utils) {
       } catch (error) {
         utils.sendResponse(response, true, 500, 1000);
       }
-    }
+    },
+
+    forgetPassword: (request, response) => {
+      const email = request.body.email;
+      User.getModel().findOne({email: email}).then(async (user) => {
+        if (!user) {
+          utils.sendResponse(response, false, 200, 4002);
+        }
+        else {
+          const payload = {
+            id: user._id,
+            email: user.email,
+            name: user.name,
+            mobile: user.mobile
+          }
+          const token = await auth.generateAuthToken(payload);
+        }
+      }).catch((error) => {
+        utils.sendResponse(response, true, 500, 1000);
+      })
+    },
 
   }
 
