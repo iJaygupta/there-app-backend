@@ -1,7 +1,7 @@
 
 
 module.exports.account = function (app, controller, error, auth, middleware) {
-     
+
     app.route("/user/account/:id").get(function (request, response) {
         try {
             controller.getUserAccountDetails(request, response);
@@ -29,7 +29,7 @@ module.exports.account = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/change-password").put(function (request, response) { 
+    app.route("/user/change-password").put(function (request, response) {
         try {
             controller.updateUserPassword(request, response);
         }
@@ -38,7 +38,7 @@ module.exports.account = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/add-picture").post(function (request, response) {
+    app.route("/user/add-picture").post(auth, function (request, response) {
         try {
             controller.addUserProfilePicture(request, response);
         }

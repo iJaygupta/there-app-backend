@@ -2,7 +2,7 @@
 
 exports.status = function (app, controller, error, auth, middleware) {
 
-    app.route("/user/get-status").post(auth, function (request, response) {
+    app.route("/user/get-status").get(auth, function (request, response) {
         try {
             controller.getStatus(request, response);
         }
@@ -11,7 +11,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/get-active-status").post(function (request, response) {
+    app.route("/user/get-active-status").get(auth, function (request, response) {
         try {
             controller.getActiveStatus(request, response);
         }
@@ -20,7 +20,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/add-status").post(function (request, response) {
+    app.route("/user/add-status").post(auth, function (request, response) {
         try {
             controller.addStatus(request, response);
         }

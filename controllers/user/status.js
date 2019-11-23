@@ -15,7 +15,7 @@ exports.status = function (utils) {
         },
 
         getActiveStatus: (request, response) => {
-            let email = request.body.email || ""
+            let email = request.headers.payload.email || ""
             Status.getModel().find({ email: email, is_Active: true }).then((data) => {
                 utils.sendResponse(response, false, 200, 4022, data);
             })
@@ -25,7 +25,7 @@ exports.status = function (utils) {
             let param = {
                 status_code: request.body.status_code || "",
                 status_message: statusCodes[request.body.status_code].msg,
-                email: request.body.email
+                email: request.headers.payload.email
             };
             Status.getModel().insertMany(param).then((data) => {
                 utils.sendResponse(response, false, 200, 4021);
