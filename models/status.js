@@ -8,7 +8,10 @@ var status = new mongoose.Schema({
     status_message: { type: String },
     email: { type: String },
     is_Active: { type: Boolean, default: true },
-    role: { type: String, default: 'user' },
+    availability: {
+        fromDate: { type: Date },
+        toDate: { type: Date }
+    }
 });
 
 
