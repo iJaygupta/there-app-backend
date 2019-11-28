@@ -5,6 +5,7 @@ const smsService = require('../../lib/sms');
 const emailService = require('../../lib/mailer');
 const util = require('../../common/auth');
 const responseFile = require('../../lib/response');
+ 
 
 
 module.exports.auth = function (utils) {
@@ -12,6 +13,8 @@ module.exports.auth = function (utils) {
   return {
 
     signUp: (request, response) => {
+
+
 
       let password = request.body.password;
       let hash = bcrypt.hashSync(password);

@@ -13,3 +13,12 @@ exports.sendResponse = function (response, error, statusCode, responseCode, data
     }
     response.status(statusCode).send(output);
 }
+
+exports.ajvErrors = function (error, callback) {
+    errorField = error[0].dataPath;
+    errorField = errorField.split('.');
+    errorField = errorField[errorField.length - 1];
+    var errMsg = errorField + ' ' + error[0].message;
+    var displayMsg = `The provided value for ${errorField} is not valid`;
+    return callback(displayMsg);
+}

@@ -1,11 +1,10 @@
-module.exports.auth = function (app, controller, error, auth, middleware) {
+module.exports.auth = function (app, controller, error, auth, middleware, schema) {
      
-    app.route("/user/signup").post(function (request, response) {
+    app.route("/user/signup").post(middleware.validateAjv(schema.auth.signUp) ,function (request, response) {
         try {
             controller.signUp(request, response);
         }
         catch (err) {   
-            console.log(err);    
             error(err, response)
         }
     })

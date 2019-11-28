@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 const dbConfig = require("../dbconfig");
 
-
 var userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     mobile: { type: String, required: true },
