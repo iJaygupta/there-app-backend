@@ -38,7 +38,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/delete-status/:id").delete(function (request, response) {
+    app.route("/user/delete-status/:id").delete(auth,function (request, response) {
         try {
             controller.deleteStatus(request, response);
         }

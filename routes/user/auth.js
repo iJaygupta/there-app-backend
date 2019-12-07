@@ -28,14 +28,14 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/forget-password").get(function (request, response) {
+    app.route("/user/forgot-password").get(function (request, response) {
         try {
-            controller.forgetPassword(request, response);
+            controller.forgotPassword(request, response);
         }
         catch (err) {
             error(err, response)
         }
-    })
+    }) 
 
 
     app.route("/user/send-phone-otp/:id").get(function (request, response) {

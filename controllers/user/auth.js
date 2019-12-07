@@ -2,6 +2,7 @@ let User = require('../../models/user');
 const auth = require('../../lib/auth');
 const bcrypt = require("bcryptjs");
 const smsService = require('../../lib/sms');
+const emailTemplate = require("../../lib/templates");
 const emailService = require('../../lib/mailer');
 const util = require('../../common/auth');
 const responseFile = require('../../lib/response');
@@ -21,6 +22,8 @@ module.exports.auth = function (utils) {
           utils.sendResponse(response, false, 200, 4000);
         }
       }).catch((error) => {
+        console.log(error);
+
         utils.sendResponse(response, true, 500, 1000);
       })
     },
@@ -151,9 +154,9 @@ module.exports.auth = function (utils) {
       }
     },
 
-    forgetPassword: (request, response) => {
+    forgotPassword: (request, response) => {
       const email = request.body.email;
-      User.getModel().findOne({email: email}).then(async (user) => {
+      User.getModel().findOne({ email: email }).then(async (user) => {
         if (!user) {
           utils.sendResponse(response, false, 200, 4002);
         }
@@ -165,6 +168,16 @@ module.exports.auth = function (utils) {
             mobile: user.mobile
           }
           const token = await auth.generateAuthToken(payload);
+          const url = `${process.env.HOST}/forgot-password/${token}`;
+          const template = emailTemplate.emailTemplate('forgotPassword',url);
+          emailService.sendEmail(email, "ForgotPassword", template, function (output) {
+            if (!output.error) {
+              response.status(200).send(output);
+            } else {
+              response.status(400).send(output);
+            }
+          })
+          
         }
       }).catch((error) => {
         utils.sendResponse(response, true, 500, 1000);
