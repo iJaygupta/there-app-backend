@@ -4,8 +4,8 @@ const dbConfig = require("../dbconfig");
 var userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     mobile: { type: String, required: true },
-    password: { type: String, required: true },
-    email: { type: String, required: true },
+    password: { type: String },
+    email: { type: String },
     city: { type: String },
     country: { type: String },
     is_email_verified: { type: Boolean, default: false },
@@ -16,10 +16,9 @@ var userSchema = new mongoose.Schema({
     role: { type: String, default: 'user' },
     is_active: { type: Boolean, default: true },
     profilePic: { type: String },
-
 });
 
-exports.userSchema = userSchema;
+exports.userSchema = mongoose.model("user", userSchema);
 
 module.exports.getModel = function () {
     let connection = dbConfig.connect();
