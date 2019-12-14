@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 const dbConfig = require("../dbconfig");
 
-
 var userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     mobile: { type: String, required: true },
@@ -16,9 +15,11 @@ var userSchema = new mongoose.Schema({
     token_expiry: { type: Date },
     role: { type: String, default: 'user' },
     is_active: { type: Boolean, default: true },
-    profilePic: { type: String }
+    profilePic: { type: String },
+
 });
 
+exports.userSchema = userSchema;
 
 module.exports.getModel = function () {
     let connection = dbConfig.connect();

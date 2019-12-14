@@ -2,7 +2,7 @@
 
 module.exports.account = function (app, controller, error, auth, middleware) {
 
-    app.route("/user/account/:id").get(function (request, response) {
+    app.route("/user/account").get(auth, function (request, response) {
         try {
             controller.getUserAccountDetails(request, response);
         }
@@ -20,7 +20,7 @@ module.exports.account = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/account/:id").put(function (request, response) {
+    app.route("/user/account").put(auth, function (request, response) {
         try {
             controller.updateUserAccountDetails(request, response);
         }

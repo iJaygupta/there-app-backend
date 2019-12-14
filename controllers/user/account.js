@@ -9,30 +9,30 @@ module.exports.account = function (utils) {
     return {
 
         getUserAccountDetails: (request, response) => {
-            let userId = request.params.id;
+            let userId = request.headers.payload.id;
             User.getModel().findById({ _id: userId }).then((userData) => {
                 utils.sendResponse(response, false, 200, 4008, userData);
-            });
+            }).catch((error) => {
+                utils.sendResponse(response, true, 500, 1000);
+            })
         },
         addUserAccountDetails: (request, response) => {
-            console.log("addUserAccountDetails");
-
-        },
-
-        updateUserAccountDetails: (request, response) => {
-
-            let userId = request.params.id;
+            let userId = request.headers.payload.id;
             User.getModel().updateOne({ _id: userId }, { $set: request.body }).then((success) => {
                 utils.sendResponse(response, false, 200, 4023);
-
             }).catch((error) => {
-                console.log("Error while updating user details")
+                utils.sendResponse(response, true, 500, 1000);
             })
 
-
-
         },
-
+        updateUserAccountDetails: (request, response) => {
+            let userId = request.headers.payload.id;
+            User.getModel().updateOne({ _id: userId }, { $set: request.body }).then((success) => {
+                utils.sendResponse(response, false, 200, 4023);
+            }).catch((error) => {
+                utils.sendResponse(response, true, 500, 1000);
+            })
+        },
         updateUserPassword: (request, response) => {
 
             let email = request.body.email;
@@ -58,13 +58,12 @@ module.exports.account = function (utils) {
             });
 
         },
-
         addUserProfilePicture: (request, response) => {
             uploader.uploadFilesLocal("user", "profile", request, response, function (err, data) {
                 if (err) {
                     utils.sendResponse(response, true, 500, 1000);
                 } else {
-                    auth.updateProfilePicDetails(request.headers.payload.email, request.files[0].filename).then((data) => {
+                    auth.updateProfilePicDetails(request.headers.payload.id, request.files[0].filename).then((data) => {
                         utils.sendResponse(response, false, 200, 4026)
                     }).catch((error) => {
                         utils.sendResponse(response, true, 500, 1000);
