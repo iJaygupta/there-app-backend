@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 const dbConfig = require("../dbconfig");
 
 var userSession = new mongoose.Schema({
+    user_id : { type: String },
     mobile_otp: { type: Number },
     mobile_otp_datetime: { type: Date },
     mobile: { type: Number },

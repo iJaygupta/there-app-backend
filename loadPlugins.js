@@ -1,5 +1,5 @@
 /*
-to load all plugins one by one and push all service in an object
+   To load all plugins one by one and push all service in an object
 */
 
 const fs = require('fs');

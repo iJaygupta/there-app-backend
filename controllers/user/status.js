@@ -9,6 +9,7 @@ exports.status = function (utils) {
         getStatus: (request, response) => {
 
             let email = request.headers.payload.email || "";
+            
             Status.getModel().find({ email: email }).then((data) => {
                 utils.sendResponse(response, false, 200, 4022, data);
             })
