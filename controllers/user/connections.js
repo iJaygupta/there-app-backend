@@ -48,14 +48,6 @@ exports.connections = function (utils) {
                 utils.sendResponse(response, true, 500, 1000);
             })
         },
-        updateConnections: (request, response) => {
-            Connections.getModel().updateOne().then((updated) => {
-                console.log(updated);
-            }).catch((error) => {
-                console.log(error);
-            });
-        },
-
         deleteConnection: (request, response) => {
             let email = request.headers.payload.email || "";
             let param = {
@@ -70,6 +62,16 @@ exports.connections = function (utils) {
                 utils.sendResponse(response, true, 500, 1000);
             })
         },
+        updateConnections: (request, response) => {
+            Connections.getModel().updateOne().then((updated) => {
+                console.log(updated);
+            }).catch((error) => {
+                console.log(error);
+            });
+        },
+        blockConnection: (request, response) => {
+            console.log("blockConnection trig");
+        }
 
     }
 

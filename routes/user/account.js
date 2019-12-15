@@ -11,7 +11,7 @@ module.exports.account = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/account").post(function (request, response) {
+    app.route("/user/account").post(auth, function (request, response) {
         try {
             controller.addUserAccountDetails(request, response);
         }
