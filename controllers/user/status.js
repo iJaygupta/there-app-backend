@@ -7,14 +7,15 @@ exports.status = function (utils) {
     return {
 
         getStatus: (request, response) => {
-            Status.getModel().find({ email: email }).then((data) => {
+            let user_id = request.headers.payload.id;
+            Status.getModel().find({ user_id: user_id }).then((data) => {
                 utils.sendResponse(response, false, 200, 4022, data);
             })
         },
 
         getActiveStatus: (request, response) => {
-            let email = request.headers.payload.email || ""
-            Status.getModel().find({ email: email, is_Active: true }).then((data) => {
+            let user_id = request.headers.payload.id;
+            Status.getModel().find({ user_id: user_id, is_active: true }).then((data) => {
                 utils.sendResponse(response, false, 200, 4022, data);
             })
         },
@@ -23,27 +24,40 @@ exports.status = function (utils) {
             let param = {
                 status_code: request.body.status_code || "",
                 status_message: statusCodes[request.body.status_code].msg,
-                email: request.headers.payload.email
+                user_id: request.headers.payload.id
             };
             Status.getModel().insertMany(param).then((data) => {
                 utils.sendResponse(response, false, 200, 4021);
+            }).catch((error) => {
+                utils.sendResponse(response, true, 500, 1000);
             })
 
         },
 
         updateStatus: (request, response) => {
-
-            console.log("updateStatus");
-
+            let param = {
+                status_code: request.body.status_code || "",
+                status_message: statusCodes[request.body.status_code].msg,
+                user_id: request.headers.payload.id
+            };
+            Status.getModel().updateOne(param).then((data) => {
+                utils.sendResponse(response, false, 200, 4021);
+            }).catch((error) => {
+                utils.sendResponse(response, true, 500, 1000);
+            })
         },
 
         deleteStatus: (request, response) => {
-            let id = request.params.id;
-            console.log(request.params.id);
-            console.log("deleteStatus");
-            Status.getModel().deleteOne({ _id: id }).then((data) => {
-                utils.sendResponse(response, false, 200, 4025, data);
+            let param = {
+                user_id: request.headers.payload.id,
+                status_code: request.body.status_code
+            };
+            Status.getModel().deleteOne(param).then((data) => {
+                utils.sendResponse(response, false, 200, 4025);
+            }).catch((error) => {
+                utils.sendResponse(response, true, 500, 1000);
             })
+
         },
 
         hideStatus: (request, response) => {
@@ -53,7 +67,7 @@ exports.status = function (utils) {
             })
         },
         addAvailability: (request, response) => {
-            let email = request.headers.payload.email || "";
+            let user_id = request.headers.payload.id;
             let param = {
                 fromDate: request.body.fromDate,
                 toDate: request.body.toDate,
@@ -61,12 +75,10 @@ exports.status = function (utils) {
             var query = {};
             query = { $push: { "availability": param } };
 
-            Status.getModel().update({ email: email }, query, { "upsert": true }).then((data) => {
-                // utils.sendResponse(response, false, 200, 4027);
-                response.send(data)
+            Status.getModel().update({ user_id: user_id }, query, { "upsert": true }).then((data) => {
+                utils.sendResponse(response, false, 200, 4030);
             }).catch((error) => {
-                // utils.sendResponse(response, true, 500, 1000);
-                response.send(error);
+                utils.sendResponse(response, true, 500, 1000);
             })
 
         }

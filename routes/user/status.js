@@ -29,7 +29,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/update-status").put(function (request, response) {
+    app.route("/user/update-status").put(auth, function (request, response) {
         try {
             controller.updateStatus(request, response);
         }
@@ -38,7 +38,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/delete-status/:id").delete(function (request, response) {
+    app.route("/user/delete-status").delete(auth, function (request, response) {
         try {
             controller.deleteStatus(request, response);
         }
@@ -47,7 +47,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/hide-status").patch(function (request, response) {
+    app.route("/user/hide-status").patch(auth, function (request, response) {
         try {
             controller.hideStatus(request, response);
         }
