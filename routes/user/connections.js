@@ -38,6 +38,15 @@ exports.connections = function (app, controller, error, auth, middleware) {
         }
     })
 
+    app.route("/user/update-connection").put(auth, function (request, response) {
+        try {
+            controller.updateConnections(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    })
+
     app.route("/user/block-connection").patch(function (request, response) {
         try {
             controller.blockConnection(request, response);
