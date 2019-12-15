@@ -28,7 +28,7 @@ exports.updateVerifyStatus = function (id, type) {
 
 exports.prepareOTPParam = function (type, otp) {
 
-    return ((type == "phone") ? `Dear Customer Your Verification Code is ${otp}` : emailTemplate.emailSignup(otp));
+    return ((type == "phone") ? `Dear Customer Your Verification Code is ${otp}` : emailTemplate.emailTemplate('userRegistration',otp));
 }
 
 
