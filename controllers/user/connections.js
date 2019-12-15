@@ -1,4 +1,5 @@
 const Connections = require('../../models/connections');
+const User = require('../../models/user');
 
 
 exports.connections = function (utils) {
@@ -6,11 +7,12 @@ exports.connections = function (utils) {
     return {
 
         getConnections: (request, response) => {
-            let email = request.headers.payload.email || "";
-            Connections.getModel().find({ email: email }).then((data) => {
+            let user_id = request.headers.payload.id;
+            Connections.getModel().find({ user_id: user_id }).populate("contact_list").exec().then((data) => {
                 utils.sendResponse(response, false, 200, 4028, data);
             }).catch((error) => {
                 console.log(error);
+                utils.sendResponse(response, true, 500, 1000);
             })
         },
 
@@ -23,18 +25,24 @@ exports.connections = function (utils) {
             })
         },
 
-        addConnection: (request, response) => {
-            let email = request.headers.payload.email || "";
-            let param = {
-                email: request.body.email,
-                mobile: request.body.mobile,
-                name: request.body.name
-            };
-            var query = {};
-            query = { $push: { "contacts_list": param } };
+        addConnection: function (request, response) {
+            let connections = request.body;
+            let id = request.headers.payload.id;
 
-            Connections.getModel().update({ email: email }, query, { "upsert": true }).then((data) => {
-                utils.sendResponse(response, false, 200, 4027);
+            User.getModel().insertMany(connections).then((result) => {
+                let connection_ids = [];
+                result.forEach(element => {
+                    connection_ids.push(element._id);
+                });
+
+                let param = {
+                    user_id: id,
+                    contact_list: connection_ids
+                }
+                Connections.getModel().insertMany(param).then((data) => {
+                    console.log(data);
+                    utils.sendResponse(response, false, 200, 4027);
+                })
             }).catch((error) => {
                 console.log(error);
                 utils.sendResponse(response, true, 500, 1000);
