@@ -26,4 +26,7 @@ module.exports.getModel = function () {
 };
 
 
+exports.user = userSchema;
+
+
 
