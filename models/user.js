@@ -4,6 +4,7 @@ const dbConfig = require("../dbconfig");
 var userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     mobile: { type: String, required: true },
+    alt_name: { type: String },
     password: { type: String },
     email: { type: String },
     city: { type: String },
@@ -24,6 +25,15 @@ module.exports.getModel = function () {
     let connection = dbConfig.connect();
     return connection.model("user", userSchema);
 };
+
+
+
+
+
+
+
+
+
 
 
 
