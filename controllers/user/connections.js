@@ -49,14 +49,13 @@ exports.connections = function (utils) {
             })
         },
         deleteConnection: (request, response) => {
-            let email = request.headers.payload.email || "";
-            let param = {
-                "email": request.params.email
-            };
+            let user_id = request.headers.payload.id;
+            let param =`ObjectId("5df7985262f8d21f841ad861")`
             var query = {};
             query = { $pull: { "contacts_list": param } };
 
-            Connections.getModel().update({ email: email }, query).then((data) => {
+            Connections.getModel().updateOne({ user_id: user_id }, query).then((data) => {
+                console.log(data);
                 utils.sendResponse(response, false, 200, 4029);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);

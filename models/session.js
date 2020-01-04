@@ -15,6 +15,7 @@ var userSession = new mongoose.Schema({
     is_session_active: { type: Boolean, default: true },
 });
 
+exports.userSession = userSession;
 
 module.exports.getModel = function () {
     let connection = dbConfig.connect();
