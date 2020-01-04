@@ -15,7 +15,7 @@ app.use(bodyParser.json({limit : '40mb'}));
 try {
      require('./loadPlugins')(app, http);
 } catch (error) {
-    console.log("Error in Loading Plugins"+error);
+    console.log(`Error in Loading Plugins ${error}`);
 }
 
 http.listen(PORT, function(){

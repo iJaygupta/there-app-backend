@@ -17,21 +17,38 @@ module.exports.auth = function (utils) {
       let password = request.body.password;
       let hash = bcrypt.hashSync(password);
       request.body.password = hash;
-      User.getModel().insertMany(request.body).then((result) => {
-        if (result) {
-          utils.sendResponse(response, false, 200, 4000);
+      request.body.is_active = true;
+
+      User.getModel().findOne({ "mobile": request.body.mobile }).then((userDetails) => {
+        if (!userDetails) {
+          User.getModel().insertMany(request.body).then((result) => {
+            if (result) {
+              utils.sendResponse(response, false, 200, 4000);
+            }
+          }).catch((error) => {
+            utils.sendResponse(response, true, 500, 1000);
+          })
+
+        } else if (userDetails && userDetails.mobile === request.body.mobile && userDetails.is_active === false) {
+          User.getModel().findOneAndUpdate({ "mobile": request.body.mobile }, { $set: { "is_active": true } }).then((result) => {
+            if (result) {
+              utils.sendResponse(response, false, 200, 4000);
+            }
+          }).catch((error) => {
+            utils.sendResponse(response, true, 500, 1000);
+          })
         }
-      }).catch((error) => {
-        console.log(error);
-
-        utils.sendResponse(response, true, 500, 1000);
+        else {
+          utils.sendResponse(response, false, 200, 4034);
+        }
       })
-    },
 
+    },
     logIn: (request, response) => {
-      let email = request.body.email;
+      let mobile = request.body.mobile;
       let password = request.body.password;
-      User.getModel().findOne({ email: email }).then((userDetails) => {
+      User.getModel().findOne({ mobile: mobile }).then((userDetails) => {
+        console.log(userDetails)
         if (!userDetails) {
           utils.sendResponse(response, false, 200, 4002);
         } else {
@@ -115,6 +132,7 @@ module.exports.auth = function (utils) {
         })
       }).catch((error) => {
         utils.sendResponse(response, true, 500, 1000);
+        // console.log(error);
       })
     },
 
@@ -124,12 +142,17 @@ module.exports.auth = function (utils) {
       let code = request.body.code;
       let user_id = request.headers.payload.id;
       try {
-        let otpData = await util.getUserOTP(user_id ,email, "email");
+        let otpData = await util.getUserOTP(user_id, email, "email");
         let OTP = otpData[0] ? otpData[0].email_otp : "";
+        let email_otp_datetime = otpData[0] ? otpData[0].email_otp_datetime : "";
         if (OTP == code) {
-          await util.updateVerifyStatus(user_id, "email");
-          //send Thanks Email
-          utils.sendResponse(response, false, 200, 4016);
+          if (util.isOTPNotExpired(email_otp_datetime, "email")) {
+            await util.updateVerifyStatus(user_id, "email");
+            //send Thanks Email
+            utils.sendResponse(response, false, 200, 4016);
+          } else {
+            utils.sendResponse(response, false, 200, 4013);
+          }
         } else {
           utils.sendResponse(response, false, 200, 4018);
         }
@@ -143,7 +166,7 @@ module.exports.auth = function (utils) {
       let code = request.body.code;
       let user_id = request.headers.payload.id;
       try {
-        let otpData = await util.getUserOTP(user_id,mobile, "phone");
+        let otpData = await util.getUserOTP(user_id, mobile, "phone");
         let OTP = otpData[0] ? otpData[0].mobile_otp : "";
         if (OTP == code) {
           await util.updateVerifyStatus(user_id, "phone")
@@ -171,7 +194,7 @@ module.exports.auth = function (utils) {
           }
           const token = await auth.generateAuthToken(payload);
           const url = `${process.env.HOST}/forgot-password/${token}`;
-          const template = emailTemplate.emailTemplate('forgotPassword',url);
+          const template = emailTemplate.emailTemplate('forgotPassword', url);
           emailService.sendEmail(email, "ForgotPassword", template, function (output) {
             if (!output.error) {
               response.status(200).send(output);
@@ -179,13 +202,12 @@ module.exports.auth = function (utils) {
               response.status(400).send(output);
             }
           })
-          
+
         }
       }).catch((error) => {
         utils.sendResponse(response, true, 500, 1000);
       })
     },
-
   }
 
 }

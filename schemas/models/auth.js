@@ -4,13 +4,13 @@ module.exports = {
         "properties": {
             "name": { "type": ["string"] },
             "email": { "type": ["string"] },
-            "password": { "type": ["string"] },
-            "mobile": { "type": ["string"] }
+            "password": { "type": ["string"], "minLength": 8 },
+            "mobile": { "type": ["string"], "maxLength": 12, "minLength": 12 }
         }
     },
     logIn: {
         "properties": {
-            "email": { "type": ["string"] },
+            "mobile": { "type": ["string"] },
             "password": { "type": ["string"] },
         }       
     },

@@ -4,13 +4,13 @@ const uploader = require("./../../lib/fileHandler");
 const auth = require('../../common/auth');
 
 
-module.exports.account = function (utils) {
+module.exports.account = function (utils, Collection) {
 
     return {
 
         getUserAccountDetails: (request, response) => {
             let userId = request.headers.payload.id;
-            User.getModel().findById({ _id: userId }).then((userData) => {
+            User.findById({ _id: userId }).then((userData) => {
                 utils.sendResponse(response, false, 200, 4008, userData);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);

@@ -11,7 +11,7 @@ exports.status = function (utils) {
             Status.getModel().find({
                 user_id: user_id
             }).then((data) => {
-                if (data[0].is_active === true) {
+                if (data[0] && data[0].is_active === true) {
                     utils.sendResponse(response, false, 200, 4022, data);
                 } else {
                     utils.sendResponse(response, true, 500, 4031);
@@ -22,7 +22,8 @@ exports.status = function (utils) {
         getActiveStatus: (request, response) => {
             let user_id = request.headers.payload.id;
             Status.getModel().find({ user_id: user_id, }).then((data) => {
-                if (data[0].is_active === true) {
+                console.log(data);
+                if (data[0] && data[0].is_active === true) {
                     utils.sendResponse(response, false, 200, 4022, data);
                 } else {
                     utils.sendResponse(response, true, 500, 4033);
@@ -51,12 +52,13 @@ exports.status = function (utils) {
                 status_message = statusCodes[request.body.status_code].msg;
 
             Status.getModel().findOneAndUpdate({ "user_id": user_id }, { $set: { "status_code": status_code, "status_message": status_message } }).then((data) => {
-                if (data.is_active === true) {
+                if (data && data.is_active === true) {
                     utils.sendResponse(response, false, 200, 4021, data);
                 } else {
                     utils.sendResponse(response, true, 500, 4032);
                 }
             }).catch((error) => {
+                console.log(error)
                 utils.sendResponse(response, true, 500, 1000);
             })
         },
