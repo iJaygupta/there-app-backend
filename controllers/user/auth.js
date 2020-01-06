@@ -10,10 +10,10 @@ const responseFile = require('../../lib/response');
 
 
 module.exports.auth = function (utils) {
-
   return {
 
     signUp: (request, response) => {
+
       let password = request.body.password;
       let hash = bcrypt.hashSync(password);
       request.body.password = hash;
@@ -48,7 +48,6 @@ module.exports.auth = function (utils) {
       let mobile = request.body.mobile;
       let password = request.body.password;
       User.getModel().findOne({ mobile: mobile }).then((userDetails) => {
-        console.log(userDetails)
         if (!userDetails) {
           utils.sendResponse(response, false, 200, 4002);
         } else {
@@ -132,7 +131,6 @@ module.exports.auth = function (utils) {
         })
       }).catch((error) => {
         utils.sendResponse(response, true, 500, 1000);
-        // console.log(error);
       })
     },
 
