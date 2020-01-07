@@ -4,30 +4,32 @@ module.exports = {
         "properties": {
             "name": { "type": ["string"] },
             "email": { "type": ["string"] },
-            "password": { "type": ["string"] },
-            "mobile": { "type": ["string"] }
-        }
+            "password": { "type": ["string"], "minLength": 8  },
+            "mobile": { "type": ["string"], "maxLength": 12, "minLength": 12 }
+        },
+        "required": [ "mobile", "password" ]
     },
     logIn: {
         "properties": {
-            "email": { "type": ["string"] },
+            "mobile": { "type": ["string"] },
             "password": { "type": ["string"] },
-        }       
+        },
+        "required": [ "mobile", "password" ]       
     },
     verifyEmailOtp: {
         "properties": {
-            "id":{ "type": ["string"] },
             "email": { "type": ["string"] },
             "code": { "type": ["string"] }
-        }
+        },
+        "required": [ "email", "code" ] 
     },
     verifyMobileOtp: {
         "properties": {
-            "id":{ "type": ["number"] },
             "mobile": { "type": ["number"] },
             "code": { "type": ["number"] }
         }
-    }
+    },
+    "required": [ "mobile", "code" ] 
 }
 
 

@@ -20,5 +20,7 @@ exports.ajvErrors = function (error, callback) {
     errorField = errorField[errorField.length - 1];
     var errMsg = errorField + ' ' + error[0].message;
     var displayMsg = `The provided value for ${errorField} is not valid`;
-    return callback(displayMsg);
+    const validationMsg = "Validation Failed For Provided Request"
+    return callback(validationMsg);
 }
+

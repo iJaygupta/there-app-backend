@@ -1,10 +1,10 @@
 
 
-exports.status = function (app, controller, error, auth, middleware) {
+exports.status = function (app, controller, error, auth, middleware, schema) {
 
-    app.route("/user/get-status").get(auth, function (request, response) {
+    app.route("/user/get-my-status").get(auth, function (request, response) {
         try {
-            controller.getStatus(request, response);
+            controller.getMyStatus(request, response);
         }
         catch (err) {
             error(err, response)
@@ -20,7 +20,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/add-status").post(auth, function (request, response) {
+    app.route("/user/add-status").post(middleware.validateAjv(schema.status.addStatus), auth, function (request, response) {
         try {
             controller.addStatus(request, response);
         }
@@ -29,7 +29,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/update-status").put(auth, function (request, response) {
+    app.route("/user/update-status").put(middleware.validateAjv(schema.status.updateStatus), auth, function (request, response) {
         try {
             controller.updateStatus(request, response);
         }
@@ -47,7 +47,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/hide-status").patch(auth, function (request, response) {
+    app.route("/user/hide-status").put(auth, function (request, response) {
         try {
             controller.hideStatus(request, response);
         }
@@ -62,6 +62,15 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
         catch (err) {
             error(err, response)
+        }
+    })
+    app.route("/user/get-status").get(auth, function (request, response){
+        try {
+            controller.getStatus(request, response);
+        }
+        catch (err) {
+            error(err, response)
+
         }
     })
 }
