@@ -30,26 +30,30 @@ exports.connections = function (utils) {
 
             User.getModel().insertMany(connections).then((result) => {
                 let connection_ids = [];
-                result.forEach(element => {
-                    connection_ids.push(element._id);
-                });
-
-                let param = {
-                    user_id: id,
-                    contact_list: connection_ids
+                if (result && Array.isArray(result)) {
+                    result.forEach(element => {
+                        connection_ids.push(element._id);
+                    });
+                    let param = {
+                        user_id: id,
+                        contact_list: connection_ids
+                    }
+                    Connections.getModel().insertMany(param).then((data) => {
+                        utils.sendResponse(response, false, 200, 4027);
+                    })
                 }
-                Connections.getModel().insertMany(param).then((data) => {
-                    utils.sendResponse(response, false, 200, 4027);
-                })
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);
             })
         },
         deleteConnection: (request, response) => {
             let user_id = request.headers.payload.id;
-            let param =`ObjectId("5df7985262f8d21f841ad861")`
+            let param = request.params.id;
+            console.log(user_id)
             var query = {};
-            query = { $pull: { "contacts_list": param } };
+            query = { $pull: { "contact_list": param } };
+            console.log(query)
+
 
             Connections.getModel().updateOne({ user_id: user_id }, query).then((data) => {
                 utils.sendResponse(response, false, 200, 4029);
