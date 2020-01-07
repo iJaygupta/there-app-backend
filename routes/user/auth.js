@@ -1,16 +1,15 @@
-module.exports.auth = function (app, controller, error, auth, middleware) {
-     
-    app.route("/user/signup").post(function (request, response) {
+module.exports.auth = function (app, controller, error, auth, middleware, schema) {
+
+    app.route("/user/signup").post(middleware.validateAjv(schema.auth.signUp), function (request, response) {
         try {
             controller.signUp(request, response);
         }
-        catch (err) {   
-            console.log(err);    
+        catch (err) {
             error(err, response)
         }
     })
 
-    app.route("/user/login").post(function (request, response) {
+    app.route("/user/login").post(middleware.validateAjv(schema.auth.logIn), function (request, response) {
         try {
             controller.logIn(request, response);
         }
@@ -19,7 +18,7 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/logout").post(auth,function (request, response) {
+    app.route("/user/logout").post(auth, function (request, response) {
         try {
             controller.logout(request, response);
         }
@@ -28,7 +27,17 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/send-phone-otp/:id").get(function (request, response) {
+    app.route("/user/forgot-password").get(function (request, response) {
+        try {
+            controller.forgotPassword(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    }) 
+
+
+    app.route("/user/send-phone-otp").get(auth, function (request, response) {
         try {
             controller.sendPhoneCode(request, response);
         }
@@ -37,7 +46,7 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/send-email-otp/:id").get(function (request, response) {
+    app.route("/user/send-email-otp").get(auth, function (request, response) {
         try {
             controller.sendEmailCode(request, response);
         }
@@ -46,7 +55,7 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/verify-email-otp").post(function (request, response) {
+    app.route("/user/verify-email-otp").post(auth, middleware.validateAjv(schema.auth.verifyEmailOtp), function (request, response) {
         try {
             controller.verifyEmailCode(request, response);
         }
@@ -55,7 +64,7 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/verify-mobile-otp").post(function (request, response) {
+    app.route("/user/verify-mobile-otp").post(auth, middleware.validateAjv(schema.auth.verifyMobileOtp), function (request, response) {
         try {
             controller.verifyMobileCode(request, response);
         }

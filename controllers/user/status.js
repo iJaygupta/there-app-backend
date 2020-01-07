@@ -6,17 +6,28 @@ exports.status = function (utils) {
 
     return {
 
-        getStatus: (request, response) => {
-            let email = request.body.email || "";
-            Status.getModel().find({ email: email }).then((data) => {
-                utils.sendResponse(response, false, 200, 4022, data);
+        getMyStatus: (request, response) => {
+            let user_id = request.headers.payload.id;
+            Status.getModel().find({
+                user_id: user_id
+            }).then((data) => {
+                if (data[0] && data[0].is_active === true) {
+                    utils.sendResponse(response, false, 200, 4022, data);
+                } else {
+                    utils.sendResponse(response, true, 500, 4031);
+                }
             })
         },
 
         getActiveStatus: (request, response) => {
-            let email = request.body.email || ""
-            Status.getModel().find({ email: email, is_Active: true }).then((data) => {
-                utils.sendResponse(response, false, 200, 4022, data);
+            let user_id = request.headers.payload.id;
+            Status.getModel().find({ user_id: user_id, }).then((data) => {
+                console.log(data);
+                if (data[0] && data[0].is_active === true) {
+                    utils.sendResponse(response, false, 200, 4022, data);
+                } else {
+                    utils.sendResponse(response, true, 500, 4033);
+                }
             })
         },
 
@@ -24,34 +35,77 @@ exports.status = function (utils) {
             let param = {
                 status_code: request.body.status_code || "",
                 status_message: statusCodes[request.body.status_code].msg,
-                email: request.body.email
+                user_id: request.headers.payload.id
             };
             Status.getModel().insertMany(param).then((data) => {
                 utils.sendResponse(response, false, 200, 4021);
+            }).catch((error) => {
+                utils.sendResponse(response, true, 500, 1000);
             })
 
         },
 
         updateStatus: (request, response) => {
 
-            console.log("updateStatus");
+            let user_id = request.headers.payload.id,
+                status_code = request.body.status_code || "",
+                status_message = statusCodes[request.body.status_code].msg;
 
+            Status.getModel().findOneAndUpdate({ "user_id": user_id }, { $set: { "status_code": status_code, "status_message": status_message } }).then((data) => {
+                if (data && data.is_active === true) {
+                    utils.sendResponse(response, false, 200, 4021, data);
+                } else {
+                    utils.sendResponse(response, true, 500, 4032);
+                }
+            }).catch((error) => {
+                console.log(error)
+                utils.sendResponse(response, true, 500, 1000);
+            })
         },
 
         deleteStatus: (request, response) => {
-            let id = request.params.id;
-          console.log(request.params.id);
-            console.log("deleteStatus");
-            Status.getModel().deleteOne({ _id: id }).then((data) => {
+            let user_id = request.headers.payload.id;
+            let param = { "user_id": user_id };
+            ((request.query.force_active == 'true') ? param.is_active = true : !(request.query.force_all == 'true') ? param.is_active = false : "")
+            Status.getModel().deleteMany(param).then((data) => {
                 utils.sendResponse(response, false, 200, 4025, data);
+            }).catch((error) => {
+                utils.sendResponse(response, true, 500, 1000, error);
             })
         },
 
         hideStatus: (request, response) => {
-            let param = { is_Active: false };
-            Status.getModel().updateOne({}, { $set: param }).then((data) => {
-                utils.sendResponse(response, false, 200, 4021);
+            let param = { "is_active": false };
+            let user_id = request.headers.payload.id;
+            let status_code = request.query.force_all;
+            let condition;
+            if (status_code !== "true") { condition = { "user_id": user_id, "status_code": status_code }; }
+            else { condition = { "user_id": user_id }; }
+
+            Status.getModel().updateMany(condition, { $set: param }).then((data) => {
+                utils.sendResponse(response, false, 200, 4021, data);
+            }).catch((error) => {
+                utils.sendResponse(response, true, 500, 1000);
             })
+        },
+        addAvailability: (request, response) => {
+            let user_id = request.headers.payload.id;
+            let param = {
+                fromDate: request.body.fromDate,
+                toDate: request.body.toDate,
+            };
+            var query = {};
+            query = { $push: { "availability": param } };
+
+            Status.getModel().update({ user_id: user_id }, query, { "upsert": true }).then((data) => {
+                utils.sendResponse(response, false, 200, 4030);
+            }).catch((error) => {
+                utils.sendResponse(response, true, 500, 1000);
+            })
+
+        },
+        getStatus: (request, response) => {
+
         }
     }
 

@@ -1,17 +1,17 @@
 
 
-exports.status = function (app, controller, error, auth, middleware) {
+exports.status = function (app, controller, error, auth, middleware, schema) {
 
-    app.route("/user/get-status").post(function (request, response) {
+    app.route("/user/get-my-status").get(auth, function (request, response) {
         try {
-            controller.getStatus(request, response);
+            controller.getMyStatus(request, response);
         }
         catch (err) {
             error(err, response)
         }
     })
 
-    app.route("/user/get-active-status").post(function (request, response) {
+    app.route("/user/get-active-status").get(auth, function (request, response) {
         try {
             controller.getActiveStatus(request, response);
         }
@@ -20,7 +20,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/add-status").post(function (request, response) {
+    app.route("/user/add-status").post(middleware.validateAjv(schema.status.addStatus), auth, function (request, response) {
         try {
             controller.addStatus(request, response);
         }
@@ -29,7 +29,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/update-status").put(function (request, response) {
+    app.route("/user/update-status").put(middleware.validateAjv(schema.status.updateStatus), auth, function (request, response) {
         try {
             controller.updateStatus(request, response);
         }
@@ -38,7 +38,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/delete-status/:id").delete(function (request, response) {
+    app.route("/user/delete-status").delete(auth, function (request, response) {
         try {
             controller.deleteStatus(request, response);
         }
@@ -47,7 +47,7 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/hide-status").patch(function (request, response) {
+    app.route("/user/hide-status").put(auth, function (request, response) {
         try {
             controller.hideStatus(request, response);
         }
@@ -56,4 +56,21 @@ exports.status = function (app, controller, error, auth, middleware) {
         }
     })
 
+    app.route("/user/add-availability").post(auth, function (request, response) {
+        try {
+            controller.addAvailability(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    })
+    app.route("/user/get-status").get(auth, function (request, response){
+        try {
+            controller.getStatus(request, response);
+        }
+        catch (err) {
+            error(err, response)
+
+        }
+    })
 }
