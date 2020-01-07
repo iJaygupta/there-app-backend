@@ -37,7 +37,7 @@ module.exports.auth = function (app, controller, error, auth, middleware, schema
     }) 
 
 
-    app.route("/user/send-phone-otp/:id").get(function (request, response) {
+    app.route("/user/send-phone-otp").get(auth, function (request, response) {
         try {
             controller.sendPhoneCode(request, response);
         }

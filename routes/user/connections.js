@@ -29,7 +29,7 @@ exports.connections = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/delete-connection/:email").delete(auth, function (request, response) {
+    app.route("/user/delete-connection/:id").delete(auth, function (request, response) {
         try {
             controller.deleteConnection(request, response);
         }

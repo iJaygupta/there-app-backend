@@ -2,6 +2,7 @@ const random = require("randomstring");
 const emailTemplate = require("../lib/templates");
 const Session = require("../models/session");
 const User = require("../models/user");
+const moment = require("moment")
 
 
 exports.putOTPIntoCollection = function (user_id, id, otp, dateTime, type) {
@@ -28,7 +29,7 @@ exports.updateVerifyStatus = function (id, type) {
 
 exports.prepareOTPParam = function (type, otp) {
 
-    return ((type == "phone") ? `Dear Customer Your Verification Code is ${otp}` : emailTemplate.emailTemplate('userRegistration',otp));
+    return ((type == "phone") ? `Dear Customer Your Verification Code is ${otp}` : emailTemplate.emailTemplate('userRegistration', otp));
 }
 
 
@@ -58,3 +59,21 @@ exports.updateProfilePicDetails = function (id, profilePic) {
         })
     })
 }
+
+exports.isOTPNotExpired = (lastOTPSentTime, type) => {
+    let timeDiff = calculateTimeDiff(lastOTPSentTime);
+    let validTime = type == "email" ? process.env.EMAIL_OTP_VALID_TIME : process.env.PHONE_OTP_VALID_TIME
+    if (timeDiff > validTime) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+ const calculateTimeDiff = (lastOTPSentTime) => {
+    var now = moment(new Date()); //todays date
+    var end = moment(lastOTPSentTime); // another date
+    var duration = moment.duration(now.diff(end));
+    return duration.asMinutes();
+}
+

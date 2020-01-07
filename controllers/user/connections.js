@@ -11,7 +11,6 @@ exports.connections = function (utils) {
             Connections.getModel().find({ user_id: user_id }).populate("contact_list").exec().then((data) => {
                 utils.sendResponse(response, false, 200, 4028, data);
             }).catch((error) => {
-                console.log(error);
                 utils.sendResponse(response, true, 500, 1000);
             })
         },
@@ -21,7 +20,7 @@ exports.connections = function (utils) {
             Connections.getModel().find({ email: email, isAvailable: true }).then((data) => {
                 utils.sendResponse(response, false, 200, 4022, data);
             }).catch((error) => {
-                console.log(error);
+                utils.sendResponse(response, true, 500, 1000);
             })
         },
 
@@ -40,23 +39,19 @@ exports.connections = function (utils) {
                     contact_list: connection_ids
                 }
                 Connections.getModel().insertMany(param).then((data) => {
-                    console.log(data);
                     utils.sendResponse(response, false, 200, 4027);
                 })
             }).catch((error) => {
-                console.log(error);
                 utils.sendResponse(response, true, 500, 1000);
             })
         },
         deleteConnection: (request, response) => {
-            let email = request.headers.payload.email || "";
-            let param = {
-                "email": request.params.email
-            };
+            let user_id = request.headers.payload.id;
+            let param =`ObjectId("5df7985262f8d21f841ad861")`
             var query = {};
             query = { $pull: { "contacts_list": param } };
 
-            Connections.getModel().update({ email: email }, query).then((data) => {
+            Connections.getModel().updateOne({ user_id: user_id }, query).then((data) => {
                 utils.sendResponse(response, false, 200, 4029);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);
@@ -64,9 +59,7 @@ exports.connections = function (utils) {
         },
         updateConnections: (request, response) => {
             Connections.getModel().updateOne().then((updated) => {
-                console.log(updated);
             }).catch((error) => {
-                console.log(error);
             });
         },
         blockConnection: (request, response) => {

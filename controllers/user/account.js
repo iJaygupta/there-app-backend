@@ -4,7 +4,7 @@ const uploader = require("./../../lib/fileHandler");
 const auth = require('../../common/auth');
 
 
-module.exports.account = function (utils) {
+module.exports.account = function (utils, Collection) {
 
     return {
 
@@ -35,26 +35,28 @@ module.exports.account = function (utils) {
         },
         updateUserPassword: (request, response) => {
 
-            let email = request.body.email;
+            let userId = request.headers.payload.id;
             let password = request.body.password;
             let hash = bcrypt.hashSync(password);
             request.body.password = hash;
-            User.getModel().findOne({ email: email }).then((userDetails) => {
+            User.getModel().findOne({ _id: userId }).then((userDetails) => {
+                console.log(userDetails)
                 if (!userDetails) {
                     utils.sendResponse(response, false, 200, 4002);
                 }
                 else {
-                    User.getModel().updateOne({ 'email': email }, { $set: { 'password': request.body.password } }).then(data => {
+                    User.getModel().updateOne({_id: userId }, { $set: { 'password': request.body.password } }).then(data => {
                         if (!data) {
                             utils.sendResponse(response, false, 200, 4021);
                         }
                         else {
-                            utils.sendResponse(response, false, 200, 4020);
+                            utils.sendResponse(response, false, 200, 4024);
                         }
                     });
                 }
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);
+                console.log(error)
             });
 
         },

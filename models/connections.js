@@ -10,7 +10,7 @@ var connectionSchema = new mongoose.Schema({
     contact_list: [{ type: Schema.Types.ObjectId, ref: "user" }]
 });
 
-
+exports.userConnections = connectionSchema;
 
 module.exports.getModel = function () {
     let connection = dbConfig.connect();
