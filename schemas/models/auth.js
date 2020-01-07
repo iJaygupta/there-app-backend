@@ -18,18 +18,18 @@ module.exports = {
     },
     verifyEmailOtp: {
         "properties": {
-            "id":{ "type": ["string"] },
             "email": { "type": ["string"] },
             "code": { "type": ["string"] }
-        }
+        },
+        "required": [ "email", "code" ] 
     },
     verifyMobileOtp: {
         "properties": {
-            "id":{ "type": ["number"] },
             "mobile": { "type": ["number"] },
             "code": { "type": ["number"] }
         }
-    }
+    },
+    "required": [ "mobile", "code" ] 
 }
 
 
