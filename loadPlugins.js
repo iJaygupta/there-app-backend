@@ -8,8 +8,6 @@ const utils = require('./common/utils');
 const auth = require('./lib/auth');
 const validator = require('./lib/validator');
 const schema = require('./schemas/factory');
-const { collection } = require('./db_connect');
-
 
 const authenticate = function (request, response, next) {
     let token = request.headers['authorization'];
@@ -28,7 +26,7 @@ module.exports = function (app, http) {
             let route = require(moduleDir + "/" + plugin);
             plugin = plugin.split(".");
             route = route[plugin[0]];
-            factory = factory[plugin[0]](utils, collection);
+            factory = factory[plugin[0]](utils);
             route(app, factory, error, authenticate, validator, schema);
         })
         console.log(module + " Service Loaded");
