@@ -1,6 +1,6 @@
 
 
-module.exports.account = function (app, controller, error, auth, middleware) {
+module.exports.account = function (app, controller, error, auth, middleware, schema) {
 
     app.route("/user/account").get(auth, function (request, response) {
         try {
@@ -29,7 +29,7 @@ module.exports.account = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/change-password").put(function (request, response) {
+    app.route("/user/change-password").put(middleware.validateAjv(schema.account.updateUserPassword), auth, function (request, response) {
         try {
             controller.updateUserPassword(request, response);
         }
