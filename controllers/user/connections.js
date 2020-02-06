@@ -1,14 +1,14 @@
-const Connections = require('../../models/connections');
+// const Connections = require('../../models/connections');
 const User = require('../../models/user');
 
 
-exports.connections = function (utils) {
-
+exports.connections = function (utils, collection) {
+    const { Connections , User} = collection;
     return {
 
         getConnections: (request, response) => {
             let user_id = request.headers.payload.id;
-            Connections.getModel().find({ user_id: user_id }).populate("contact_list").exec().then((data) => {
+            Connections.find({ user_id: user_id }).populate("contact_list").exec().then((data) => {
                 utils.sendResponse(response, false, 200, 4028, data);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);
@@ -16,8 +16,8 @@ exports.connections = function (utils) {
         },
 
         getActiveConnections: (request, response) => {
-            let email = request.headers.payload.email || ""
-            Connections.getModel().find({ email: email, isAvailable: true }).then((data) => {
+            let user_id = request.headers.payload.id;
+            User.find({ user_id: user_id, is_active: true }).then((data) => {
                 utils.sendResponse(response, false, 200, 4022, data);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);
@@ -28,7 +28,7 @@ exports.connections = function (utils) {
             let connections = request.body;
             let id = request.headers.payload.id;
 
-            User.getModel().insertMany(connections).then((result) => {
+            User.insertMany(connections).then((result) => {
                 let connection_ids = [];
                 if (result && Array.isArray(result)) {
                     result.forEach(element => {
@@ -38,7 +38,7 @@ exports.connections = function (utils) {
                         user_id: id,
                         contact_list: connection_ids
                     }
-                    Connections.getModel().insertMany(param).then((data) => {
+                    Connections.insertMany(param).then((data) => {
                         utils.sendResponse(response, false, 200, 4027);
                     })
                 }
@@ -49,20 +49,18 @@ exports.connections = function (utils) {
         deleteConnection: (request, response) => {
             let user_id = request.headers.payload.id;
             let param = request.params.id;
-            console.log(user_id)
             var query = {};
             query = { $pull: { "contact_list": param } };
-            console.log(query)
 
 
-            Connections.getModel().updateOne({ user_id: user_id }, query).then((data) => {
+            Connections.updateOne({ user_id: user_id }, query).then((data) => {
                 utils.sendResponse(response, false, 200, 4029);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);
             })
         },
         updateConnections: (request, response) => {
-            Connections.getModel().updateOne().then((updated) => {
+            Connections.updateOne().then((updated) => {
             }).catch((error) => {
             });
         },
