@@ -1,10 +1,10 @@
-let User = require('../../models/user');
+// let User = require('../../models/user');
 const auth = require('../../lib/auth');
 const bcrypt = require("bcryptjs");
 
 
-module.exports.auth = function (responseFile) {
-
+module.exports.auth = function (responseFile, collection) {
+  const {User} = collection;
   return {
 
     signUp: (request, response) => {
@@ -12,7 +12,7 @@ module.exports.auth = function (responseFile) {
       let password = request.body.password;
       let hash = bcrypt.hashSync(password);
       request.body.password = hash;
-      User.getModel().insertMany(request.body).then((result) => {
+      User.insertMany(request.body).then((result) => {
         if (result) {
           let output = {
             error: false,
@@ -34,7 +34,7 @@ module.exports.auth = function (responseFile) {
     logIn: (request, response) => {
       let email = request.body.email;
       let password = request.body.password;
-      User.getModel().findOne({ email: email }).then((userDetails) => {
+      User.findOne({ email: email }).then((userDetails) => {
         if (!userDetails) {
           let output = {
             error: false,
@@ -95,7 +95,7 @@ module.exports.auth = function (responseFile) {
 
     },
     sendPhoneCode: (request, response) => {
-      User.getModel().findById(request.params.id).then(async (userDetails) => {
+      User.findById(request.params.id).then(async (userDetails) => {
         let { mobile } = userDetails;
         if (userDetails.is_phone_verified) {
           console.log("phone already verified");
@@ -107,7 +107,6 @@ module.exports.auth = function (responseFile) {
 
         smsService.sendMsg(paramForMsg, "+919897821299", function (err, done) {
           if (err) {
-            console.log(err);
             let output = {
               error: true,
               msg: responseFile[4010]['msg'],
@@ -134,7 +133,7 @@ module.exports.auth = function (responseFile) {
     },
     sendEmailCode: (request, response) => {
 
-      User.getModel().findById(request.params.id).then(async (userDetails) => {
+      User.findById(request.params.id).then(async (userDetails) => {
         let { email } = userDetails;
         if (userDetails.is_email_verified) {
           let output = {
@@ -172,7 +171,6 @@ module.exports.auth = function (responseFile) {
       let code = request.body.code;
       try {
         let otpData = await util.getUserOTP(id, "email");
-        console.log(otpData)
         let OTP = otpData[0].email_otp;
         if (OTP == code) {
           let output = {
