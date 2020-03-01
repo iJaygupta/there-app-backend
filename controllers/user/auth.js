@@ -178,22 +178,24 @@ module.exports.auth = function (utils) {
     },
 
     forgotPassword: (request, response) => {
-      const email = request.body.email;
-      User.getModel().findOne({ email: email }).then(async (user) => {
+      const mobile = request.body.mobile;
+      User.getModel().findOne({ mobile: mobile }).then(async (user) => {
         if (!user) {
           utils.sendResponse(response, false, 200, 4002);
         }
         else {
+          let securityCode = util.generateOTP("email");
+          let otpDateTime = new Date();
+          await util.putOTPIntoCollection(user._id, user.email, securityCode, otpDateTime, "email");
           const payload = {
             id: user._id,
             email: user.email,
-            name: user.name,
-            mobile: user.mobile
+            securityCode: securityCode
           }
           const token = await auth.generateAuthToken(payload);
-          const url = `${process.env.HOST}/forgot-password/${token}`;
+          const url = `${process.env.HOST}:${process.env.PORT}/user/confirm-forgot-password/${token}`;
           const template = emailTemplate.emailTemplate('forgotPassword', url);
-          emailService.sendEmail(email, "ForgotPassword", template, function (output) {
+          emailService.sendEmail(user.email, "ForgotPassword", template, function (output) {
             if (!output.error) {
               response.status(200).send(output);
             } else {
@@ -206,6 +208,29 @@ module.exports.auth = function (utils) {
         utils.sendResponse(response, true, 500, 1000);
       })
     },
+    confirmForgotPassword: async (request, response) => {
+      let token = request.params.token;
+      const decodedData = auth.decodeForgotPasswordToken(response, token);
+      if (decodedData) {
+        const { id, email, securityCode } = decodedData;
+        try {
+          let otpData = await util.getUserOTP(id, email, "email");
+          let OTP = otpData[0] ? otpData[0].email_otp : "";
+          let email_otp_datetime = otpData[0] ? otpData[0].email_otp_datetime : "";
+          if (OTP == securityCode) {
+            if (util.isOTPNotExpired(email_otp_datetime, "email")) {
+              utils.sendResponse(response, false, 200, 4016);
+            } else {
+              utils.sendResponse(response, true, 401, 4036);
+            }
+          } else {
+            utils.sendResponse(response, true, 401, 4037);
+          }
+        } catch (error) {
+          utils.sendResponse(response, true, 500, 1000);
+        }
+      }
+    }
   }
 
 }
