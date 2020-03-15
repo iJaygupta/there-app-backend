@@ -4,7 +4,7 @@ const uploader = require("./../../lib/fileHandler");
 const auth = require('../../common/auth');
 
 
-module.exports.account = function (utils) {
+module.exports.account = function (utils, Collection) {
 
     return {
 
@@ -35,23 +35,32 @@ module.exports.account = function (utils) {
         },
         updateUserPassword: (request, response) => {
 
-            let email = request.body.email;
+            let userId = request.headers.payload.id;
+            let oldPassword = request.body.oldPassword;
             let password = request.body.password;
-            let hash = bcrypt.hashSync(password);
-            request.body.password = hash;
-            User.getModel().findOne({ email: email }).then((userDetails) => {
+            password = bcrypt.hashSync(password);
+            User.getModel().findOne({ _id: userId }).then((userDetails) => {
                 if (!userDetails) {
-                    utils.sendResponse(response, false, 200, 4002);
+                    utils.sendResponse(response, false, 200, 1000);
                 }
                 else {
-                    User.getModel().updateOne({ 'email': email }, { $set: { 'password': request.body.password } }).then(data => {
-                        if (!data) {
-                            utils.sendResponse(response, false, 200, 4021);
+                    bcrypt.compare(oldPassword, userDetails.password,  (error, result) => {
+                        if (error) {
+                            utils.sendResponse(response, false, 200, 1000);
+                        } else if (!result) {
+                            utils.sendResponse(response, true, 400, 4035);
+                        } else {
+                            User.getModel().updateOne({ _id: userId }, { $set: { 'password': password } }).then(data => {
+                                if (!data) {
+                                    utils.sendResponse(response, false, 200, 1000);
+                                }
+                                else {
+                                    utils.sendResponse(response, false, 200, 4024);
+                                }
+                            });
                         }
-                        else {
-                            utils.sendResponse(response, false, 200, 4020);
-                        }
-                    });
+                    })
+
                 }
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);

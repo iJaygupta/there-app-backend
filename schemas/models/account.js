@@ -1,7 +1,9 @@
 module.exports={
-    // account: {
-    //     "properties": {
-            
-    //     }
-    // }
+    
+    updateUserPassword: {
+        "properties": {
+            "password": { "type": ["string"], "minLength": 8  },  
+        },
+        "required": [ "password" ]
+    }
 }
