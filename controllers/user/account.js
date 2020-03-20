@@ -39,19 +39,13 @@ module.exports.account = function (utils, collection) {
             let userId = request.headers.payload.id;
             let oldPassword = request.body.oldPassword;
             let password = request.body.password;
-<<<<<<< HEAD
-            password = bcrypt.hashSync(password);
-            User.getModel().findOne({ _id: userId }).then((userDetails) => {
-=======
             let hash = bcrypt.hashSync(password);
             request.body.password = hash;
             User.findOne({ _id: userId }).then((userDetails) => {
->>>>>>> scale
                 if (!userDetails) {
                     utils.sendResponse(response, false, 200, 1000);
                 }
                 else {
-<<<<<<< HEAD
                     bcrypt.compare(oldPassword, userDetails.password,  (error, result) => {
                         if (error) {
                             utils.sendResponse(response, false, 200, 1000);
@@ -66,11 +60,6 @@ module.exports.account = function (utils, collection) {
                                     utils.sendResponse(response, false, 200, 4024);
                                 }
                             });
-=======
-                    User.updateOne({_id: userId }, { $set: { 'password': request.body.password } }).then(data => {
-                        if (!data) {
-                            utils.sendResponse(response, false, 200, 4021);
->>>>>>> scale
                         }
                     })
 
