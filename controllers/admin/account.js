@@ -24,7 +24,7 @@ module.exports.account = function (utils) {
                         totalResults: data.length,
                         limit,
                         // page: 1,
-                        totalPages: 2,
+                        totalPages: 2,  
                         hasPrevPage: skip > 10 ? true : false,
                         prevPage: skip > 10 ? parseInt(skip / 10) : 0,
                         // nextPage: 6,
