@@ -1,9 +1,10 @@
-// const Status = require('../../models/status');
 const statusCodes = require("../../common/userStatus");
+const scheduler = require('../../lib/scheduler');
 
 
 exports.status = function (utils, collection) {
-    const {Status } = collection
+
+    const { Status, Notification } = collection
     return {
 
         getMyStatus: (request, response) => {
@@ -96,6 +97,14 @@ exports.status = function (utils, collection) {
             query = { $push: { "availability": param } };
 
             Status.update({ user_id: user_id }, query, { "upsert": true }).then((data) => {
+                const availabilityDateTime = request.body.fromDate
+                scheduler.jobScheduler(availabilityDateTime, () => {
+                    Notification.find({}).then((data) => {
+
+                    }).catch(error => {
+                        console.log("Error In Job : ", error);
+                    })
+                })
                 utils.sendResponse(response, false, 200, 4030);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);

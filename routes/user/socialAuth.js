@@ -120,9 +120,9 @@ exports.socialAuth = function (app, controller, error, auth, middleware) {
     }
 
     // Routes
-    app.get('/', (req, res) => {
-        res.render('template', { user: req.user });
-    });
+    // app.get('/', (req, res) => {
+    //     res.render('template', { user: req.user });
+    // });
 
     // passport.authenticate middleware is used here to authenticate the request
     app.get('/auth/google', passport.authenticate('google', {

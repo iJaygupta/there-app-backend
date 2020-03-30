@@ -1,4 +1,3 @@
-// let User = require('../../models/user');
 const bcrypt = require("bcryptjs");
 const uploader = require("./../../lib/fileHandler");
 const auth = require('../../common/auth');

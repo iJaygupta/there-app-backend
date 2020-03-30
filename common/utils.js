@@ -1,5 +1,7 @@
 
 const responseFile = require('../lib/response');
+const scheduler = require('../lib/scheduler');
+
 
 
 exports.sendResponse = function (response, error, statusCode, responseCode, data) {
@@ -21,6 +23,14 @@ exports.ajvErrors = function (error, callback) {
     var errMsg = errorField + ' ' + error[0].message;
     var displayMsg = `The provided value for ${errorField} is not valid`;
     const validationMsg = "Validation Failed For Provided Request"
+    console.log(error);
     return callback(validationMsg);
 }
 
+exports.scheduleNotification = function () {
+
+}
+
+exports.sendNotification = function () {
+
+}

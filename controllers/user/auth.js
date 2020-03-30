@@ -1,4 +1,3 @@
-// let User = require('../../models/user');
 const auth = require('../../lib/auth');
 const bcrypt = require("bcryptjs");
 const smsService = require('../../lib/sms');
