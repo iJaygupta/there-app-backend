@@ -1,4 +1,3 @@
-let User = require('../../models/user');
 const auth = require('../../lib/auth');
 const bcrypt = require("bcryptjs");
 const smsService = require('../../lib/sms');
@@ -9,7 +8,8 @@ const responseFile = require('../../lib/response');
 
 
 
-module.exports.auth = function (utils) {
+module.exports.auth = function (utils, collection) {
+  const { User } = collection;
   return {
 
     signUp: (request, response) => {
@@ -19,9 +19,9 @@ module.exports.auth = function (utils) {
       request.body.password = hash;
       request.body.is_active = true;
 
-      User.getModel().findOne({ "mobile": request.body.mobile }).then((userDetails) => {
+      User.findOne({ "mobile": request.body.mobile }).then((userDetails) => {
         if (!userDetails) {
-          User.getModel().insertMany(request.body).then((result) => {
+          User.insertMany(request.body).then((result) => {
             if (result) {
               utils.sendResponse(response, false, 200, 4000);
             }
@@ -30,7 +30,7 @@ module.exports.auth = function (utils) {
           })
 
         } else if (userDetails && userDetails.mobile === request.body.mobile && userDetails.is_active === false) {
-          User.getModel().findOneAndUpdate({ "mobile": request.body.mobile }, { $set: { "is_active": true } }).then((result) => {
+          User.findOneAndUpdate({ "mobile": request.body.mobile }, { $set: { "is_active": true } }).then((result) => {
             if (result) {
               utils.sendResponse(response, false, 200, 4000);
             }
@@ -47,7 +47,7 @@ module.exports.auth = function (utils) {
     logIn: (request, response) => {
       let mobile = request.body.mobile;
       let password = request.body.password;
-      User.getModel().findOne({ mobile: mobile }).then((userDetails) => {
+      User.findOne({ mobile: mobile }).then((userDetails) => {
         if (!userDetails) {
           utils.sendResponse(response, false, 200, 4002);
         } else {
@@ -88,7 +88,7 @@ module.exports.auth = function (utils) {
     },
     sendPhoneCode: (request, response) => {
       let user_id = request.headers.payload.id;
-      User.getModel().findById(user_id).then(async (userDetails) => {
+      User.findById(user_id).then(async (userDetails) => {
         let { mobile } = userDetails;
         if (userDetails.is_phone_verified) {
           return utils.sendResponse(response, false, 200, 4020);
@@ -112,7 +112,7 @@ module.exports.auth = function (utils) {
     sendEmailCode: (request, response) => {
 
       let user_id = request.headers.payload.id;
-      User.getModel().findById(user_id).then(async (userDetails) => {
+      User.findById(user_id).then(async (userDetails) => {
         let { email } = userDetails;
         if (userDetails.is_email_verified) {
           return utils.sendResponse(response, false, 200, 4011);
@@ -178,8 +178,8 @@ module.exports.auth = function (utils) {
     },
 
     forgotPassword: (request, response) => {
-      const mobile = request.body.mobile;
-      User.getModel().findOne({ mobile: mobile }).then(async (user) => {
+      const email = request.body.email;
+      User.findOne({ email: email }).then(async (user) => {
         if (!user) {
           utils.sendResponse(response, false, 200, 4002);
         }

@@ -1,0 +1,13 @@
+<% if (!user) { %>
+<div style="width:500px;height:180px;">
+    <h2 style="font-size:40px;">Welcome! Please log in.</h2>
+    <ul>
+        <li><a href="/auth/google">Login With Gmail</a></li>
+        <li><a href="/auth/facebook">Login With Facebook</a></li>
+        <li><a href="/secret">Secret</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</div>
+<% } else { %>
+<h2>Hello, <%= user.name %>.</h2>
+<% } %>

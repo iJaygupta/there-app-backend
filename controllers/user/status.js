@@ -1,14 +1,15 @@
-const Status = require('../../models/status');
 const statusCodes = require("../../common/userStatus");
+const scheduler = require('../../lib/scheduler');
 
 
-exports.status = function (utils) {
+exports.status = function (utils, collection) {
 
+    const { Status, Notification } = collection
     return {
 
         getMyStatus: (request, response) => {
             let user_id = request.headers.payload.id;
-            Status.getModel().find({
+            Status.find({
                 user_id: user_id
             }).then((data) => {
                 if (data[0] && data[0].is_active === true) {
@@ -21,8 +22,7 @@ exports.status = function (utils) {
 
         getActiveStatus: (request, response) => {
             let user_id = request.headers.payload.id;
-            Status.getModel().find({ user_id: user_id, }).then((data) => {
-                console.log(data);
+            Status.find({ user_id: user_id, }).then((data) => {
                 if (data[0] && data[0].is_active === true) {
                     utils.sendResponse(response, false, 200, 4022, data);
                 } else {
@@ -37,7 +37,7 @@ exports.status = function (utils) {
                 status_message: statusCodes[request.body.status_code].msg,
                 user_id: request.headers.payload.id
             };
-            Status.getModel().insertMany(param).then((data) => {
+            Status.insertMany(param).then((data) => {
                 utils.sendResponse(response, false, 200, 4021);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);
@@ -51,14 +51,13 @@ exports.status = function (utils) {
                 status_code = request.body.status_code || "",
                 status_message = statusCodes[request.body.status_code].msg;
 
-            Status.getModel().findOneAndUpdate({ "user_id": user_id }, { $set: { "status_code": status_code, "status_message": status_message } }).then((data) => {
+            Status.findOneAndUpdate({ "user_id": user_id }, { $set: { "status_code": status_code, "status_message": status_message } }).then((data) => {
                 if (data && data.is_active === true) {
                     utils.sendResponse(response, false, 200, 4021, data);
                 } else {
                     utils.sendResponse(response, true, 500, 4032);
                 }
             }).catch((error) => {
-                console.log(error)
                 utils.sendResponse(response, true, 500, 1000);
             })
         },
@@ -67,7 +66,7 @@ exports.status = function (utils) {
             let user_id = request.headers.payload.id;
             let param = { "user_id": user_id };
             ((request.query.force_active == 'true') ? param.is_active = true : !(request.query.force_all == 'true') ? param.is_active = false : "")
-            Status.getModel().deleteMany(param).then((data) => {
+            Status.deleteMany(param).then((data) => {
                 utils.sendResponse(response, false, 200, 4025, data);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000, error);
@@ -82,7 +81,7 @@ exports.status = function (utils) {
             if (status_code !== "true") { condition = { "user_id": user_id, "status_code": status_code }; }
             else { condition = { "user_id": user_id }; }
 
-            Status.getModel().updateMany(condition, { $set: param }).then((data) => {
+            Status.updateMany(condition, { $set: param }).then((data) => {
                 utils.sendResponse(response, false, 200, 4021, data);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);
@@ -97,7 +96,15 @@ exports.status = function (utils) {
             var query = {};
             query = { $push: { "availability": param } };
 
-            Status.getModel().update({ user_id: user_id }, query, { "upsert": true }).then((data) => {
+            Status.update({ user_id: user_id }, query, { "upsert": true }).then((data) => {
+                const availabilityDateTime = request.body.fromDate
+                scheduler.jobScheduler(availabilityDateTime, () => {
+                    Notification.find({}).then((data) => {
+
+                    }).catch(error => {
+                        console.log("Error In Job : ", error);
+                    })
+                })
                 utils.sendResponse(response, false, 200, 4030);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);

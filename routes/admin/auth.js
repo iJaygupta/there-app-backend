@@ -4,7 +4,7 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
      
     app.route("/admin/signup").post(function (request, response) {
         try {
-            controller.signup(request, response);
+            controller.signUp(request, response);
         }
         catch (err) {
             
@@ -14,7 +14,7 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
 
     app.route("/admin/login").post(function (request, response) {
         try {
-            controller.login(request, response);
+            controller.logIn(request, response);
         }
         catch (err) {
             error(err, response)
