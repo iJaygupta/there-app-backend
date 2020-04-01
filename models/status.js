@@ -9,7 +9,8 @@ var status = new mongoose.Schema({
     availability: [{
         fromDate: { type: Date },
         toDate: { type: Date }
-    }]
+    }],
+    availability_message: { type: String }
 });
 
 exports.status = status;

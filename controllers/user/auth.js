@@ -9,7 +9,7 @@ const responseFile = require('../../lib/response');
 
 
 module.exports.auth = function (utils, collection) {
-  const { User } = collection;
+  const { User , Session } = collection;
   return {
 
     signUp: (request, response) => {
@@ -96,7 +96,7 @@ module.exports.auth = function (utils, collection) {
         let OTP = util.generateOTP("phone");
         let paramForMsg = util.prepareOTPParam("phone", OTP);
         let otpDateTime = new Date();
-        await util.putOTPIntoCollection(user_id, mobile, OTP, otpDateTime, "phone");
+        await util.putOTPIntoCollection(user_id, mobile, OTP, otpDateTime, "phone", Session);
 
         smsService.sendMsg(paramForMsg, mobile, function (err, done) {
           if (err) {
@@ -106,6 +106,7 @@ module.exports.auth = function (utils, collection) {
           }
         })
       }).catch((error) => {
+        console.log(error);
         utils.sendResponse(response, true, 500, 1000);
       })
     },
@@ -120,7 +121,7 @@ module.exports.auth = function (utils, collection) {
         let OTP = util.generateOTP("email");
         let paramForMsg = util.prepareOTPParam("email", OTP);
         let otpDateTime = new Date();
-        await util.putOTPIntoCollection(user_id, email, OTP, otpDateTime, "email");
+        await util.putOTPIntoCollection(user_id, email, OTP, otpDateTime, "email", Session);
 
         emailService.sendEmail(email, "Verification", paramForMsg, function (output) {
           if (!output.error) {
@@ -140,12 +141,12 @@ module.exports.auth = function (utils, collection) {
       let code = request.body.code;
       let user_id = request.headers.payload.id;
       try {
-        let otpData = await util.getUserOTP(user_id, email, "email");
+        let otpData = await util.getUserOTP(user_id, email, "email", Session);
         let OTP = otpData[0] ? otpData[0].email_otp : "";
         let email_otp_datetime = otpData[0] ? otpData[0].email_otp_datetime : "";
         if (OTP == code) {
           if (util.isOTPNotExpired(email_otp_datetime, "email")) {
-            await util.updateVerifyStatus(user_id, "email");
+            await util.updateVerifyStatus(user_id, "email", User);
             //send Thanks Email
             utils.sendResponse(response, false, 200, 4016);
           } else {
@@ -164,10 +165,10 @@ module.exports.auth = function (utils, collection) {
       let code = request.body.code;
       let user_id = request.headers.payload.id;
       try {
-        let otpData = await util.getUserOTP(user_id, mobile, "phone");
+        let otpData = await util.getUserOTP(user_id, mobile, "phone", Session);
         let OTP = otpData[0] ? otpData[0].mobile_otp : "";
         if (OTP == code) {
-          await util.updateVerifyStatus(user_id, "phone")
+          await util.updateVerifyStatus(user_id, "phone", User)
           utils.sendResponse(response, false, 200, 4012);
         } else {
           utils.sendResponse(response, false, 200, 4014);
@@ -186,7 +187,7 @@ module.exports.auth = function (utils, collection) {
         else {
           let securityCode = util.generateOTP("email");
           let otpDateTime = new Date();
-          await util.putOTPIntoCollection(user._id, user.email, securityCode, otpDateTime, "email");
+          await util.putOTPIntoCollection(user._id, user.email, securityCode, otpDateTime, "email", Session);
           const payload = {
             id: user._id,
             email: user.email,
@@ -214,7 +215,7 @@ module.exports.auth = function (utils, collection) {
       if (decodedData) {
         const { id, email, securityCode } = decodedData;
         try {
-          let otpData = await util.getUserOTP(id, email, "email");
+          let otpData = await util.getUserOTP(id, email, "email", Session);
           let OTP = otpData[0] ? otpData[0].email_otp : "";
           let email_otp_datetime = otpData[0] ? otpData[0].email_otp_datetime : "";
           if (OTP == securityCode) {

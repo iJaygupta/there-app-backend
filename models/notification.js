@@ -7,7 +7,6 @@ var notification = new mongoose.Schema({
     sender: { type: Schema.Types.ObjectId, ref: "user" },
     receiver: [{ type: Schema.Types.ObjectId, ref: "user" }],
     notificationMessage: { type: String },
-    created_at: { type: String },
     created_at: { type: Date },
     seen: { type: Boolean, default: false },
 
