@@ -3,8 +3,10 @@ const { user } = require("./models/user");
 const { status } = require("./models/status");
 const { userSession } = require("./models/session");
 const { userConnections } = require("./models/connections");
-// const { notification } = require("./models/notification");
-// const { common } = require("./models/common");
+const { notification } = require("./models/notification");
+const { common } = require("./models/common");
+const { activity } = require("./models/activity");
+
 
 
 
@@ -35,8 +37,8 @@ exports.collection = {
     Status: connection.model("status", status),
     Session: connection.model("session", userSession),
     Connections: connection.model("connection", userConnections),
-    // Notification: connection.model("notification", notification),
-    // Common: connection.model("common", common)
-
+    Notification: connection.model("notification", notification),
+    Common: connection.model("common", common),
+    Activity: connection.model("activity", activity)
 
 }
