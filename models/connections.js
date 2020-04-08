@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-const dbConfig = require("../dbconfig");
 const Schema = mongoose.Schema;
 
 var connectionSchema = new mongoose.Schema({
@@ -12,10 +11,7 @@ var connectionSchema = new mongoose.Schema({
 
 exports.userConnections = connectionSchema;
 
-module.exports.getModel = function () {
-    let connection = dbConfig.connect();
-    return connection.model("connection", connectionSchema);
-};
+
 
 
 
