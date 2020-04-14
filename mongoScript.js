@@ -20,6 +20,17 @@ const commonDocument = {
             phone_number : "+011 87756"
         }
     ],
+    app_common_questions: [
+        {   question_id: "101",
+            question: "What type of app is this ? Any reference app link will be helpful"
+        },
+        {    question_id: "102",
+            question: "how can this app helpful",
+        },
+        {    question_id: "103",
+            question: "is this app available for ios or anddroid both",
+        },
+    ],
     notification_messages: [
         { notification_id: "601", msg: "Hello , I am available to take call now" },
         { notification_id: "602", msg: "Busy, Not Available on call now" },
