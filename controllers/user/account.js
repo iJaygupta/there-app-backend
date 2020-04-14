@@ -4,7 +4,7 @@ const auth = require('../../common/auth');
 
 
 module.exports.account = function (utils, collection) {
-    const { User } = collection
+    const { User } = collection;
 
     return {
 
@@ -17,6 +17,7 @@ module.exports.account = function (utils, collection) {
             })
         },
         addUserAccountDetails: (request, response) => {
+
             let userId = request.headers.payload.id;
             User.updateOne({ _id: userId }, { $set: request.body }).then((success) => {
                 utils.sendResponse(response, false, 200, 4023);
@@ -45,13 +46,13 @@ module.exports.account = function (utils, collection) {
                     utils.sendResponse(response, false, 200, 1000);
                 }
                 else {
-                    bcrypt.compare(oldPassword, userDetails.password,  (error, result) => {
+                    bcrypt.compare(oldPassword, userDetails.password, (error, result) => {
                         if (error) {
                             utils.sendResponse(response, false, 200, 1000);
                         } else if (!result) {
                             utils.sendResponse(response, true, 400, 4035);
                         } else {
-                            User.getModel().updateOne({ _id: userId }, { $set: { 'password': password } }).then(data => {
+                            User.updateOne({ _id: userId }, { $set: { 'password': hash } }).then(data => {
                                 if (!data) {
                                     utils.sendResponse(response, false, 200, 1000);
                                 }
@@ -64,22 +65,30 @@ module.exports.account = function (utils, collection) {
 
                 }
             }).catch((error) => {
-                utils.sendResponse(response, true, 500, 1000);
+                utils.sendResponse(response, true, 500, 1000, error);
             });
 
         },
         addUserProfilePicture: (request, response) => {
-            uploader.uploadFilesLocal("user", "profile", request, response, function (err, data) {
+
+            let userId = request.headers.payload.id;
+            uploader.uploadFilesLocal("user", "profile", userId, request, response, function (err, data) {
                 if (err) {
                     utils.sendResponse(response, true, 500, 1000);
                 } else {
-                    auth.updateProfilePicDetails(request.headers.payload.id, request.files[0].filename).then((data) => {
-                        utils.sendResponse(response, false, 200, 4026)
+                    let localFolderPath = "/home/jaygupta/Desktop/app-sprint/uploads/user/profile/" + userId;
+                    uploader.uploadFileOnS3("user/profile/" + userId, localFolderPath, request.files[0].filename).then((data) => {
+                        auth.updateProfilePicDetails(request.headers.payload.id, request.files[0].filename, User).then((data) => {
+                            utils.sendResponse(response, false, 200, 4026);
+                        }).catch((error) => {
+                            utils.sendResponse(response, true, 500, 1000);
+                        })
                     }).catch((error) => {
                         utils.sendResponse(response, true, 500, 1000);
                     })
                 }
             })
+
         }
     }
 

@@ -48,9 +48,13 @@ exports.socialAuth = function (app, controller, error, auth, middleware) {
     app.set('views', global.appDir + '../../common/');
     app.set('view engine', 'ejs');
     app.use(cookieParser());
-    app.use(session({ secret: 'keyboard cat', key: 'sid' }));
+    app.use(session({
+        secret: 'keyboard cat',
+        key: 'sid',
+        resave: true,
+        saveUninitialized: true
+    }));
     app.use(passport.initialize());
-    app.use(passport.session());
 
     app.route('/account').get(ensureAuthenticated, function (req, res) {
 
@@ -131,7 +135,7 @@ exports.socialAuth = function (app, controller, error, auth, middleware) {
 
     // The middleware receives the data from Google and runs the function on Strategy config
     app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
-       
+
         res.redirect('/user/google-login');
 
     });

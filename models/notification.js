@@ -3,12 +3,10 @@ const Schema = mongoose.Schema;
 
 
 var notification = new mongoose.Schema({
-    user_id: { type: String },
-    sender: { type: Schema.Types.ObjectId, ref: "user" },
+    user_id: { type: Schema.Types.ObjectId, ref: "user" },
     receiver: [{ type: Schema.Types.ObjectId, ref: "user" }],
-    notificationMessage: { type: String },
-    created_at: { type: String },
-    created_at: { type: Date },
+    content: { type: String },
+    sent_date_time: { type: Date, default: new Date() },
     seen: { type: Boolean, default: false },
 
 });
