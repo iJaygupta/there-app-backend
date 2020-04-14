@@ -6,7 +6,7 @@ const { userConnections } = require("./models/connections");
 const { notification } = require("./models/notification");
 const { common } = require("./models/common");
 const { activity } = require("./models/activity");
-const { contactfaq } = require("./models/contactfaq");
+const { queries } = require("./models/queries");
 
 const { DATABASE_URL } = process.env;
 
@@ -27,13 +27,17 @@ connection
     process.exit(1);
   });
 
+
+
 exports.collection = {
   User: connection.model("user", user),
   Status: connection.model("status", status),
   Session: connection.model("session", userSession),
   Connections: connection.model("connection", userConnections),
   Notification: connection.model("notification", notification),
-  Common: connection.model("common", common),
+  Common: connection.model("commons", common),
   Activity: connection.model("activity", activity),
-  Contactfaq: connection.model("contactfaq", contactfaq)
+  Queries: connection.model("queries", queries)
 };
+
+

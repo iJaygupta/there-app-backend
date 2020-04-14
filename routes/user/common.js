@@ -1,4 +1,4 @@
-module.exports.common = function(
+module.exports.common = function (
   app,
   controller,
   error,
@@ -6,9 +6,9 @@ module.exports.common = function(
   middleware,
   schema
 ) {
-  app.route("/common/get-questions-address").get(function(request, response) {
+  app.route("/common/lookup").get(function (request, response) {
     try {
-      controller.getQuestionsAddress(request, response);
+      controller.getLookupData(request, response);
     } catch (err) {
       error(err, response);
     }
