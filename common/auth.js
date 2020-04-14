@@ -1,12 +1,9 @@
 const random = require("randomstring");
 const emailTemplate = require("../lib/templates");
-// const Session = require("../models/session");
-// const User = require("../models/user");
 const moment = require("moment")
 
 
-exports.putOTPIntoCollection = function (user_id, id, otp, dateTime, type, collection) {
-    const {Session} = collection
+exports.putOTPIntoCollection = function (user_id, id, otp, dateTime, type, Session) {
     return new Promise((resolve, reject) => {
         let params = (type == "email") ? { user_id: user_id, email: id, email_otp: otp, email_otp_datetime: dateTime } : { user_id: user_id, mobile: id, mobile_otp: otp, mobile_otp_datetime: dateTime };
         Session.insertMany(params).then((data) => {
@@ -17,8 +14,7 @@ exports.putOTPIntoCollection = function (user_id, id, otp, dateTime, type, colle
     })
 }
 
-exports.updateVerifyStatus = function (id, type, collection) {
-    const {User} = collection
+exports.updateVerifyStatus = function (id, type, User) {
     return new Promise((resolve, reject) => {
         let params = (type == "email") ? { is_email_verified: true } : { is_phone_verified: true };
         User.updateOne({ _id: id }, { $set: params }).then((data) => {
@@ -31,7 +27,7 @@ exports.updateVerifyStatus = function (id, type, collection) {
 
 exports.prepareOTPParam = function (type, otp) {
 
-    return ((type == "phone") ? `Dear Customer Your Verification Code is ${otp}` : emailTemplate.emailTemplate('userRegistration', otp));
+    return ((type == "phone") ? `Dear Customer, Please confirm your phone number to complete your registration. Your verification code is ${otp} and expires in ${process.env.PHONE_OTP_VALID_TIME} minutes.\nThanks,\nThere App Dev Team. ` : emailTemplate.emailTemplate('userRegistration', otp));
 }
 
 
@@ -40,8 +36,7 @@ exports.generateOTP = function (type) {
     return (type == "phone" ? Math.floor(100000 + Math.random() * 900000) : random.generate(6));
 }
 
-exports.getUserOTP = function (user_id, id, type, collection) {
-    const {Session} = collection
+exports.getUserOTP = function (user_id, id, type, Session) {
     return new Promise((resolve, reject) => {
         let params = (type == "phone") ? { user_id: user_id, mobile: id } : { user_id: user_id, email: id };
         let sortKey = (type == "phone") ? { mobile_otp_datetime: -1 } : { email_otp_datetime: -1 }
@@ -53,8 +48,7 @@ exports.getUserOTP = function (user_id, id, type, collection) {
     })
 }
 
-exports.updateProfilePicDetails = function (id, profilePic, collection) {
-    const {User} = collection
+exports.updateProfilePicDetails = function (id, profilePic, User) {
     return new Promise((resolve, reject) => {
         User.updateOne({ "_id": id }, { $set: { "profilePic": profilePic } }).then((data) => {
             resolve();
@@ -74,7 +68,7 @@ exports.isOTPNotExpired = (lastOTPSentTime, type) => {
     }
 }
 
- const calculateTimeDiff = (lastOTPSentTime) => {
+const calculateTimeDiff = (lastOTPSentTime) => {
     var now = moment(new Date()); //todays date
     var end = moment(lastOTPSentTime); // another date
     var duration = moment.duration(now.diff(end));

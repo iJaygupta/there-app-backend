@@ -8,7 +8,9 @@ const utils = require('./common/utils');
 const auth = require('./lib/auth');
 const validator = require('./lib/validator');
 const schema = require('./schemas/factory');
-const { collection } = require('./db_connect')
+const { collection } = require('./dbConfig');
+
+
 
 const authenticate = function (request, response, next) {
     let token = request.headers['authorization'];

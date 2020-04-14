@@ -1,6 +1,3 @@
-// const Connections = require('../../models/connections');
-const User = require('../../models/user');
-
 
 exports.connections = function (utils, collection) {
     const { Connections , User} = collection;

@@ -1,9 +1,10 @@
-// const Status = require('../../models/status');
 const statusCodes = require("../../common/userStatus");
+const scheduler = require('../../lib/scheduler');
 
 
 exports.status = function (utils, collection) {
-    const {Status } = collection
+
+    const { Status, Notification, Common, Activity } = collection
     return {
 
         getMyStatus: (request, response) => {
@@ -95,11 +96,79 @@ exports.status = function (utils, collection) {
             var query = {};
             query = { $push: { "availability": param } };
 
-            Status.update({ user_id: user_id }, query, { "upsert": true }).then((data) => {
-                utils.sendResponse(response, false, 200, 4030);
-            }).catch((error) => {
-                utils.sendResponse(response, true, 500, 1000);
+            const sendNotification = function () {
+                console.log("Sending Notification");
+                Activity.find({ user_id: user_id }).then((data) => {
+                    if (!data.length) {
+                        Common.find({}).then((data) => {
+                            if (data && data.length) {
+                                console.log("Common Data-->>", data);
+                                let notificationData = {
+                                    content: data.notification_messages[0].msg,
+                                    user_id: user_id
+                                }
+                                Notification.insertMany(notificationData).then(data => {
+                                    console.log("Notification recorded", data)
+                                }).catch((error) => {
+                                    console.log("error while adding data");
+                                })
+                            } else {
+                                console.log("common data ==>>", data);
+                                let notificationData = {
+                                    content: "Hello !! I am free",
+                                    user_id: user_id
+                                }
+                                Notification.insertMany(notificationData).then(data => {
+                                    console.log("Notification recorded", data)
+                                }).catch(error => {
+                                    console.log("error while adding data");
+                                })
+
+                            }
+
+
+                        })
+
+                    } else {
+                        console.log("Activity Found", data);
+                        var messageContent, receiver;
+                        if (data && data.availability_message) {
+                            messageContent = data.availability_message;
+                        }
+                        if (data && data.availability_visible_to) {
+                            receiver = data.availability_visible_to;
+                        }
+                        let notificationData = {
+                            content: "Hello !! I am free",
+                            user_id: user_id
+                        }
+                        Notification.insertMany(notificationData).then(data => {
+                            console.log("Notification recorded", data)
+                        }).catch(error => {
+                            console.log("error while adding data");
+                        })
+
+                    }
+
+
+                }).catch(error => {
+                    console.log("break sdkjgfkdsg---------", error)
+                })
+
+            }
+
+            Common.find().then(data => {
+                response.json({ data: data })
             })
+
+            // Status.update({ user_id: user_id }, query, { "upsert": true }).then((data) => {
+            //     console.log(data)
+            //     const availabilityDateTime = request.body.fromDate;
+            //     scheduler.jobScheduler(availabilityDateTime, sendNotification)
+            //     utils.sendResponse(response, false, 200, 4030);
+            // }).catch((error) => {
+            //     utils.sendResponse(response, true, 500, 1000);
+            // })
 
         },
         getStatus: (request, response) => {
