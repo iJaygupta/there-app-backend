@@ -1,5 +1,9 @@
 const statusCodes = require("../../common/userStatus");
 const scheduler = require('../../lib/scheduler');
+const fcm = require('../../lib/fcm');
+const elasticHandler = require("../../lib/elasticSearch");
+const bodybuilder = require('bodybuilder');
+
 
 
 exports.status = function (utils, collection) {
@@ -172,6 +176,16 @@ exports.status = function (utils, collection) {
 
         },
         getStatus: (request, response) => {
+            var query = bodybuilder()
+            query = query.build();
+
+            elasticHandler.sendRequest(process.env.ELASTIC_USER_INDEX, process.env.ELASTIC_USER_DOC_TYPE, query)
+                .then((data) => {
+                    response.json(data);
+                })
+                .catch((data) => {
+                    response.json(data);
+                })
 
         }
     }
