@@ -33,8 +33,8 @@ exports.socialAuth = function (app, controller, error, auth, middleware) {
             process.nextTick(async function () {
                 try {
                     //Check whether the User exists or not using profile.id
-                    profile = await controller.checkUserExistAndSignUp(profile._json, "facebook");
-                    return callback(null, profile[0]);
+                    await controller.checkUserExistAndSignUp(profile._json, "facebook");
+                    return callback(null, profile._json);
                 } catch (error) {
                     return callback(true, error);
                 }
@@ -64,24 +64,17 @@ exports.socialAuth = function (app, controller, error, auth, middleware) {
     app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
 
     app.get('/auth/facebook/callback',
-        passport.authenticate('facebook', { successRedirect: '/user/facebook-login', failureRedirect: '/login' }),
-        function (req, res) {
-            res.redirect('/');
+        passport.authenticate('facebook', { failureRedirect: '/log' }),
+        async (req, res) => {
+
+            let socialToken = await controller.generateSocialToken(req.user);
+            res.redirect(`${process.env.FRONT_END_URL}/authenticate-social-user/?token=${socialToken}`);
         });
 
     app.get('/logout', function (req, res) {
         req.logout();
         res.redirect('/');
     });
-
-    app.route("/user/facebook-login").get(function (request, response) {
-        try {
-            response.render('template', { user: request.user });
-        }
-        catch (err) {
-            error(err, response)
-        }
-    })
 
 
     function ensureAuthenticated(req, res, next) {
@@ -124,9 +117,6 @@ exports.socialAuth = function (app, controller, error, auth, middleware) {
     }
 
     // Routes
-    // app.get('/', (req, res) => {
-    //     res.render('template', { user: req.user });
-    // });
 
     // passport.authenticate middleware is used here to authenticate the request
     app.get('/auth/google', passport.authenticate('google', {
@@ -134,9 +124,10 @@ exports.socialAuth = function (app, controller, error, auth, middleware) {
     }));
 
     // The middleware receives the data from Google and runs the function on Strategy config
-    app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
+    app.get('/auth/google/callback', passport.authenticate('google'), async (req, res) => {
 
-        res.redirect('/user/google-login');
+        let socialToken = await controller.generateSocialToken(req.user._json);
+        res.redirect(`${process.env.FRONT_END_URL}/authenticate-social-user/?token=${socialToken}`);
 
     });
 
@@ -151,9 +142,10 @@ exports.socialAuth = function (app, controller, error, auth, middleware) {
         res.redirect('/');
     });
 
-    app.route("/user/google-login").get(function (request, response) {
+    app.route("/user/social-login").post(function (request, response) {
         try {
-            response.render('template', { user: { name: request.user.displayName } });
+            // response.render('template', { user: { name: request.user.displayName } });
+            controller.authenticateSocialUser(request, response)
         }
         catch (err) {
             error(err, response)

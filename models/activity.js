@@ -6,6 +6,7 @@ var activitySchema = new mongoose.Schema({
     user_id: { type: String },
     status_id: { type: Number },
     status_message: { type: String },
+    is_status_active: { type: Boolean, default: true },
     status_datetime: { type: Date, default: new Date() },
     availability_message_id: { type: Number },
     availability_message: { type: String },
@@ -14,6 +15,7 @@ var activitySchema = new mongoose.Schema({
         fromDate: { type: Date },
         toDate: { type: Date }
     }],
+    status_list: [{ type: Schema.Types.ObjectId, ref: "status" }],
     status_visible_to: [{ type: Schema.Types.ObjectId, ref: "user" }],
     availability_visible_to: [{ type: Schema.Types.ObjectId, ref: "user" }],
 
