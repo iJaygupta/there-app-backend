@@ -64,4 +64,15 @@ exports.status = function (app, controller, error, auth, middleware, schema) {
 
         }
     })
+
+    app.route("/user/add-visibility").post(auth, function (request, response){
+        try {
+            controller.addVisibility(request, response);
+        }
+        catch (err) {
+            error(err, response)
+
+        }
+    })
+    
 }

@@ -1,6 +1,8 @@
 const random = require("randomstring");
 const emailTemplate = require("../lib/templates");
-const moment = require("moment")
+const moment = require("moment");
+const elasticHandler = require("../lib/elasticSearch");
+
 
 
 exports.putOTPIntoCollection = function (user_id, id, otp, dateTime, type, Session) {
@@ -75,3 +77,31 @@ const calculateTimeDiff = (lastOTPSentTime) => {
     return duration.asMinutes();
 }
 
+
+exports.addUserDocument = function (userDetails) {
+
+    if (userDetails && userDetails._id) {
+        let userDocument = { 
+            "user_id": userDetails._id,
+            "email": userDetails.email,
+            "mobile": userDetails.mobile,
+            "registered_on": userDetails.registered_on,
+            "user_name": userDetails.name,
+            "roleId": userDetails.roleId,
+            "status": {},
+            "status_visible_to": [],
+            "availability": {},
+            "availability_visible_to": [],
+            "profile_pic":  userDetails.profilePic,
+            "alternate_names": [],
+            "bio": userDetails.bio
+        }
+
+        elasticHandler.addDocument(String(userDetails._id), process.env.ELASTIC_USER_INDEX, process.env.ELASTIC_USER_DOC_TYPE, userDocument)
+            .then((data) => {
+            }).catch((error) => {
+                console.log(error);
+            })
+    }
+
+}

@@ -9,7 +9,7 @@ const responseFile = require('../../lib/response');
 
 
 module.exports.auth = function (utils, collection) {
-  const { User , Session } = collection;
+  const { User, Session } = collection;
   return {
 
     signUp: (request, response) => {
@@ -23,6 +23,7 @@ module.exports.auth = function (utils, collection) {
         if (!userDetails) {
           User.insertMany(request.body).then((result) => {
             if (result) {
+              util.addUserDocument(result[0]);
               utils.sendResponse(response, false, 200, 4000);
             }
           }).catch((error) => {
@@ -30,8 +31,9 @@ module.exports.auth = function (utils, collection) {
           })
 
         } else if (userDetails && userDetails.mobile === request.body.mobile && userDetails.is_active === false) {
-          User.findOneAndUpdate({ "mobile": request.body.mobile }, { $set: { "is_active": true } }).then((result) => {
+          User.findOneAndUpdate({ "mobile": request.body.mobile }, { $set: { "is_active": true, password: hash } }).then((result) => {
             if (result) {
+              util.addUserDocument(result);
               utils.sendResponse(response, false, 200, 4000);
             }
           }).catch((error) => {
@@ -106,7 +108,6 @@ module.exports.auth = function (utils, collection) {
           }
         })
       }).catch((error) => {
-        console.log(error);
         utils.sendResponse(response, true, 500, 1000);
       })
     },
