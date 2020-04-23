@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-const dbConfig = require("../dbconfig");
 
 var status = new mongoose.Schema({
     user_id: { type: String },
@@ -10,15 +9,13 @@ var status = new mongoose.Schema({
     availability: [{
         fromDate: { type: Date },
         toDate: { type: Date }
-    }]
+    }],
+    availability_message: { type: String }
 });
 
 exports.status = status;
 
-module.exports.getModel = function () {
-    let connection = dbConfig.connect();
-    return connection.model("status", status);
-};
+
 
 
 
