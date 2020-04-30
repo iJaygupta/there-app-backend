@@ -10,6 +10,8 @@
     "ajv": "^6.10.2",
     "aws-sdk": "^2.648.0",
     "bcryptjs": "^2.4.3",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -34,7 +36,7 @@
     "nodemon": "^1.19.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha ./tests/script.js",
     "start": "nodemon index.js"
   },
   "repository": {
