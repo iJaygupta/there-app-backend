@@ -1,7 +1,7 @@
 
 module.exports = {
 
-    signUp: {
+    appsignUp: {
         data: {
             'mobile': '918808974265',
             'password': 'Pass1234'
@@ -10,7 +10,19 @@ module.exports = {
     appSignUp: {
         data: {
             'mobile': '918808974265',
+            
+        }
+    },
+    appSignUp: {
+        data: {
+            
             'password': 'Pass1234'
+        }
+    },
+    appSignUp: {
+        data: {
+            
+            
         }
     },
     appLogin: {
@@ -19,9 +31,32 @@ module.exports = {
             'password': 'Pass1234'
         }
     },
+    appLogin: {
+        data: {
+            'mobile': '918808974265'
+            
+        }
+    },
+    appLogin: {
+        data: {
+            'mobile': '918808974265'
+            
+        }
+    },
+    appLogin: {
+        data: {
+            'mobile': '918808974265'
+            
+        }
+    },
     confirmUserAccount: {
         params: {
             'confirmationCode': 'dfjkfgjkjksdfsdfjk'
+        }
+    },
+    confirmUserAccount: {
+        params: {
+            
         }
     },
     confirmationCodeByUserId: {
