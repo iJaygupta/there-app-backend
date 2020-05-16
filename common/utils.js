@@ -23,7 +23,7 @@ exports.ajvErrors = function (error, callback) {
     var errMsg = errorField + ' ' + error[0].message;
     var displayMsg = `The provided value for ${errorField} is not valid`;
     const validationMsg = "Validation Failed For Provided Request"
-    return callback(displayMsg);
+    return callback(errMsg);
 }
 
 exports.scheduleNotification = function () {

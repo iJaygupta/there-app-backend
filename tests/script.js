@@ -21,9 +21,13 @@ describe(`Testing APIs`, function () {
     before(async () => {
         console.log("\n\n ~~~~~~~~~~~~~~~~~ Testing starts here ~~~~~~~~~~~~~~~~~~~~ \n\n");
 
+        await chai.request(appUrl)
+            .post('user/signup')
+            .send({ mobile: process.env.TEST_USER_MOBILE, email : process.env.TEST_USER_EMAIL,  password: process.env.TEST_USER_PASSWORD })
+
         let user = await chai.request(appUrl)
             .post('user/login')
-            .send({ mobile: '918808974265', password: 'Pass1234' })
+            .send({ mobile: process.env.TEST_USER_MOBILE, password: process.env.TEST_USER_PASSWORD })
         //saving users token into the global object (process.env)
         process.env.token = (user && user.body && user.body.token) ? user.body.token : null;
     });

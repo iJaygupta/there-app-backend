@@ -1,86 +1,62 @@
 
+const { TEST_USER_MOBILE, TEST_USER_PASSWORD, TEST_USER_NEW_PASSWORD, TEST_USER_EMAIL, TEST_USER_NAME } = process.env
+
 module.exports = {
 
-    appsignUp1: {
+    appSignUp1: {
         data: {
-            'mobile': '918808974265',
-            'password': 'Pass1234'
+            'mobile': TEST_USER_MOBILE,
+            'password': TEST_USER_PASSWORD,
+            'email': TEST_USER_EMAIL
         }
     },
-    appsignUp2: {
+    appSignUp2: {
         data: {
-            'mobile': '918808974265',
+            'mobile': TEST_USER_MOBILE,
         }
     },
-    appsignUp3: {
+    appSignUp3: {
         data: {
-            'password': 'Pass1234'
+            'password': TEST_USER_PASSWORD
         }
     },
-    appsignUp4: {
-        data: {}
+    appSignUp4: {
+        data: {
+        }
     },
     appLogin1: {
         data: {
-            'mobile': '918808974265',
-            'password': 'Pass1234'
+            'mobile': TEST_USER_MOBILE,
+            'password': TEST_USER_PASSWORD
         }
     },
     appLogin2: {
         data: {
-            'mobile': '918808974265'
-            
+            'mobile': TEST_USER_MOBILE,
         }
     },
     appLogin3: {
         data: {
-            'mobile': '918808974265'
-            
+            'mobile': TEST_USER_MOBILE,
         }
     },
     appLogin4: {
         data: {
-            'mobile': '918808974265'
-            
+            'mobile': TEST_USER_MOBILE,
         }
     },
-    confirmUserAccount: {
-        params: {
-            'confirmationCode': 'dfjkfgjkjksdfsdfjk'
-        }
-    },
-    confirmUserAccount: {
-        params: {
-            
-        }
-    },
-    confirmationCodeByUserId: {
-        params: {
-            'userId': 3
-        }
-    },
-    forgotPassword: {
+    forgotPassword1: {
         data: {
-            'email': 'jayguptazzz@gmail.com'
+            'email': TEST_USER_EMAIL
         }
     },
-    confirmPasswordResetCode: {
-        params: {
-            'recoveryCode': 'fjhdfhjkuihjsdky'
-        }
-    },
-    resetPassword: {
+    forgotPassword2: {
         data: {
-            'newPassword': 'abcdef',
-            'recoveryCode': 'fjhdfhjkuihjsdky',
-            'userId': 3
+            'email': ""
         }
     },
-    changePassword: {
+    forgotPassword3: {
         data: {
-            'newPassword': 'abcdef',
-            'userId': 3
         }
-    }
-
+    },
 };
