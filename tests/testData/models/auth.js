@@ -1,49 +1,44 @@
 
 module.exports = {
 
-    appsignUp: {
+    appsignUp1: {
         data: {
             'mobile': '918808974265',
             'password': 'Pass1234'
         }
     },
-    appSignUp: {
+    appsignUp2: {
         data: {
             'mobile': '918808974265',
-            
         }
     },
-    appSignUp: {
+    appsignUp3: {
         data: {
-            
             'password': 'Pass1234'
         }
     },
-    appSignUp: {
-        data: {
-            
-            
-        }
+    appsignUp4: {
+        data: {}
     },
-    appLogin: {
+    appLogin1: {
         data: {
             'mobile': '918808974265',
             'password': 'Pass1234'
         }
     },
-    appLogin: {
+    appLogin2: {
         data: {
             'mobile': '918808974265'
             
         }
     },
-    appLogin: {
+    appLogin3: {
         data: {
             'mobile': '918808974265'
             
         }
     },
-    appLogin: {
+    appLogin4: {
         data: {
             'mobile': '918808974265'
             
