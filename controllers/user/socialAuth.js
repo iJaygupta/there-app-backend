@@ -73,10 +73,10 @@ module.exports.socialAuth = function (utils, collection) {
             let token = request.body.socialToken;
             jwt.verify(token, process.env.SOCIAL_SECRET_KEY, function (err, data) {
                 if (err && err.name === 'TokenExpiredError')
-                    return response.status(200).send({ error: true, code: 'TokenExpiredError', message: 'The token has been expired.' })
+                    return response.status(401).send({ error: true, code: 'TokenExpiredError', message: 'The token has been expired.' })
 
                 if (err && err.name != 'TokenExpiredError')
-                    return response.status(200).send({ error: true, message: 'Unauthorized Access.' })
+                    return response.status(401).send({ error: true, message: 'Unauthorized Access.' })
                 // request.headers.payload = data;
 
                 if (data && data.email) {
