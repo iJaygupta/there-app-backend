@@ -67,7 +67,12 @@ exports.socialAuth = function (app, controller, error, auth, middleware) {
         async (req, res) => {
 
             let socialToken = await controller.generateSocialToken(req.user);
-            res.redirect(`${process.env.FRONT_END_URL}/authenticate-social-user/?token=${socialToken}`);
+            let redirectUrl = `${process.env.FRONT_END_URL}/authenticate-social-user/?token=${socialToken}`;
+
+            response.writeHead(301,
+                { Location: redirectUrl }
+            );
+            response.end();
         });
 
     app.get('/logout', function (req, res) {
