@@ -6,6 +6,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
 
                 chai.request(appUrl)
                     .post("user/add-connection")
+                    .set('Authorization', process.env.token)
                     .send(models.connections.appConnections1.data)
                     .end(function (err, res) {
                         try {

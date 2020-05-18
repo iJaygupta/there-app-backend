@@ -6,10 +6,28 @@ module.exports = {
             "status_code" : 607
         }
     },
-    availability: {
+    addStatus1: {
+        data: {
+        }
+    },
+    availability1: {
         data: {
             "fromDate" :"2020-04-01T22:59:57.539Z",
             "toDate" : "2020-03-30T00:59:12.510Z"
+        }
+    },
+    availability2: {
+        data: {
+            "fromDate" :"2020-04-01T22:59:57.539Z"
+        }
+    },   
+    availability3: {
+        data: {
+            "toDate" : "2020-03-30T00:59:12.510Z"
+        }
+    },   
+    availability4: {
+        data: {
         }
     },   
     visibility: {
