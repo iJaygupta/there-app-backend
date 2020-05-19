@@ -11,7 +11,7 @@ module.exports.account = function (app, controller, error, auth, middleware, sch
         }
     })
 
-    app.route("/user/account").post(auth, function (request, response) {
+    app.route("/user/account").post(middleware.validateAjv(schema.account.addUserAccountDetails),auth, function (request, response) {
         try {
             controller.addUserAccountDetails(request, response);
         }
@@ -20,7 +20,7 @@ module.exports.account = function (app, controller, error, auth, middleware, sch
         }
     })
 
-    app.route("/user/account").put(auth, function (request, response) {
+    app.route("/user/account").put(middleware.validateAjv(schema.account.updateUserAccountDetails),auth, function (request, response) {
         try {
             controller.updateUserAccountDetails(request, response);
         }

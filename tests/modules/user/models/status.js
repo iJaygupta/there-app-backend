@@ -51,6 +51,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                         try {
                             res.should.have.status(200);
                             res.body.should.have.property('error', false, res.body.msg);
+                            res.body.should.have.property('data');
                             done();
                         } catch (error) {
                             done(error);
@@ -68,6 +69,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                         try {
                             res.should.have.status(401);
                             res.body.should.have.property('error', true, res.body.msg);
+                            res.body.should.have.property('data');
                             done();
                         } catch (error) {
                             done(error);
@@ -86,6 +88,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                         try {
                             res.should.have.status(200);
                             res.body.should.have.property('error', false, res.body.msg);
+                            res.body.should.have.property('data');
                             done();
                         } catch (error) {
                             done(error);
@@ -103,6 +106,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                         try {
                             res.should.have.status(401);
                             res.body.should.have.property('error', true, res.body.msg);
+                            res.body.should.have.property('data');
                             done();
                         } catch (error) {
                             done(error);
