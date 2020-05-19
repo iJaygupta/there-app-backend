@@ -12,7 +12,6 @@ module.exports = function (appUrl, chai, should, assert, models) {
                         try {
                             res.should.have.status(200);
                             res.body.should.have.property('error', false);
-                            res.body.should.have.property('token');
                             res.body.should.have.property('msg');
                             res.body.should.have.property('code', 4027);
                             done();
@@ -136,26 +135,6 @@ module.exports = function (appUrl, chai, should, assert, models) {
                             res.body.should.have.property('error', false);
                             res.body.should.have.property('msg');
                             res.body.should.have.property('code', 4029);
-                            done();
-                        }
-                         catch (error) {
-                            done(error);
-                        }
-                        
-                    });
-            }
-        },
-        {
-            description: "Delete-Connections Case-2  Connections-User-Controller",
-            callback: function (done) {
-
-                chai.request(appUrl)
-                    .delete("user/delete-connection/:id")
-                    .end(function (err, res) {
-                        try {
-                            res.should.have.status(401);
-                            res.body.should.have.property('error', true);
-                            res.body.should.have.property('msg');
                             done();
                         }
                          catch (error) {

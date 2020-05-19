@@ -47,7 +47,7 @@ exports.status = function (app, controller, error, auth, middleware, schema) {
         }
     })
 
-    app.route("/user/add-availability").post(auth, function (request, response) {
+    app.route("/user/add-availability").post(middleware.validateAjv(schema.status.addAvailability),auth, function (request, response) {
         try {
             controller.addAvailability(request, response);
         }
