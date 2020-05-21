@@ -6,5 +6,5 @@ module.exports={
             "name": { "type": ["string"]},
             "mobile": { "type": ["number"]}
         }
-    }
+    },
 }

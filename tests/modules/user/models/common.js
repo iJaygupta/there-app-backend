@@ -1,15 +1,11 @@
-
-
-
 module.exports = function (appUrl, chai, should, assert, models) {
     return [
         {
-            description: "Get-User-Account-Details Account-User-Controller",
+            description: "Get Lookup Case-1 Common-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .get('user/account')
-                    .set('Authorization', process.env.token)
+                    .get('common/lookup')
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
@@ -20,15 +16,13 @@ module.exports = function (appUrl, chai, should, assert, models) {
                         }
                     });
             }
-        }
-        , {
-            description: "Add-User-Account-Details Account-User-Controller",
+        },
+        {
+            description: "Get Lookup Case-2 Common-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .post('user/account')
-                    .set('Authorization', process.env.token)
-                    .send(models.account.accountDetail.data)
+                    .get('common/lookup?requested_for=contact_details')
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
@@ -39,15 +33,13 @@ module.exports = function (appUrl, chai, should, assert, models) {
                         }
                     });
             }
-        }
-        , {
-            description: "Update-User-Account-Details Account-User-Controller",
+        },
+        {
+            description: "Get Lookup Case-3 Common-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .put('user/account')
-                    .set('Authorization', process.env.token)
-                    .send(models.account.accountDetailUpdate.data)
+                    .get('common/lookup?requested_for=status_messages')
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
@@ -58,15 +50,30 @@ module.exports = function (appUrl, chai, should, assert, models) {
                         }
                     });
             }
-        }
-        , {
-            description: "Change-User-Password-Details Account-User-Controller",
+        },
+        {
+            description: "Get Lookup Case-4 Common-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .put('user/change-password')
-                    .set('Authorization', process.env.token)
-                    .send(models.account.updatePassword.data)
+                    .get('common/lookup?requested_for=common_questions')
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(200);
+                            res.body.should.have.property('error', false);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+        {
+            description: "Get Lookup Case-5 Common-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .get('common/lookup?requested_for=notification_messages')
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);

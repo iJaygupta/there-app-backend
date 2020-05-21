@@ -27,7 +27,7 @@ module.exports.auth = function (app, controller, error, auth, middleware, schema
         }
     })
 
-    app.route("/user/forgot-password").post(function (request, response) {
+    app.route("/user/forgot-password").post(middleware.validateAjv(schema.auth.forgotPassword), function (request, response) {
         try {
             controller.forgotPassword(request, response);
         }

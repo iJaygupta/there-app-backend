@@ -1,56 +1,61 @@
 
+const { TEST_USER_MOBILE, TEST_USER_PASSWORD, TEST_USER_NEW_PASSWORD, TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_WRONG_MOBILE } = process.env
+
 module.exports = {
 
-    signUp: {
+    appSignUp1: {
         data: {
-            'mobile': '918808974265',
-            'password': 'Pass1234'
+            'mobile': TEST_USER_MOBILE,
+            'password': TEST_USER_PASSWORD,
+            'email': TEST_USER_EMAIL
         }
     },
-    appSignUp: {
+    appSignUp2: {
         data: {
-            'mobile': '918808974265',
-            'password': 'Pass1234'
+            'mobile': TEST_USER_MOBILE,
         }
     },
-    appLogin: {
+    appSignUp3: {
         data: {
-            'mobile': '918808974265',
-            'password': 'Pass1234'
+            'password': TEST_USER_PASSWORD
         }
     },
-    confirmUserAccount: {
-        params: {
-            'confirmationCode': 'dfjkfgjkjksdfsdfjk'
-        }
-    },
-    confirmationCodeByUserId: {
-        params: {
-            'userId': 3
-        }
-    },
-    forgotPassword: {
+    appSignUp4: {
         data: {
-            'email': 'jayguptazzz@gmail.com'
         }
     },
-    confirmPasswordResetCode: {
-        params: {
-            'recoveryCode': 'fjhdfhjkuihjsdky'
-        }
-    },
-    resetPassword: {
+    appLogin1: {
         data: {
-            'newPassword': 'abcdef',
-            'recoveryCode': 'fjhdfhjkuihjsdky',
-            'userId': 3
+            'mobile': TEST_USER_MOBILE,
+            'password': TEST_USER_PASSWORD
         }
     },
-    changePassword: {
+    appLogin2: {
         data: {
-            'newPassword': 'abcdef',
-            'userId': 3
+            'mobile': TEST_USER_MOBILE,
         }
-    }
-
+    },
+    appLogin3: {
+        data: {
+            'mobile': TEST_USER_WRONG_MOBILE,
+        }
+    },
+    appLogin4: {
+        data: {
+        }
+    },
+    forgotPassword1: {
+        data: {
+            'email': TEST_USER_EMAIL
+        }
+    },
+    forgotPassword2: {
+        data: {
+            'email': ""
+        }
+    },
+    forgotPassword3: {
+        data: {
+        }
+    },
 };
