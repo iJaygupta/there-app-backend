@@ -127,7 +127,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .delete("user/delete-connection/:id")
+                    .delete(`user/delete-connection/5ec67f64b236f717adadbb5e`)
                     .set('Authorization', process.env.token)
                     .end(function (err, res) {
                         try {

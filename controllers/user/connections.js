@@ -15,7 +15,7 @@ exports.connections = function (utils, collection) {
         getActiveConnections: (request, response) => {
             let user_id = request.headers.payload.id;
             User.find({ user_id: user_id, is_active: true }).then((data) => {
-                utils.sendResponse(response, false, 200, 4022, data);
+                utils.sendResponse(response, false, 200, 4028, data);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);
             })
@@ -53,6 +53,7 @@ exports.connections = function (utils, collection) {
             Connections.updateOne({ user_id: user_id }, query).then((data) => {
                 utils.sendResponse(response, false, 200, 4029);
             }).catch((error) => {
+                console.log(error)
                 utils.sendResponse(response, true, 500, 1000);
             })
         },

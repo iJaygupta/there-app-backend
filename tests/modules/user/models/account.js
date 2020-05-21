@@ -13,7 +13,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
-                            res.body.should.have.property('error', false, res.body.msg);
+                            res.body.should.have.property('error', false);
                             done();
                         } catch (error) {
                             done(error);
@@ -32,7 +32,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
-                            res.body.should.have.property('error', false, res.body.msg);
+                            res.body.should.have.property('error', false);
                             done();
                         } catch (error) {
                             done(error);
@@ -51,7 +51,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
-                            res.body.should.have.property('error', false, res.body.msg);
+                            res.body.should.have.property('error', false);
                             done();
                         } catch (error) {
                             done(error);
@@ -70,7 +70,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
-                            res.body.should.have.property('error', false, res.body.msg);
+                            res.body.should.have.property('error', false);
                             done();
                         } catch (error) {
                             done(error);

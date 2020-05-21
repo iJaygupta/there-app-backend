@@ -14,7 +14,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
-                            res.body.should.have.property('error', false, res.body.msg);
+                            res.body.should.have.property('error', false);
                             done();
                         } catch (error) {
                             done(error);
@@ -32,7 +32,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(401);
-                            res.body.should.have.property('error', true, res.body.msg);
+                            res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
                             done(error);
@@ -50,7 +50,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
-                            res.body.should.have.property('error', false, res.body.msg);
+                            res.body.should.have.property('error', false);
                             res.body.should.have.property('data');
                             done();
                         } catch (error) {
@@ -68,8 +68,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(401);
-                            res.body.should.have.property('error', true, res.body.msg);
-                            res.body.should.have.property('data');
+                            res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
                             done(error);
@@ -87,7 +86,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
-                            res.body.should.have.property('error', false, res.body.msg);
+                            res.body.should.have.property('error', false);
                             res.body.should.have.property('data');
                             done();
                         } catch (error) {
@@ -105,8 +104,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(401);
-                            res.body.should.have.property('error', true, res.body.msg);
-                            res.body.should.have.property('data');
+                            res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
                             done(error);
@@ -125,7 +123,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
-                            res.body.should.have.property('error', false, res.body.msg);
+                            res.body.should.have.property('error', false);
                             done();
                         } catch (error) {
                             done(error);
@@ -139,11 +137,11 @@ module.exports = function (appUrl, chai, should, assert, models) {
 
                 chai.request(appUrl)
                     .post('user/add-availability')
-                    .send(models.status.availability.data)
+                    .send(models.status.availability1.data)
                     .end(function (err, res) {
                         try {
                             res.should.have.status(401);
-                            res.body.should.have.property('error', true, res.body.msg);
+                            res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
                             done(error);
@@ -162,7 +160,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(400);
-                            res.body.should.have.property('error', true, res.body.msg);
+                            res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
                             done(error);
@@ -181,7 +179,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(400);
-                            res.body.should.have.property('error', true, res.body.msg);
+                            res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
                             done(error);
@@ -200,7 +198,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(400);
-                            res.body.should.have.property('error', true, res.body.msg);
+                            res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
                             done(error);
@@ -219,7 +217,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
-                            res.body.should.have.property('error', false, res.body.msg);
+                            res.body.should.have.property('error', false);
                             done();
                         } catch (error) {
                             done(error);
@@ -237,7 +235,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(401);
-                            res.body.should.have.property('error', true, res.body.msg);
+                            res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
                             done(error);
@@ -279,7 +277,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(401);
-                            res.body.should.have.property('error', true, res.body.msg);
+                            res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
                             done(error);
@@ -296,7 +294,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(401);
-                            res.body.should.have.property('error', true, res.body.msg);
+                            res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
                             done(error);
@@ -314,7 +312,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
-                            res.body.should.have.property('error', false, res.body.msg);
+                            res.body.should.have.property('error', false);
                             done();
                         } catch (error) {
                             done(error);
