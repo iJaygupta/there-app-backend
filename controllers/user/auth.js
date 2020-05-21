@@ -9,7 +9,7 @@ const responseFile = require('../../lib/response');
 
 
 module.exports.auth = function (utils, collection) {
-  const { User , Session } = collection;
+  const { User, Session } = collection;
   return {
 
     signUp: (request, response) => {
@@ -47,7 +47,7 @@ module.exports.auth = function (utils, collection) {
     logIn: (request, response) => {
       let mobile = request.body.mobile;
       let password = request.body.password;
-      User.findOne({ mobile: mobile }).then((userDetails) => {
+      User.findOne({ mobile: mobile, is_active: true }).then((userDetails) => {
         if (!userDetails) {
           utils.sendResponse(response, false, 200, 4002);
         } else {
@@ -231,6 +231,31 @@ module.exports.auth = function (utils, collection) {
           utils.sendResponse(response, true, 500, 1000);
         }
       }
+    },
+    register: (request, response) => {
+
+      let mobile = request.body.mobile;
+
+      User.update({ "mobile": mobile }, request.body, { "upsert": true }, { _id: 1 })
+        .then(async (userDetails) => {
+          let OTP = util.generateOTP("phone");
+          let paramForMsg = util.prepareOTPParam("phone", OTP);
+          let otpDateTime = new Date();
+          await util.putOTPIntoCollection(user_id, mobile, OTP, otpDateTime, "phone", Session);
+
+          smsService.sendMsg(paramForMsg, mobile, function (err, done) {
+            if (err) {
+              utils.sendResponse(response, true, 200, 4010);
+            } else {
+              utils.sendResponse(response, false, 200, 4009);
+            }
+          })
+
+          utils.sendResponse(response, false, 200, 4000);
+        }).catch((error) => {
+          utils.sendResponse(response, true, 500, 1000);
+        })
+
     }
   }
 

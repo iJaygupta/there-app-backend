@@ -29,15 +29,6 @@ exports.status = function (app, controller, error, auth, middleware, schema) {
         }
     })
 
-    app.route("/user/update-status").put(middleware.validateAjv(schema.status.updateStatus), auth, function (request, response) {
-        try {
-            controller.updateStatus(request, response);
-        }
-        catch (err) {
-            error(err, response)
-        }
-    })
-
     app.route("/user/delete-status").delete(auth, function (request, response) {
         try {
             controller.deleteStatus(request, response);

@@ -81,4 +81,13 @@ module.exports.auth = function (app, controller, error, auth, middleware, schema
             error(err, response)
         }
     })
+
+    app.route("/api/v2/user/register").post(middleware.validateAjv(schema.auth.register), function (request, response) {
+        try {
+            controller.register(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    })
 }
