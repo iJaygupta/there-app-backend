@@ -232,28 +232,51 @@ module.exports.auth = function (utils, collection) {
         }
       }
     },
-    register: (request, response) => {
-
-      let mobile = request.body.mobile;
-
-      User.updateMany({ "mobile": mobile }, request.body, { "upsert": true })
-        .then(async (userDetails) => {
-          let OTP = util.generateOTP("phone");
-          let paramForMsg = util.prepareOTPParam("phone", OTP);
-          let otpDateTime = new Date();
-          // await util.putOTPIntoCollection(user_id, mobile, OTP, otpDateTime, "phone", Session);
-
-          smsService.sendMsg(paramForMsg, mobile, function (err, done) {
-            if (err) {
-              utils.sendResponse(response, true, 200, 4010);
-            } else {
-              utils.sendResponse(response, false, 200, 4009);
-            }
-          })
+    register: function (request, response) {
+      try {
+        User.findOne({ "mobile": request.body.mobile }).then(async (userDetails) => {
+          if (!userDetails) {
+            User.insertMany(request.body).then(async (result) => {
+              if (Array.isArray(result) && result.length) {
+                var output = await this.sendSmsAndToken(result[0])
+                response.status(200).send(output);
+              }
+            }).catch((error) => {
+              utils.sendResponse(response, true, 500, 1000, error);
+            })
+          } else {
+            output = await this.sendSmsAndToken(userDetails)
+            response.status(200).send(output);
+          }
         }).catch((error) => {
           utils.sendResponse(response, true, 500, 1000, error);
         })
-
+      } catch (error) {
+        utils.sendResponse(response, true, 500, 1000, error);
+      }
+    },
+    sendSmsAndToken: function (userDetails) {
+      return new Promise(async (resolve, reject) => {
+        let user_id = userDetails._id;
+        let mobile = userDetails.mobile;
+        let OTP = util.generateOTP("phone");
+        let paramForMsg = util.prepareOTPParam("phone", OTP);
+        let otpDateTime = new Date();
+        await util.putOTPIntoCollection(user_id, mobile, OTP, otpDateTime, "phone", Session);
+        smsService.sendMsg(paramForMsg, mobile, async function (err, done) {
+          if (err) {
+            return reject(err);
+          } else {
+            let payload = { id: user_id }
+            let token = await auth.generateAuthToken(payload);
+            let output = {
+              error: false, msg: responseFile[4000]['msg'], code: responseFile[4000]['code'],
+              token: token, data: payload
+            }
+            resolve(output);
+          }
+        })
+      })
     }
   }
 
