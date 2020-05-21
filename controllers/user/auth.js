@@ -236,12 +236,12 @@ module.exports.auth = function (utils, collection) {
 
       let mobile = request.body.mobile;
 
-      User.update({ "mobile": mobile }, request.body, { "upsert": true }, { _id: 1 })
+      User.updateMany({ "mobile": mobile }, request.body, { "upsert": true })
         .then(async (userDetails) => {
           let OTP = util.generateOTP("phone");
           let paramForMsg = util.prepareOTPParam("phone", OTP);
           let otpDateTime = new Date();
-          await util.putOTPIntoCollection(user_id, mobile, OTP, otpDateTime, "phone", Session);
+          // await util.putOTPIntoCollection(user_id, mobile, OTP, otpDateTime, "phone", Session);
 
           smsService.sendMsg(paramForMsg, mobile, function (err, done) {
             if (err) {
@@ -250,10 +250,8 @@ module.exports.auth = function (utils, collection) {
               utils.sendResponse(response, false, 200, 4009);
             }
           })
-
-          utils.sendResponse(response, false, 200, 4000);
         }).catch((error) => {
-          utils.sendResponse(response, true, 500, 1000);
+          utils.sendResponse(response, true, 500, 1000, error);
         })
 
     }
