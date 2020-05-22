@@ -8,8 +8,7 @@ module.exports = {
         }
     },
     accountDetail2: {
-        data: {
-        }
+        data: []
     },
     accountDetailUpdate1: {
         data: {
@@ -17,8 +16,7 @@ module.exports = {
         }
     },
     accountDetailUpdate2: {
-        data: {
-        }
+        data: []
     },
     updatePassword1: {
         data: {

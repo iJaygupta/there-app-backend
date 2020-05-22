@@ -25,5 +25,13 @@ module.exports = {
         "required": [ "fromDate" , "toDate" ],
         "additionalProperties": false   
     },
-    
+    addVisibility: {
+        "type": ["object"],
+        "properties": {
+            "requested_for": { "type": ["string"]},
+            "value": { "type": ["array"]},
+        },
+        "required": [ "requested_for" , "value" ],
+        "additionalProperties": false   
+    },
 }

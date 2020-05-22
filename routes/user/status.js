@@ -65,7 +65,7 @@ exports.status = function (app, controller, error, auth, middleware, schema) {
         }
     })
 
-    app.route("/user/add-visibility").post(auth, function (request, response){
+    app.route("/user/add-visibility").post(middleware.validateAjv(schema.status.addVisibility),auth, function (request, response){
         try {
             controller.addVisibility(request, response);
         }
