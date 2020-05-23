@@ -25,8 +25,8 @@ module.exports = {
     },
     verifyMobileOtp: {
         "properties": {
-            "mobile": { "type": ["number"] },
-            "code": { "type": ["number"] }
+            "mobile": { "type": ["string"] },
+            "code": { "type": ["string"] }
         },
         "required": ["mobile", "code"]
     },
