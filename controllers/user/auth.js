@@ -64,6 +64,7 @@ module.exports.auth = function (utils, collection) {
                 // mobile: userDetails.mobile
               }
               let token = await auth.generateAuthToken(payload);
+              payload['is_phone_verified'] = userDetails.is_phone_verified;
               let output = {
                 error: false,
                 msg: responseFile[4001]['msg'],
