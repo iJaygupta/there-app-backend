@@ -213,7 +213,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                 chai.request(appUrl)
                     .post('user/add-visibility')
                     .set('Authorization', process.env.token)
-                    .send(models.status.visibility.data)
+                    .send(models.status.visibility1.data)
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
@@ -231,10 +231,68 @@ module.exports = function (appUrl, chai, should, assert, models) {
 
                 chai.request(appUrl)
                     .post('user/add-visibility')
-                    .send(models.status.visibility.data)
+                    .send(models.status.visibility1.data)
                     .end(function (err, res) {
                         try {
                             res.should.have.status(401);
+                            res.body.should.have.property('error', true);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+            
+        },
+        {
+            description: "Add-Visibility Case-3 Status-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .post('user/add-visibility')
+                    .set('Authorization', process.env.token)
+                    .send(models.status.visibility2.data)
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(400);
+                            res.body.should.have.property('error', true);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+        {
+            description: "Add-Visibility Case-4 Status-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .post('user/add-visibility')
+                    .set('Authorization', process.env.token)
+                    .send(models.status.visibility3.data)
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(400);
+                            res.body.should.have.property('error', true);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+        {
+            description: "Add-Visibility Case-5 Status-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .post('user/add-visibility')
+                    .set('Authorization', process.env.token)
+                    .send(models.status.visibility4.data)
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(400);
                             res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
