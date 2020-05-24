@@ -15,7 +15,7 @@ const { collection } = require('./dbConfig');
 const authenticate = function (request, response, next) {
     let token = request.headers['authorization'];
     if (!token)
-        return response.status(401).send({ auth: false, message: 'No token provided.' });
+        return response.status(401).send({ error: true, msg: 'No token provided.' });
 
     auth.verifyAuthToken(request, response, next);
 }

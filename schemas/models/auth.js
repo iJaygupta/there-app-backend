@@ -1,13 +1,15 @@
 module.exports = {
 
     signUp: {
+        "type": ["object"],
         "properties": {
             "name": { "type": ["string"] },
             "email": { "type": ["string"] },
             "password": { "type": ["string"], "minLength": 8 },
             "mobile": { "type": ["string"], "maxLength": 12, "minLength": 12 }
         },
-        "required": ["mobile", "password"]
+        "required": ["mobile", "password"],
+        "additionalProperties": false
     },
     logIn: {
         "properties": {
@@ -36,6 +38,12 @@ module.exports = {
         },
         "required": ["mobile"]
     },
+    forgotPassword: {
+        "properties": {
+            "email": { "type": ["string"] }
+        },
+        "required": ["email"]
+    }
 }
 
 
