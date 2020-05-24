@@ -1,11 +1,8 @@
-module.exports.common = function (
-  app,
-  controller,
-  error,
-  auth,
-  middleware,
-  schema
-) {
+
+
+module.exports.common = function (app, controller, error, auth, middleware, schema) {
+
+
   app.route("/common/lookup").get(function (request, response) {
     try {
       controller.getLookupData(request, response);
@@ -13,4 +10,13 @@ module.exports.common = function (
       error(err, response);
     }
   });
+
+  app.route("/common/lookup/countries").post(middleware.validateAjv(schema.common.getCountries), function (request, response) {
+    try {
+      controller.getCountries(request, response);
+    } catch (err) {
+      error(err, response);
+    }
+  });
+
 };
