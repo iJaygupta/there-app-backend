@@ -224,7 +224,7 @@ exports.status = function (utils, collection) {
                 .then(data => {
                     utils.sendResponse(response, false, 200, 4040, data);
                 }).catch(error => {
-                    utils.sendResponse(response, true, 500, 4031, error);
+                    utils.sendResponse(response, true, 500, 1000, error);
                 })
 
         }
