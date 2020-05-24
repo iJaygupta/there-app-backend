@@ -34,7 +34,7 @@ module.exports = {
     },
     register: {
         "properties": {
-            "mobile": { "type": ["string"], "maxLength": 12, "minLength": 12 }
+            "mobile": { "type": ["string"], "maxLength": 15, "minLength": 12 }
         },
         "required": ["mobile"]
     },

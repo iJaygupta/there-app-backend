@@ -216,7 +216,6 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .set('Authorization', process.env.token)
                     .end(function (err, res) {
                         try {
-                            console.log(res.body)
                             res.should.have.status(200);
                             res.body.should.have.property('error', false);
                             res.body.should.have.property('msg');

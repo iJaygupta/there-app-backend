@@ -29,7 +29,7 @@ describe(`Testing APIs`, function () {
             .post('user/login')
             .send({ mobile: process.env.TEST_USER_MOBILE, password: process.env.TEST_USER_PASSWORD })
         //saving users token into the global object (process.env)
-        process.env.token = (user && user.body && user.body.token) ? user.body.token : null;
+        process.env.token = (user && user.body && user.body.token && user.body.token.accessToken) ? user.body.token.accessToken : null;
     });
 
     beforeEach(function () {
