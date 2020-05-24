@@ -5,10 +5,10 @@ const elasticHandler = require("../lib/elasticSearch");
 
 
 
-exports.putOTPIntoCollection = function (user_id, id, otp, dateTime, type, Session) {
+exports.putOTPIntoCollection = function (user_id, id, otp, dateTime, type, Otp) {
     return new Promise((resolve, reject) => {
         let params = (type == "email") ? { user_id: user_id, email: id, email_otp: otp, email_otp_datetime: dateTime } : { user_id: user_id, mobile: id, mobile_otp: otp, mobile_otp_datetime: dateTime };
-        Session.insertMany(params).then((data) => {
+        Otp.insertMany(params).then((data) => {
             resolve(data)
         }).catch((err) => {
             reject(err);
@@ -38,11 +38,11 @@ exports.generateOTP = function (type) {
     return (type == "phone" ? Math.floor(100000 + Math.random() * 900000) : random.generate(6));
 }
 
-exports.getUserOTP = function (user_id, id, type, Session) {
+exports.getUserOTP = function (user_id, id, type, Otp) {
     return new Promise((resolve, reject) => {
         let params = (type == "phone") ? { user_id: user_id, mobile: id } : { user_id: user_id, email: id };
         let sortKey = (type == "phone") ? { mobile_otp_datetime: -1 } : { email_otp_datetime: -1 }
-        Session.find(params).sort(sortKey).limit(1).then((data) => {
+        Otp.find(params).sort(sortKey).limit(1).then((data) => {
             resolve(data);
         }).catch((error) => {
             reject(error);

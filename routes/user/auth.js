@@ -81,4 +81,13 @@ module.exports.auth = function (app, controller, error, auth, middleware, schema
             error(err, response)
         }
     })
+
+    app.route("/api/v2/refresh-token").post(function (request, response) {
+        try {
+            controller.refreshToken(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    })
 }
