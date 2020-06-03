@@ -16,16 +16,7 @@ module.exports.account = function (utils, collection) {
                 utils.sendResponse(response, true, 500, 1000);
             })
         },
-      /*  addUserAccountDetails: (request, response) => {
-
-            let userId = request.headers.payload.id;
-            User.updateOne({ _id: userId }, { $set: request.body }).then((success) => {
-                utils.sendResponse(response, false, 200, 4023);
-            }).catch((error) => {
-                utils.sendResponse(response, true, 500, 1000);
-            })
-
-        },*/
+      
         updateUserAccountDetails: (request, response) => {
             let userId = request.headers.payload.id;
             const options = {new: true};
