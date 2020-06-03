@@ -11,14 +11,7 @@ module.exports.account = function (app, controller, error, auth, middleware, sch
         }
     })
 
-   /* app.route("/user/account").post(auth, function (request, response) {
-        try {
-            controller.addUserAccountDetails(request, response);
-        }
-        catch (err) {
-            error(err, response)
-        }
-    })*/
+  
 
     app.route("/user/account").put(middleware.validateAjv(schema.account.updateUserAccountDetails), auth, function (request, response) {
         try {
