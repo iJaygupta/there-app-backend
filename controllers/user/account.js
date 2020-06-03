@@ -32,7 +32,6 @@ module.exports.account = function (utils, collection) {
             User.updateOne({ _id: userId }, { $set: request.body }, options).then((success) => {
                 utils.sendResponse(response, false, 200, 4023);
             }).catch((error) => {
-                console.log(error);
                 utils.sendResponse(response, true, 500, 1000);
             }) 
         },
