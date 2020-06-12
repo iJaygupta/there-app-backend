@@ -41,7 +41,6 @@ module.exports.schedule = function (utils, collection) {
           utils.sendResponse(response, false, 200, 4044, data);
         })
         .catch((error) => {
-          console.log(error);
           utils.sendResponse(response, true, 500, 1000);
         });
     },
@@ -60,7 +59,6 @@ module.exports.schedule = function (utils, collection) {
             return utils.sendResponse(response, false, 422, 5000);
           }
           utils.sendResponse(response, false, 200, 4045, data);
-          console.log(data);
         })
         .catch((error) => {
           utils.sendResponse(response, true, 500, 1000);

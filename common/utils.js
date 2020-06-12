@@ -2,13 +2,7 @@ const responseFile = require("../lib/response");
 const scheduler = require("../lib/scheduler");
 const { ObjectID } = require("mongodb");
 
-exports.sendResponse = function (
-  response,
-  error,
-  statusCode,
-  responseCode,
-  data
-) {
+exports.sendResponse = function (response, error, statusCode, responseCode, data) {
   let output = {
     error: error,
     msg: responseFile[responseCode]["msg"],
@@ -30,9 +24,9 @@ exports.ajvErrors = function (error, callback) {
   return callback(displayMsg);
 };
 
-exports.scheduleNotification = function () {};
+exports.scheduleNotification = function () { };
 
-exports.sendNotification = function () {};
+exports.sendNotification = function () { };
 
 exports.validateMongoId = (mongoId) => {
   if (ObjectID.isValid(mongoId)) {
