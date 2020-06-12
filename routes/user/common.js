@@ -20,7 +20,7 @@ module.exports.common = function (app, controller, error, auth, middleware, sche
   });
   app.route("/common/lookup/query").post(middleware.validateAjv(schema.common. getQueries), auth, function (request, response) {
     try {
-      controller.getQueries(request, response);
+      controller.addQuery(request, response);
     } catch (err) {
       error(err, response);
     }

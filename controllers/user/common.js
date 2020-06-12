@@ -43,7 +43,7 @@ module.exports.common = function (utils, collection) {
           data = output;
         }
 
-        if(!data.length){
+        if (!data.length) {
           return utils.sendResponse(response, false, 404, 5000);
         }
 
@@ -53,32 +53,18 @@ module.exports.common = function (utils, collection) {
 
       }
     },
-    getQueries: (request, response) => {
+    addQuery: (request, response) => {
       let user_id = request.headers.payload.id;
       let param = {
-          created_at: request.body.created_at,
-          updated_at: request.body.updated_at
+        query: request.body.query
       };
-      var faqs= { $push: [{ "query": param }] };
-
-      Queries.updateOne({ user_id: user_id }, faqs,  { "upsert": true }).then((data) => {
-          const queryCreated = request.body.created_at;
-          utils.sendResponse(response, false, 200, 4043);
+      var faqs = { $push: { "faqs": param } };
+      Queries.updateOne({ user_id: user_id }, faqs, { "upsert": true }).then((data) => {
+        utils.sendResponse(response, false, 200, 4044, data);
       }).catch((error) => {
-          utils.sendResponse(response, true, 500, 1000);
-          console.log(error);
-      })
-
-     /* Queries.find({ user_id: user_id }, faqs,  { "upsert": true }).then((data) => {
-        const queryCreated = request.body.created_at;
-        utils.sendResponse(response, false, 200, 4043);
-    }).catch((error) => {
         utils.sendResponse(response, true, 500, 1000);
-        console.log(error);
-    })*/
+      })
+    },
 
-  },
-      
-    
   };
 };
