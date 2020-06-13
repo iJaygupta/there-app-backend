@@ -7,6 +7,8 @@ const { notification } = require("./models/notification");
 const { common } = require("./models/common");
 const { activity } = require("./models/activity");
 const { queries } = require("./models/queries");
+const { schedule } = require("./models/schedule");
+
 
 const { DATABASE_URL } = process.env;
 
@@ -37,7 +39,9 @@ exports.collection = {
   Notification: connection.model("notification", notification),
   Common: connection.model("commons", common),
   Activity: connection.model("activity", activity),
-  Queries: connection.model("queries", queries)
+  Queries: connection.model("queries", queries),
+  Schedule: connection.model("schedule", schedule),
+
 };
 
 

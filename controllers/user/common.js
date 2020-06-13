@@ -60,7 +60,7 @@ module.exports.common = function (utils, collection) {
       };
       var faqs = { $push: { "faqs": param } };
       Queries.updateOne({ user_id: user_id }, faqs, { "upsert": true }).then((data) => {
-        utils.sendResponse(response, false, 200, 4044, data);
+        utils.sendResponse(response, false, 200, 4050, data);
       }).catch((error) => {
         utils.sendResponse(response, true, 500, 1000);
       })
