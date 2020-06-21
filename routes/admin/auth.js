@@ -45,8 +45,5 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
             error(err, response)
         }
     })
-    
-    
-    
 
 }

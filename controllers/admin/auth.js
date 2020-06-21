@@ -58,10 +58,9 @@ module.exports.auth = function (utils, collection) {
               utils.sendResponse(response, false, 200, 4007);
             } else {
               let payload = {
-                id: userDetails._id
-                // email: userDetails.email,
-                // name: userDetails.name,
-                // mobile: userDetails.mobile
+                id: userDetails._id,
+                userTypeId: userDetails.userTypeId,
+                role: userDetails.role
               }
               let token = await auth.generateAuthToken(payload);
               payload['is_phone_verified'] = userDetails.is_phone_verified;
@@ -101,7 +100,6 @@ module.exports.auth = function (utils, collection) {
           }
         })
       }).catch((error) => {
-        console.log(error);
         utils.sendResponse(response, true, 500, 1000);
       })
     },
