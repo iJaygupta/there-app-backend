@@ -15,9 +15,17 @@ const { collection } = require('./dbConfig');
 const authenticate = function (request, response, next) {
     let token = request.headers['authorization'];
     if (!token)
-        return response.status(401).send({ auth: false, message: 'No token provided.' });
+        return response.status(401).send({ error: true, msg: 'No token provided.' });
 
     auth.verifyAuthToken(request, response, next);
+}
+
+const authenticateAdmin = function (request, response, next) {
+    let token = request.headers['authorization'];
+    if (!token)
+        return response.status(401).send({ error: true, msg: 'No token provided.' });
+
+    auth.verifyAdminToken(request, response, next);
 }
 
 module.exports = function (app, http) {
@@ -30,7 +38,7 @@ module.exports = function (app, http) {
             plugin = plugin.split(".");
             route = route[plugin[0]];
             factory = factory[plugin[0]](utils, collection);
-            route(app, factory, error, authenticate, validator, schema);
+            route(app, factory, error, module == 'admin' ? authenticateAdmin : authenticate, validator, schema);
         })
         console.log(module + " Service Loaded");
 
