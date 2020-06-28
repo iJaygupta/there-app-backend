@@ -6,30 +6,30 @@ module.exports.account = function (
   middleware,
   schema
 ) {
-  app.route("/admin/user").get(function (request, response) {
+  app.route("/admin/setting").get(function (request, response) {
     try {
-      controller.getAllUsers(request, response);
+      controller.getAdmin(request, response);
     } catch (err) {
       error(err, response);
     }
   });
 
-  app.route("/admin/user").post(function (request, response) {
+  app.route("/admin/setting").post(function (request, response) {
     try {
-      controller.addUserByAdmin(request, response);
+      controller.addAdmin(request, response);
     } catch (err) {
       error(err, response);
     }
   });
 
   app
-    .route("/admin/user")
+    .route("/admin/setting")
     .put(
-      middleware.validateAjv(schema.account.updateUserByAdmin),
+      middleware.validateAjv(schema.account.updateAdminEmail),
       auth,
       function (request, response) {
         try {
-          controller.updateUserByAdmin(request, response);
+          controller.updateAdmin(request, response);
         } catch (err) {
           error(err, response);
         }
@@ -37,13 +37,13 @@ module.exports.account = function (
     );
 
   app
-    .route("/admin/user")
+    .route("/admin/setting")
     .delete(
-      middleware.validateAjv(schema.account.deleteUserByAdmin),
+      middleware.validateAjv(schema.account.deleteAdminEmail),
       auth,
       function (request, response) {
         try {
-          controller.deleteUserByAdmin(request, response);
+          controller.deleteAdmin(request, response);
         } catch (err) {
           error(err, response);
         }

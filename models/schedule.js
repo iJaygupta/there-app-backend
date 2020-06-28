@@ -21,22 +21,18 @@ var scheduleSchema = new mongoose.Schema({
     start_time: { type: String },
     end_time: { type: String },
   },
-  weekly_holiday: [
-    {
-      type: String,
-      enum: [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thusday",
-        "Friday",
-        "Saturday",
-      ],
-    },
-  ],
+  weekly_holiday: {
+    type: String,
+    enum: [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thusday",
+      "Friday",
+      "Saturday",
+    ],
+  },
 });
-
-exports.scheduleSchema = mongoose.model("schedule", scheduleSchema);
 
 exports.schedule = scheduleSchema;
