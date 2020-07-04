@@ -1,41 +1,27 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 
 var userSchema = new mongoose.Schema({
-    name: { type: String },
-    choice: { type: String },
-    address: { type: String },
-    mobile: { type: String },
-    alt_name: { type: String },
-    profile_id: { type: String },
-    password: { type: String },
-    email: { type: String },
-    city: { type: String },
-    country: { type: String },
-    is_email_verified: { type: Boolean, default: false },
-    is_phone_verified: { type: Boolean, default: false },
-    registered_on: { type: Date, default: Date.now },
-    verification_token: { type: String },
-    token_expiry: { type: Date },
-    role: { type: String, default: 'user' },
-    userTypeId: { type: Number},
-    is_active: { type: Boolean, default: false },
-    profilePic: { type: String },
+  name: { type: String },
+  choice: { type: String },
+  address: { type: String },
+  mobile: { type: String },
+  alt_name: { type: String },
+  profile_id: { type: String },
+  password: { type: String },
+  email: { type: String },
+  city: { type: String },
+  country: { type: String },
+  is_email_verified: { type: Boolean, default: false },
+  is_phone_verified: { type: Boolean, default: false },
+  registered_on: { type: Date, default: Date.now },
+  verification_token: { type: String },
+  token_expiry: { type: Date },
+  role: { type: String, default: "user" },
+  is_active: { type: Boolean, default: false },
+  profilePic: { type: String },
+  is_block: { type: Boolean, default: false },
 });
 
 exports.userSchema = mongoose.model("user", userSchema);
 
-
-
 exports.user = userSchema;
-
-
-
-
-
-
-
-
-
-
-
-

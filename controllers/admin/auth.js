@@ -47,7 +47,7 @@ module.exports.auth = function (utils, collection) {
     logIn: (request, response) => {
       let mobile = request.body.mobile;
       let password = request.body.password;
-      User.findOne({ mobile: mobile, is_active: true ,"role":"admin", "userTypeId":1}).then((userDetails) => {
+      User.findOne({ mobile: mobile, is_active: true, "role": "admin", "userTypeId": 1 }).then((userDetails) => {
         if (!userDetails) {
           utils.sendResponse(response, false, 200, 4002);
         } else {

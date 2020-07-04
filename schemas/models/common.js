@@ -7,7 +7,7 @@ module.exports = {
         },
         "additionalProperties": false
     },
-    getQueries: {
+    addQuery: {
         "properties": {
             "query": { "type": ["string"], },  
         },
