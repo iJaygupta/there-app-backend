@@ -11,6 +11,6 @@ var settingSchema = new mongoose.Schema({
   email: { type: String },
 });
 
-exports.settingSchema = mongoose.model("admin", settingSchema);
+exports.settingSchema = mongoose.model("setting", settingSchema);
 
 exports.settingSchema = settingSchema;
