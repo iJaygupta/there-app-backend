@@ -1,9 +1,9 @@
 module.exports.setting = function (utils, collection) {
-  const { User } = collection;
+  const { Setting } = collection;
   return {
-    getAdmin: (request, response) => {
+    getSettig: (request, response) => {
       let userId = request.headers.payload.id;
-      User.findById({ _id: userId })
+      Setting.findById({ _id: userId })
         .then((userData) => {
           utils.sendResponse(response, false, 200, 4060, userData);
         })
@@ -11,7 +11,7 @@ module.exports.setting = function (utils, collection) {
           utils.sendResponse(response, true, 500, 1000);
         });
     },
-    addAdmin: (request, response) => {
+    addSetting: (request, response) => {
       let userId = request.headers.payload.id;
       User.insertMany({ _id: userId })
         .then((userData) => {
@@ -21,7 +21,7 @@ module.exports.setting = function (utils, collection) {
           utils.sendResponse(response, true, 500, 1000);
         });
     },
-    updateAdmin: (request, response) => {
+    updateSetting: (request, response) => {
       let userId = request.headers.payload.id;
       const options = { new: true };
       User.updateOne({ _id: userId }, { $set: request.body }, options)
@@ -32,7 +32,7 @@ module.exports.setting = function (utils, collection) {
           utils.sendResponse(response, true, 500, 1000);
         });
     },
-    deteteAdmin: (request, response) => {
+    deteteSetting: (request, response) => {
       let userId = request.headers.payload.id;
       User.delete({ _id: userId })
         .then((userData) => {

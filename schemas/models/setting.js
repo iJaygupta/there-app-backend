@@ -1,5 +1,5 @@
 module.exports = {
-  addAdmin: {
+  addSetting: {
     properties: {
       name: { type: String },
       address: { type: String },
@@ -11,7 +11,7 @@ module.exports = {
     },
     additionalProperties: false,
   },
-  updateAdmin: {
+  updateSetting: {
     properties: {
       name: { type: String },
       address: { type: String },

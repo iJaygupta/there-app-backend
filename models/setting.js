@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 
-var adminSchema = new mongoose.Schema({
+var settingSchema = new mongoose.Schema({
   name: { type: String },
   choice: { type: String },
   address: { type: String },
@@ -11,6 +11,6 @@ var adminSchema = new mongoose.Schema({
   email: { type: String },
 });
 
-exports.adminSchema = mongoose.model("admin", adminSchema);
+exports.settingSchema = mongoose.model("admin", settingSchema);
 
-exports.adminSchema = adminSchema;
+exports.settingSchema = settingSchema;
