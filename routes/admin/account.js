@@ -11,7 +11,13 @@ module.exports.account = function (
       controller.getAllUsers(request, response);
     } catch (err) {
       error(err, response);
-    }
+    } app.route("/admin/user").get(function (request, response) {
+      try {
+        controller.getAllUsers(request, response);
+      } catch (err) {
+        error(err, response);
+      }
+    });
   });
 
   app.route("/admin/user").post(function (request, response) {

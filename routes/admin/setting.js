@@ -1,4 +1,4 @@
-module.exports.account = function (
+module.exports.setting = function (
   app,
   controller,
   error,
