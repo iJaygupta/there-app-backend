@@ -29,6 +29,10 @@ var commonSchema = mongoose.Schema({
       msg: String
     }
   ],
-});
+},
+{
+  timestamps: true,
+}
+);
 
 exports.common = commonSchema;

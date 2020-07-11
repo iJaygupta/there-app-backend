@@ -8,6 +8,10 @@ var querySchema = new mongoose.Schema({
       answer: String
     }
   ]
-});
+},
+{
+  timestamps: true,
+}
+);
 
 exports.queries = querySchema;

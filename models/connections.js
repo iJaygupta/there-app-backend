@@ -7,7 +7,11 @@ var connectionSchema = new mongoose.Schema({
     mobile: { type: Number },
     updatedDate: { type: Date, default: new Date() },
     contact_list: [{ type: Schema.Types.ObjectId, ref: "user" }]
-});
+},
+{
+    timestamps: true,
+}
+);
 
 exports.userConnections = connectionSchema;
 

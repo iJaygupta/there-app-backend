@@ -12,6 +12,9 @@ var userSession = new mongoose.Schema({
     token_expiry: { type: Date },
     role: { type: String, default: 'user' },
     is_session_active: { type: Boolean, default: true },
+},
+{
+    timestamps: true,
 });
 
 exports.userSession = userSession;
