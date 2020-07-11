@@ -9,6 +9,9 @@ var settingSchema = new mongoose.Schema({
   profile_id: { type: String },
   password: { type: String },
   email: { type: String },
+},
+{
+  timestamps: true,
 });
 
 exports.settingSchema = mongoose.model("setting", settingSchema);

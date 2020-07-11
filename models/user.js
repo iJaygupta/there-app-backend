@@ -21,7 +21,11 @@ var userSchema = new mongoose.Schema({
   is_active: { type: Boolean, default: false },
   profilePic: { type: String },
   is_block: { type: Boolean, default: false },
-});
+},
+{
+  timestamps: true,
+}
+);
 
 exports.userSchema = mongoose.model("user", userSchema);
 
