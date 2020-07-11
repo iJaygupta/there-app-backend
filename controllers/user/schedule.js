@@ -1,9 +1,9 @@
 module.exports.schedule = function (utils, collection) {
-  const { Schedule } = collection;
+  const { Schedule, Connections } = collection;
 
   return {
     getUserSchedules: (request, response) => {
-      Schedule.find()
+      Schedule.find({ "user_id": request.headers.payload.id })
         .then((data) => {
           utils.sendResponse(response, false, 200, 4043, data);
         })
@@ -24,15 +24,30 @@ module.exports.schedule = function (utils, collection) {
           utils.sendResponse(response, true, 500, 1000);
         });
     },
-    // getUserConnectionSchedules: (request, response) => {
-    //   Schedule.find()
-    //     .then((data) => {
-    //       utils.sendResponse(response, false, 200, 4047, data);
-    //     })
-    //     .catch((error) => {
-    //       utils.sendResponse(response, true, 500, 1000);
-    //     });
-    // },
+    getUserConnectionSchedules: (request, response) => {
+      Connections.aggregate([
+        {
+          "$match": {
+            "user_id": request.headers.payload.id
+          }
+        },
+        { "$unwind": "$contact_list" },
+        {
+          "$lookup": {
+            "from": "schedules",
+            "localField": "contact_list",
+            "foreignField": "user_id",
+            "as": "schedule_info"
+          }
+        },
+      ])
+        .then((data) => {
+          utils.sendResponse(response, false, 200, 4047, data);
+        })
+        .catch((error) => {
+          utils.sendResponse(response, true, 500, 1000);
+        });
+    },
     addUserSchedule: (request, response) => {
       let user_id = request.headers.payload.id;
       request.body.user_id = user_id;

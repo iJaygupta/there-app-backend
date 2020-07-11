@@ -24,13 +24,13 @@ module.exports.schedule = function (
       }
     });
 
-  // app.route("/user/connection/schedule").get(function (request, response) {
-  //   try {
-  //     controller.getUserConnectionSchedules(request, response);
-  //   } catch (err) {
-  //     error(err, response);
-  //   }
-  // });
+  app.route("/user/connection/schedule").get(auth, function (request, response) {
+    try {
+      controller.getUserConnectionSchedules(request, response);
+    } catch (err) {
+      error(err, response);
+    }
+  });
 
   // app
   //   .route("/user/connection/:connectionId/schedule")

@@ -1,6 +1,6 @@
 
 exports.connections = function (utils, collection) {
-    const { Connections , User} = collection;
+    const { Connections, User } = collection;
     return {
 
         getConnections: (request, response) => {
@@ -68,5 +68,3 @@ exports.connections = function (utils, collection) {
     }
 
 }
-
-
