@@ -19,7 +19,11 @@ var activitySchema = new mongoose.Schema({
     status_visible_to: [{ type: Schema.Types.ObjectId, ref: "user" }],
     availability_visible_to: [{ type: Schema.Types.ObjectId, ref: "user" }],
 
-});
+},
+{
+    timestamps: true,
+}
+);
 
 exports.activity = activitySchema;
 

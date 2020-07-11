@@ -6,6 +6,9 @@ var status = new mongoose.Schema({
     status_message: { type: String },
     status_datetime: { type: Date, default: new Date() },
     is_active: { type: Boolean, default: true },
+},
+{
+    timestamps: true,
 });
 
 
