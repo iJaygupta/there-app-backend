@@ -17,6 +17,7 @@ var userSchema = new mongoose.Schema({
   verification_token: { type: String },
   token_expiry: { type: Date },
   role: { type: String, default: "user" },
+  userTypeId: { type: Number },
   is_active: { type: Boolean, default: false },
   profilePic: { type: String },
   is_block: { type: Boolean, default: false },
