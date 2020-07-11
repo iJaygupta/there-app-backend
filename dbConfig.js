@@ -8,14 +8,14 @@ const { common } = require("./models/common");
 const { activity } = require("./models/activity");
 const { queries } = require("./models/queries");
 const { schedule } = require("./models/schedule");
-
+const { setting } = require("./models/setting");
 
 const { DATABASE_URL } = process.env;
 
 const options = {
   useNewUrlParser: true,
   poolSize: 20,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 };
 
 const connection = mongoose.createConnection(DATABASE_URL, options);
@@ -24,12 +24,10 @@ connection
   .then(() => {
     console.log("Successfully Connected with Database !!");
   })
-  .catch(error => {
+  .catch((error) => {
     console.log("Error in Connecting Database  !!", error.message);
     process.exit(1);
   });
-
-
 
 exports.collection = {
   User: connection.model("user", user),
@@ -41,7 +39,5 @@ exports.collection = {
   Activity: connection.model("activity", activity),
   Queries: connection.model("queries", queries),
   Schedule: connection.model("schedule", schedule),
-
+  Setting: connection.model("setting", setting),
 };
-
-
