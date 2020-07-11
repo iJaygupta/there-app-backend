@@ -12,8 +12,3 @@ var notification = new mongoose.Schema({
 });
 
 exports.notification = notification;
-
-
-
-
-

@@ -1,7 +1,8 @@
 var mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 var scheduleSchema = new mongoose.Schema({
-  user_id: { type: String },
+  user_id: { type: Schema.Types.ObjectId, ref: "user" },
   meeting_time: [
     {
       start_time: { type: String },
@@ -35,8 +36,8 @@ var scheduleSchema = new mongoose.Schema({
       ],
     },
   ],
+}, {
+  timestamps: true
 });
-
-exports.scheduleSchema = mongoose.model("schedule", scheduleSchema);
 
 exports.schedule = scheduleSchema;
