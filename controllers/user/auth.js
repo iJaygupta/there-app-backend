@@ -79,14 +79,11 @@ module.exports.auth = function (utils, collection) {
 
         }
       }).catch((error) => {
-        utils.sendResponse(response, true, 500, 1000);
+        utils.sendResponse(response, true, 500, 1000, error);
       })
     },
 
     logOut: (request, response) => {
-
-      console.log("Authentication Done");
-
     },
     sendPhoneCode: (request, response) => {
       let user_id = request.headers.payload.id;

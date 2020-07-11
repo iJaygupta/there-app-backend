@@ -32,8 +32,3 @@ var commonSchema = mongoose.Schema({
 });
 
 exports.common = commonSchema;
-
-
-
-
-

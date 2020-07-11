@@ -7,5 +7,12 @@ module.exports = {
         },
         "additionalProperties": false
     },
+    addQuery: {
+        "properties": {
+            "query": { "type": ["string"], },  
+        },
+        "required": [ "query" ],
+        "additionalProperties": false
+    },
   
 }
