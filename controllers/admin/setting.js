@@ -1,7 +1,7 @@
 module.exports.setting = function (utils, collection) {
   const { Setting } = collection;
   return {
-    getSettig: (request, response) => {
+    getSetting: (request, response) => {
       let userId = request.headers.payload.id;
       Setting.findById({ _id: userId })
         .then((userData) => {
@@ -13,7 +13,7 @@ module.exports.setting = function (utils, collection) {
     },
     addSetting: (request, response) => {
       let userId = request.headers.payload.id;
-      User.insertMany({ _id: userId })
+      Setting.insertMany({ _id: userId })
         .then((userData) => {
           utils.sendResponse(response, false, 200, 4061, userData);
         })
@@ -24,7 +24,7 @@ module.exports.setting = function (utils, collection) {
     updateSetting: (request, response) => {
       let userId = request.headers.payload.id;
       const options = { new: true };
-      User.updateOne({ _id: userId }, { $set: request.body }, options)
+      Setting.updateOne({ _id: userId }, { $set: request.body }, options)
         .then((success) => {
           utils.sendResponse(response, false, 200, 4062);
         })
@@ -34,7 +34,7 @@ module.exports.setting = function (utils, collection) {
     },
     deteteSetting: (request, response) => {
       let userId = request.headers.payload.id;
-      User.delete({ _id: userId })
+      Setting.delete({ _id: userId })
         .then((userData) => {
           utils.sendResponse(response, false, 200, 4063, userData);
         })
