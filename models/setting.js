@@ -1,14 +1,13 @@
 var mongoose = require("mongoose");
 
 var settingSchema = new mongoose.Schema({
-  name: { type: String },
-  choice: { type: String },
-  address: { type: String },
-  mobile: { type: String },
-  alt_name: { type: String },
-  profile_id: { type: String },
-  password: { type: String },
-  email: { type: String },
+  isEmailServiceActive: { type: Boolean },
+  isSMSServiceActive: { type: Boolean },
+  allowedLoggedInDevice: { type: Number },
+  accessTokenValidTime: { type: Number },
+  senderEmailId: { type: String },
+  senderEmailPassword: { type: String },
+  cronTimeInterval: { type: Number },
 },
 {
   timestamps: true,
