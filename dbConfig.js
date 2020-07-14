@@ -43,6 +43,6 @@ exports.collection = {
   Schedule: connection.model("schedule", schedule),
   Setting: connection.model("setting", setting),
   Message: connection.model("message", message),
-  Chatrooom: connection.model("chatroom", chatroom)
+  Chatroom: connection.model("chatroom", chatroom)
 
 };

@@ -1,14 +1,17 @@
 
 var mongoose = require("mongoose");
-const Schema = mongoose.schema;
+const Schema = mongoose.Schema;
 
 var chatroomSchema = new mongoose.Schema({
-    name:{ type: String},
-    user_id :{ type: Schema.Types.ObjectId, ref:"user"}
+    name: { type: String },
+    user_id: { type: Schema.Types.ObjectId, ref: "user" },
+    chat_users: [{ type: Schema.Types.ObjectId, ref: "user" }],
+    filename: { type: String },
+    description: { type: String },
 },
-{
-    timseStamps: true
-}
+    {
+        timestamps: true
+    }
 )
-exports.chatRoomSchema = mongoose.model("chatroom", chatRoomSchema);
+
 exports.chatroom = chatroomSchema;
