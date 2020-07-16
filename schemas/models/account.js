@@ -18,19 +18,22 @@ module.exports = {
     additionalProperties: false,
   },
 
-  // updateUser: {
-  //   properties: {
-  //     name: { type: ["string"] },
-  //     email: { type: ["string"] },
-  //     choice: { type: ["string"] },
-  //     address: { type: ["string"] },
-  //   },
-  //   additionalProperties: false,
-  // },
+  addUserByAdmin: {
+    properties: {
+      name: { type: ["string"] },
+      mobile: { type: ["string"] },
+      email: { type: ["string"] },
+      choice: { type: ["string"] },
+      address: { type: ["string"] },
+    },
+    required: ["mobile"],
+    additionalProperties: false,
+  },
 
   updateUserByAdmin: {
     properties: {
       name: { type: ["string"] },
+      mobile: { type: ["string"] },
       email: { type: ["string"] },
       choice: { type: ["string"] },
       address: { type: ["string"] },
