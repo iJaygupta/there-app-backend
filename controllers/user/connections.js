@@ -21,45 +21,75 @@ exports.connections = function (utils, collection) {
             })
         },
 
-        addConnection: function (request, response) {
-            let connections = request.body;
-            let id = request.headers.payload.id;
-
-            User.insertMany(connections).then((result) => {
-                let connection_ids = [];
-                if (result && Array.isArray(result)) {
-                    result.forEach(element => {
-                        connection_ids.push(element._id);
-                    });
-                    let param = {
-                        user_id: id,
-                        contact_list: connection_ids
-                    }
-                    Connections.insertMany(param).then((data) => {
-                        utils.sendResponse(response, false, 200, 4027);
-                    })
+        addConnection: async function (request, response) {
+            try {
+                let connections = request.body;
+                let user_id = request.headers.payload.id;
+                let bulWriteQuery = this.prepareQueryForUpdateUserConnections(connections);
+                await User.bulkWrite(bulWriteQuery);
+                let userMobiles = [];
+                connections.forEach(element => {
+                    userMobiles.push(element.mobile);
+                });
+                let connectionResult = await User.find({ "mobile": { "$in": userMobiles } }, { _id: 1 });
+                let connectionIds = [];
+                connectionResult.forEach(element => {
+                    connectionIds.push(element._id);
+                });
+                let connectionParam = {
+                    user_id: user_id,
+                    contact_list: connectionIds
                 }
-            }).catch((error) => {
-                utils.sendResponse(response, true, 500, 1000);
+                await Connections.updateOne({ user_id: user_id }, { $set: connectionParam }, { "upsert": true })
+                utils.sendResponse(response, false, 200, 4027, connectionResult);
+            } catch (err) {
+                utils.sendResponse(response, true, 500, 1000, err);
+            }
+        },
+        prepareQueryForUpdateUserConnections: function (connections) {
+            let bulkWriteConnectionQuery = [];
+            bulkWriteConnectionQuery = connections.map((el, index) => {
+                return {
+                    updateOne: {
+                        "filter": { mobile: el.mobile },
+                        "update": { $set: el },
+                        "upsert": true
+                    }
+                }
             })
+            return bulkWriteConnectionQuery;
         },
         deleteConnection: (request, response) => {
             let user_id = request.headers.payload.id;
             let param = request.params.id;
             var query = {};
             query = { $pull: { "contact_list": param } };
-
-
             Connections.updateOne({ user_id: user_id }, query).then((data) => {
                 utils.sendResponse(response, false, 200, 4029);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);
             })
         },
-        updateConnections: (request, response) => {
-            Connections.updateOne().then((updated) => {
-            }).catch((error) => {
-            });
+        updateConnections: async function (request, response) {
+            try {
+                let connections = request.body;
+                let user_id = request.headers.payload.id;
+                let bulWriteQuery = this.prepareQueryForUpdateUserConnections(connections);
+                await User.bulkWrite(bulWriteQuery);
+                let userMobiles = [];
+                connections.forEach(element => {
+                    userMobiles.push(element.mobile);
+                });
+                let connectionResult = await User.find({ "mobile": { "$in": userMobiles } }, { _id: 1 });
+                let connectionIds = [];
+                connectionResult.forEach(element => {
+                    connectionIds.push(element._id);
+                });
+                await Connections.updateOne({ user_id: user_id }, { $push: { "contact_list": connectionIds } }, { "upsert": true })
+                utils.sendResponse(response, false, 200, 4027, connectionResult);
+            } catch (err) {
+                utils.sendResponse(response, true, 500, 1000, err);
+            }
         },
         blockConnection: (request, response) => {
             console.log("blockConnection trig");
