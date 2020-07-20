@@ -3,15 +3,18 @@ exports.connections = function (utils, collection) {
     const { Connections, User } = collection;
     return {
 
-        getConnections: (request, response) => {
+        getConnections: async (request, response) => {
+            try{
             let user_id = request.headers.payload.id;
-            Connections.find({ user_id: user_id }).populate("contact_list").exec().then((data) => {
-                utils.sendResponse(response, false, 200, 4028, data);
-            }).catch((error) => {
+           let connection = await Connections.find({ user_id: user_id }).populate("contact_list").exec();
+                utils.sendResponse(response, false, 200, 4028, connection);
+        }
+           catch(error){ 
                 utils.sendResponse(response, true, 500, 1000);
-            })
+            }
         },
 
+       
         getActiveConnections: (request, response) => {
             let user_id = request.headers.payload.id;
             User.find({ user_id: user_id, is_active: true }).then((data) => {

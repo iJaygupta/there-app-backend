@@ -6,21 +6,22 @@ module.exports.common = function (utils, collection) {
 
   return {
 
-    getLookupData: (request, response) => {
+     getLookupData: async (request, response) => {
+      try{
       const requested_for = request.query.requested_for;
       let populate = {};
       if (requested_for) {
         populate[requested_for] = 1;
       }
-
-      Common.find({}, populate)
-        .then(result => {
-          utils.sendResponse(response, false, 200, 4039, result);
-        })
-        .catch(error => {
-          utils.sendResponse(response, true, 500, 1000);
-        });
+        let lookupData= await Common.find({}, populate);
+        utils.sendResponse(response, false, 200, 4039, lookupData);
+      
+      }
+      catch(error){
+        utils.sendResponse(response, true, 500, 1000);
+      }
     },
+
     getCountries: async (request, response) => {
       const country_api_url = process.env.COUNTRY_API_URL;
       const requested_for = request.body.requested_for;
@@ -53,17 +54,20 @@ module.exports.common = function (utils, collection) {
 
       }
     },
-    addQuery: (request, response) => {
-      let user_id = request.headers.payload.id;
+    addQuery: async  (request, response) => {
+      try{
+        let user_id = request.headers.payload.id;
       let param = {
         query: request.body.query
       };
       var faqs = { $push: { "faqs": param } };
-      Queries.updateOne({ user_id: user_id }, faqs, { "upsert": true }).then((data) => {
-        utils.sendResponse(response, false, 200, 4050, data);
-      }).catch((error) => {
+     let query = await Queries.updateOne({ user_id: user_id }, faqs, { "upsert": true })
+     utils.sendResponse(response, false, 200, 4050, query);
+      }
+      catch(error)
+      {
         utils.sendResponse(response, true, 500, 1000);
-      })
+      }
     },
 
   };
