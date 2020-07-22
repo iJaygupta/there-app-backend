@@ -61,11 +61,47 @@ exports.connections = function (utils, collection) {
         },
         deleteConnection: (request, response) => {
             let user_id = request.headers.payload.id;
-            let param = request.params.id;
-            var query = {};
-            query = { $pull: { "contact_list": param } };
-            Connections.updateOne({ user_id: user_id }, query).then((data) => {
-                utils.sendResponse(response, false, 200, 4029);
+            let connectionIds = JSON.parse(request.query.connectionIds);
+            let validConnections = [];
+            let invalidConnections = [];
+            Connections.find({ user_id: user_id }, { "contact_list": 1 }).then((data) => {
+                if (data && data.length) {
+                    data.map(el => {
+                        connectionIds.forEach(elem => {
+                            if (el.contact_list.includes(elem)) validConnections.push(elem);
+                            else invalidConnections.push(elem)
+                        })
+                        if (validConnections.length > 0) {
+                            var query = {};
+                            query = {
+                                $pull: {
+                                    "contact_list": {
+                                        $in: validConnections
+                                    }
+                                }
+                            };
+                            Connections.updateOne({ user_id: user_id }, query, { multi: true }).then((data) => {
+                                let res = {
+                                    "deleted_result": validConnections
+                                }
+                                if (invalidConnections.length > 0) res["not_found"] = invalidConnections;
+                                utils.sendResponse(response, false, 200, 4029, res);
+                            }).catch((error) => {
+                                utils.sendResponse(response, true, 500, 1000);
+                            })
+                        } else {
+                            let res = {
+                                "not_found": invalidConnections
+                            }
+                            utils.sendResponse(response, false, 422, 5000, res);
+                        }
+                    })
+                } else {
+                    let res = {
+                        "not_found": connectionIds
+                    }
+                    utils.sendResponse(response, false, 422, 5000, res);
+                }
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);
             })
