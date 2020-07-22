@@ -1,10 +1,14 @@
 const statusCodes = require("../../common/userStatus");
 const scheduler = require('../../lib/scheduler');
+const fcm = require('../../lib/fcm');
+const elasticHandler = require("../../lib/elasticSearch");
+const bodybuilder = require('bodybuilder');
+
 
 
 exports.status = function (utils, collection) {
 
-    const { Status, Notification, Common, Activity } = collection
+    const { Status, Notification, Common, Activity, User } = collection
     return {
 
         getMyStatus: (request, response) => {
@@ -41,7 +45,18 @@ exports.status = function (utils, collection) {
                 user_id: user_id,
                 is_status_active: true
             };
+
             var query = {};
+            let documentData = {};
+            documentData.doc = {};
+            documentData.doc.status = {
+                status_id: statusData.status_id,
+                status_message: statusData.status_message
+            };
+            elasticHandler.updateDocument(user_id, process.env.ELASTIC_USER_INDEX, process.env.ELASTIC_USER_DOC_TYPE, documentData)
+                .then(data => {
+                    console.log(data);
+                })
 
             Status.insertMany(statusData).then((data) => {
                 if (data.length && data[0]._id) {
@@ -70,7 +85,7 @@ exports.status = function (utils, collection) {
         hideStatus: (request, response) => {
             let user_id = request.headers.payload.id;
 
-            Activity.updateOne({ user_id: user_id }, { $set : { is_status_active: false }} ,{ "upsert" : false } ).then((data) => {
+            Activity.updateOne({ user_id: user_id }, { $set: { is_status_active: false } }, { "upsert": false }).then((data) => {
 
                 utils.sendResponse(response, false, 200, 4021, data);
             }).catch((error) => {
@@ -85,6 +100,14 @@ exports.status = function (utils, collection) {
             };
             var query = {};
             query = { $push: { "availability": param } };
+
+            let documentData = {};
+            documentData.doc = {};
+            documentData.doc.availability = param;
+            elasticHandler.updateDocument(user_id, process.env.ELASTIC_USER_INDEX, process.env.ELASTIC_USER_DOC_TYPE, documentData)
+                .then(data => {
+                    console.log(data);
+                })
 
             // const sendNotification = function () {
             //     console.log("Sending Notification");
@@ -157,6 +180,52 @@ exports.status = function (utils, collection) {
 
         },
         getStatus: (request, response) => {
+
+            let user_id = request.headers.payload.id;
+            let mobile = request.query.mobile;
+
+
+            var statusQuery = bodybuilder();
+            if (mobile) {
+                statusQuery = statusQuery.query("match", "mobile", mobile)
+            }
+            statusQuery = statusQuery.query("match", "status_visible_to", user_id)
+            statusQuery = statusQuery.build();
+
+            elasticHandler.sendRequest(process.env.ELASTIC_USER_INDEX, process.env.ELASTIC_USER_DOC_TYPE, statusQuery)
+                .then((statusData) => {
+                    if (statusData.data.length && statusData.data[0].status) {
+                        statusData = [statusData.data[0].status]
+                        utils.sendResponse(response, false, 200, 4022, statusData);
+                    } else {
+                        utils.sendResponse(response, true, 500, 4031);
+                    }
+
+                })
+                .catch((data) => {
+                    response.json(data);
+                })
+
+        },
+        addVisibility: (request, response) => {
+
+            let user_id = request.headers.payload.id;
+            let requested_for = request.body.requested_for;
+            let value = request.body.value;
+
+            let documentData = {};
+            if (requested_for && value) {
+                documentData.doc = {
+                    [requested_for]: value
+                };
+            }
+
+            elasticHandler.updateDocument(user_id, process.env.ELASTIC_USER_INDEX, process.env.ELASTIC_USER_DOC_TYPE, documentData)
+                .then(data => {
+                    utils.sendResponse(response, false, 200, 4040, data);
+                }).catch(error => {
+                    utils.sendResponse(response, true, 500, 1000, error);
+                })
 
         }
     }

@@ -1,13 +1,13 @@
 
 
 module.exports.auth = function (app, controller, error, auth, middleware) {
-     
+
     app.route("/admin/signup").post(function (request, response) {
         try {
             controller.signUp(request, response);
         }
         catch (err) {
-            
+
             error(err, response)
         }
     })
@@ -29,7 +29,7 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
             error(err, response)
         }
     })
-    app.route("/admin/send-phone-otp").get(auth,function (request, response) {
+    app.route("/admin/send-phone-otp").get(auth, function (request, response) {
         try {
             controller.sendPhoneCode(request, response);
         }
@@ -37,7 +37,7 @@ module.exports.auth = function (app, controller, error, auth, middleware) {
             error(err, response)
         }
     })
-    app.route("/admin/send-email-otp").get(auth,function (request, response) {
+    app.route("/admin/send-email-otp").get(auth, function (request, response) {
         try {
             controller.sendEmailCode(request, response);
         }

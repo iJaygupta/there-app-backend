@@ -9,7 +9,7 @@ const responseFile = require('../../lib/response');
 
 
 module.exports.auth = function (utils, collection) {
-  const { User, Session } = collection;
+  const { User, Otp, Session } = collection;
   return {
 
     signUp: (request, response) => {
@@ -23,6 +23,7 @@ module.exports.auth = function (utils, collection) {
         if (!userDetails) {
           User.insertMany(request.body).then((result) => {
             if (result) {
+              util.addUserDocument(result[0]);
               utils.sendResponse(response, false, 200, 4000);
             }
           }).catch((error) => {
@@ -32,6 +33,7 @@ module.exports.auth = function (utils, collection) {
         } else if (userDetails && userDetails.mobile === request.body.mobile && userDetails.is_active === false) {
           User.findOneAndUpdate({ "mobile": request.body.mobile }, { $set: { "is_active": true, password: hash } }).then((result) => {
             if (result) {
+              util.addUserDocument(result);
               utils.sendResponse(response, false, 200, 4000);
             }
           }).catch((error) => {
@@ -63,13 +65,12 @@ module.exports.auth = function (utils, collection) {
                 // name: userDetails.name,
                 // mobile: userDetails.mobile
               }
-              let token = await auth.generateAuthToken(payload);
-              payload['is_phone_verified'] = userDetails.is_phone_verified;
+              let tokens = await auth.generateAuthToken(payload, Session);
               let output = {
                 error: false,
                 msg: responseFile[4001]['msg'],
                 code: responseFile[4001]['code'],
-                token: token,
+                token: tokens,
                 data: payload
               }
               response.status(200).send(output);
@@ -94,7 +95,7 @@ module.exports.auth = function (utils, collection) {
         let OTP = util.generateOTP("phone");
         let paramForMsg = util.prepareOTPParam("phone", OTP);
         let otpDateTime = new Date();
-        await util.putOTPIntoCollection(user_id, mobile, OTP, otpDateTime, "phone", Session);
+        await util.putOTPIntoCollection(user_id, mobile, OTP, otpDateTime, "phone", Otp);
 
         smsService.sendMsg(paramForMsg, mobile, function (err, done) {
           if (err) {
@@ -118,7 +119,7 @@ module.exports.auth = function (utils, collection) {
         let OTP = util.generateOTP("email");
         let paramForMsg = util.prepareOTPParam("email", OTP);
         let otpDateTime = new Date();
-        await util.putOTPIntoCollection(user_id, email, OTP, otpDateTime, "email", Session);
+        await util.putOTPIntoCollection(user_id, email, OTP, otpDateTime, "email", Otp);
 
         emailService.sendEmail(email, "Verification", paramForMsg, function (output) {
           if (!output.error) {
@@ -138,7 +139,7 @@ module.exports.auth = function (utils, collection) {
       let code = request.body.code;
       let user_id = request.headers.payload.id;
       try {
-        let otpData = await util.getUserOTP(user_id, email, "email", Session);
+        let otpData = await util.getUserOTP(user_id, email, "email", Otp);
         let OTP = otpData[0] ? otpData[0].email_otp : "";
         let email_otp_datetime = otpData[0] ? otpData[0].email_otp_datetime : "";
         if (OTP == code) {
@@ -162,7 +163,7 @@ module.exports.auth = function (utils, collection) {
       let code = request.body.code;
       let user_id = request.headers.payload.id;
       try {
-        let otpData = await util.getUserOTP(user_id, mobile, "phone", Session);
+        let otpData = await util.getUserOTP(user_id, mobile, "phone", Otp);
         let OTP = otpData[0] ? otpData[0].mobile_otp : "";
         if (OTP == code) {
           await util.updateVerifyStatus(user_id, "phone", User)
@@ -184,7 +185,7 @@ module.exports.auth = function (utils, collection) {
         else {
           let securityCode = util.generateOTP("email");
           let otpDateTime = new Date();
-          await util.putOTPIntoCollection(user._id, user.email, securityCode, otpDateTime, "email", Session);
+          await util.putOTPIntoCollection(user._id, user.email, securityCode, otpDateTime, "email", Otp);
           const payload = {
             id: user._id,
             email: user.email,
@@ -212,7 +213,7 @@ module.exports.auth = function (utils, collection) {
       if (decodedData) {
         const { id, email, securityCode } = decodedData;
         try {
-          let otpData = await util.getUserOTP(id, email, "email", Session);
+          let otpData = await util.getUserOTP(id, email, "email", Otp);
           let OTP = otpData[0] ? otpData[0].email_otp : "";
           let email_otp_datetime = otpData[0] ? otpData[0].email_otp_datetime : "";
           if (OTP == securityCode) {
@@ -274,6 +275,32 @@ module.exports.auth = function (utils, collection) {
           }
         })
       })
+    },
+    refreshToken: function (request, response) {
+      const { refresh_token, user_id } = request.body;
+      const param = { refresh_token, user_id, is_session_active: true }
+      Session.find(param).then((data) => {
+        if (data && data.length) {
+          User.findById(user_id).then(async (userDetails) => {
+            if (userDetails && userDetails._id) {
+              let payload = {
+                id: userDetails._id
+              }
+              let tokens = await auth.generateAuthToken(payload, Session);
+              utils.sendResponse(response, false, 200, 4041, tokens);
+            } else {
+              return response.status(401).send({ error: true, msg: 'Unauthorized Access.' })
+            }
+          }).catch((error) => {
+            utils.sendResponse(response, true, 500, 1000, error);
+          })
+        } else {
+          return response.status(401).send({ error: true, msg: 'Unauthorized Access.' })
+        }
+      }).catch((error) => {
+        utils.sendResponse(response, true, 500, 1000, error);
+      })
+
     }
   }
 
