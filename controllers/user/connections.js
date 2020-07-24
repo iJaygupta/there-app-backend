@@ -2,25 +2,16 @@
 exports.connections = function (utils, collection) {
     const { Connections, User } = collection;
     return {
-
-        getConnections: (request, response) => {
-            let user_id = request.headers.payload.id;
-            Connections.find({ user_id: user_id }).populate("contact_list").exec().then((data) => {
-                utils.sendResponse(response, false, 200, 4028, data);
-            }).catch((error) => {
+        getConnections: async (request, response) => {
+            try {
+                let user_id = request.headers.payload.id;
+                let connection = await Connections.find({ user_id: user_id }).populate("contact_list").populate("blocked_list").exec();
+                utils.sendResponse(response, false, 200, 4028, connection);
+            }
+            catch (error) {
                 utils.sendResponse(response, true, 500, 1000);
-            })
+            }
         },
-
-        getActiveConnections: (request, response) => {
-            let user_id = request.headers.payload.id;
-            User.find({ user_id: user_id, is_active: true }).then((data) => {
-                utils.sendResponse(response, false, 200, 4022, data);
-            }).catch((error) => {
-                utils.sendResponse(response, true, 500, 1000);
-            })
-        },
-
         addConnection: async function (request, response) {
             try {
                 let connections = request.body;
@@ -63,9 +54,7 @@ exports.connections = function (utils, collection) {
             try {
                 let user_id = request.headers.payload.id;
                 let connectionIds = request.query.connectionIds ? JSON.parse(request.query.connectionIds) : [];
-
                 let data = await Connections.find({ user_id: user_id }, { "contact_list": 1 });
-
                 if (data && data.length) {
                     let validConnections = [];
                     let invalidConnections = [];
@@ -75,7 +64,6 @@ exports.connections = function (utils, collection) {
                             else invalidConnections.push(elem)
                         })
                     })
-
                     if (validConnections.length) {
                         var query = {};
                         query = {
@@ -90,12 +78,9 @@ exports.connections = function (utils, collection) {
                             let res = {
                                 "deleted_result": validConnections
                             }
-
                             if (invalidConnections.length > 0) res["not_found"] = invalidConnections;
                             utils.sendResponse(response, false, 200, 4029, res);
-
                         } else utils.sendResponse(response, true, 500, 1000);
-
                     } else {
                         let res = {
                             "not_found": invalidConnections
@@ -113,7 +98,6 @@ exports.connections = function (utils, collection) {
                 console.log(err)
                 utils.sendResponse(response, true, 500, 1000, err);
             }
-
         },
         updateConnections: async function (request, response) {
             try {
@@ -140,9 +124,7 @@ exports.connections = function (utils, collection) {
             try {
                 let user_id = request.headers.payload.id;
                 let connectionIds = request.query.connectionIds ? JSON.parse(request.query.connectionIds) : [];
-
                 let data = await Connections.find({ user_id: user_id }, { "contact_list": 1 });
-
                 if (data && data.length) {
                     let validConnections = [];
                     let invalidConnections = [];
@@ -166,23 +148,19 @@ exports.connections = function (utils, collection) {
                             if (invalidConnections.length > 0) res["not_found"] = invalidConnections;
                             utils.sendResponse(response, false, 200, 4073, res);
                         } else utils.sendResponse(response, true, 500, 1000);
-
                     } else {
                         let res = {
                             "not_found": invalidConnections
                         }
                         utils.sendResponse(response, false, 422, 5000, res);
                     }
-
                 } else {
                     let res = {
                         "not_found": connectionIds
                     }
                     utils.sendResponse(response, false, 422, 5000, res);
                 }
-
             } catch (err) {
-                console.log(err)
                 utils.sendResponse(response, true, 500, 1000, err);
             }
 
@@ -191,9 +169,7 @@ exports.connections = function (utils, collection) {
             try {
                 let user_id = request && request.headers && request.headers.payload && request.headers.payload.id || '';
                 let connectionIds = request.query.connectionIds ? JSON.parse(request.query.connectionIds) : [];
-
                 let data = await Connections.find({ user_id: user_id }, { "blocked_list": 1 });
-
                 if (data && data.length) {
                     let validConnections = [];
                     let invalidConnections = [];
@@ -206,7 +182,6 @@ exports.connections = function (utils, collection) {
                             }
                         });
                     });
-
                     if (validConnections.length) {
                         let query = {};
                         query = { $pull: { "blocked_list": { $in: validConnections } }, $addToSet: { "contact_list": validConnections } };
@@ -215,33 +190,25 @@ exports.connections = function (utils, collection) {
                             let res = {
                                 "unblocked_connections": validConnections
                             };
-
                             if (invalidConnections.length > 0) res["not_found"] = invalidConnections;
-
                             utils.sendResponse(response, false, 200, 4074, res);
                         } else utils.sendResponse(response, true, 500, 1000);
-
                     } else {
                         let res = {
                             "not_found": connectionIds
                         }
                         utils.sendResponse(response, false, 422, 5000, res);
                     }
-
-
                 } else {
                     let res = {
                         "not_found": connectionIds
                     }
                     utils.sendResponse(response, false, 422, 5000, res);
                 }
-
-
             } catch (err) {
                 utils.sendResponse(response, true, 500, 1000, err);
             }
         }
-
     }
 
 }
