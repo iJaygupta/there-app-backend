@@ -5,7 +5,7 @@ exports.connections = function (utils, collection) {
 
         getConnections: (request, response) => {
             let user_id = request.headers.payload.id;
-            Connections.find({ user_id: user_id }).populate("contact_list").exec().then((data) => {
+            Connections.find({ user_id: user_id }).populate("contact_list").populate("blocked_list").exec().then((data) => {
                 utils.sendResponse(response, false, 200, 4028, data);
             }).catch((error) => {
                 utils.sendResponse(response, true, 500, 1000);
@@ -61,7 +61,7 @@ exports.connections = function (utils, collection) {
         },
         deleteConnection: (request, response) => {
             let user_id = request.headers.payload.id;
-            let connectionIds = JSON.parse(request.query.connectionIds);
+            let connectionIds = request.query.connectionIds ? JSON.parse(request.query.connectionIds) : [];
             let validConnections = [];
             let invalidConnections = [];
             Connections.find({ user_id: user_id }, { "contact_list": 1 }).then((data) => {
@@ -121,14 +121,56 @@ exports.connections = function (utils, collection) {
                 connectionResult.forEach(element => {
                     connectionIds.push(element._id);
                 });
-                await Connections.updateOne({ user_id: user_id }, { $push: { "contact_list": connectionIds } }, { "upsert": true })
+                await Connections.updateOne({ user_id: user_id }, { $addToSet: { "contact_list": connectionIds } }, { "upsert": true })
                 utils.sendResponse(response, false, 200, 4027, connectionResult);
             } catch (err) {
                 utils.sendResponse(response, true, 500, 1000, err);
             }
         },
-        blockConnection: (request, response) => {
-            console.log("blockConnection trig");
+        blockConnection: async function (request, response) {
+            try {
+                let user_id = request.headers.payload.id;
+                let connectionIds = request.query.connectionIds ? JSON.parse(request.query.connectionIds) : [];
+                let data = await Connections.find({ user_id: user_id }, { "contact_list": 1 });
+                if (data && data.length) {
+                    let validConnections = [];
+                    let invalidConnections = [];
+                    data.map(el => {
+                        connectionIds.forEach(elem => {
+                            if (el.contact_list.includes(elem)) {
+                                validConnections.push(elem);
+                            } else {
+                                invalidConnections.push(elem);
+                            }
+                        });
+                    })
+                    if (validConnections.length) {
+                        var query = {};
+                        query = { $pull: { "contact_list": { $in: validConnections } }, $addToSet: { "blocked_list": validConnections } };
+                        let result = await Connections.updateOne({ user_id: user_id }, query);
+                        if (result.ok) {
+                            let res = {
+                                "blocked_connections": validConnections
+                            }
+                            if (invalidConnections.length > 0) res["not_found"] = invalidConnections;
+                            utils.sendResponse(response, false, 200, 4073, res);
+                        } else utils.sendResponse(response, true, 500, 1000);
+                    } else {
+                        let res = {
+                            "not_found": invalidConnections
+                        }
+                        utils.sendResponse(response, false, 422, 5000, res);
+                    }
+                } else {
+                    let res = {
+                        "not_found": connectionIds
+                    }
+                    utils.sendResponse(response, false, 422, 5000, res);
+                }
+            } catch (err) {
+                utils.sendResponse(response, true, 500, 1000, err);
+            }
+
         }
 
     }

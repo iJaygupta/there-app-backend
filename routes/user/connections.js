@@ -47,7 +47,7 @@ exports.connections = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/block-connection").patch(function (request, response) {
+    app.route("/user/block-connection").patch(auth, function (request, response) {
         try {
             controller.blockConnection(request, response);
         }
