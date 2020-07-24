@@ -47,4 +47,13 @@ exports.connections = function (app, controller, error, auth, middleware) {
         }
     })
 
+    app.route("/user/unblock-connection").patch(auth, function (request, response) {
+        try {
+            controller.unblockBlockConnection(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    })
+
 }
