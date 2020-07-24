@@ -11,15 +11,6 @@ exports.connections = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/get-active-connections").get(auth, function (request, response) {
-        try {
-            controller.getActiveConnections(request, response);
-        }
-        catch (err) {
-            error(err, response)
-        }
-    })
-
     app.route("/user/add-connection").post(auth, function (request, response) {
         try {
             controller.addConnection(request, response);
