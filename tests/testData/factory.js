@@ -7,5 +7,8 @@ module.exports = {
     status : require(modelsPath + 'status'),
     connections : require(modelsPath + 'connections'),
     common: require(modelsPath + 'common'),
+    schedule : require(modelsPath + 'schedule'),
+    chat : require(modelsPath + 'chat')
+
 };
 
