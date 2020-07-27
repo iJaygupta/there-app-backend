@@ -1,8 +1,10 @@
 
 const axios = require('axios');
+const { request, response } = require('express');
+//const { contactUs } = require('../../models/contactUs');
 
 module.exports.common = function (utils, collection) {
-  const { Queries, Common } = collection;
+  const { Queries, Common, Contactus,TeamMembers} = collection;
 
   return {
     getLookupData: async (request, response) => {
@@ -66,6 +68,38 @@ module.exports.common = function (utils, collection) {
         utils.sendResponse(response, true, 500, 1000);
       }
     },
+
+   contactUs : async(request,response)=>{
+      try{
+        let user_id = request.headers.payload.id;
+        let contactus = new Contactus({
+          user_id: user_id,
+          email: request.body.email,
+          fullName:request.body.fullName,
+          phoneNumber: request.body.phoneNumber,
+          query: request.body.query
+
+        })
+        contactus = await contactus.save();
+        utils.sendResponse(response, false, 200, 4075, contactus);
+      }
+      catch(error){
+        console.log(error);
+        utils.sendResponse(response, true, 500, 1000);
+      }
+
+    },
+
+    getTeam: async (request,response)=>{
+      try{
+      let team = await TeamMembers.find({});
+      utils.sendResponse(response,false,200,4078,team);
+      }
+      catch(error){
+        utils.sendResponse(response, true, 500, 1000);
+      }
+    }
+    
 
   };
 };

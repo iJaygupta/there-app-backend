@@ -26,4 +26,23 @@ module.exports.common = function (app, controller, error, auth, middleware, sche
     }
   });
 
+  app.route("/common/contactUs").post(middleware.validateAjv(schema.common.contactUs),auth, function(request,response){
+    try{
+      controller.contactUs(request,response);
+    }
+    catch(err){
+      console.log(err);
+      error(err,response);
+    }
+  });
+
+  app.route("/common/team").get(function (request, response) {
+    try {
+      controller.getTeam(request,response);
+    } catch (err) {
+      error(err, response);
+    }
+  });
+
+
 };
