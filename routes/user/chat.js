@@ -1,6 +1,6 @@
 module.exports.chat = function (app, controller, error, auth, middleware, schema) {
 
-  app.route("/user/chatroom").post(auth, function (request, response) {
+  app.route("/user/chatroom").post(middleware.validateAjv(schema.chat.createChatroom), auth, function (request, response) {
     try {
       controller.createChatroom(request, response);
     } catch (err) {
@@ -16,7 +16,7 @@ module.exports.chat = function (app, controller, error, auth, middleware, schema
     }
   });
 
-  app.route("/user/chatroom/:chatroomId").put(auth, function (request, response) {
+  app.route("/user/chatroom/:chatroomId").put(middleware.validateAjv(schema.chat.updateChatroom), auth, function (request, response) {
     try {
       controller.updateChatroom(request, response);
     } catch (err) {
@@ -45,14 +45,14 @@ module.exports.chat = function (app, controller, error, auth, middleware, schema
       error(err, response);
     }
   });
-  app.route("/user/message").post(auth, function (request, response) {
+  app.route("/user/message").post(middleware.validateAjv(schema.chat.addMessage), auth, function (request, response) {
     try {
       controller.addMessage(request, response);
     } catch (err) {
       error(err, response);
     }
   });
-  app.route("/user/message/:messageId").put(auth, function (request, response) {
+  app.route("/user/message/:messageId").put(middleware.validateAjv(schema.chat.updateMessage), auth, function (request, response) {
     try {
       controller.updateMessage(request, response);
     } catch (err) {
@@ -67,5 +67,5 @@ module.exports.chat = function (app, controller, error, auth, middleware, schema
     }
   });
 
-  
+
 }

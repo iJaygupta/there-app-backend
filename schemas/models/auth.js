@@ -16,34 +16,37 @@ module.exports = {
             "mobile": { "type": ["string"] },
             "password": { "type": ["string"] },
         },
-        "required": ["mobile", "password"]
+        "required": ["mobile", "password"],
+        "additionalProperties": false
     },
     verifyEmailOtp: {
         "properties": {
             "email": { "type": ["string"] },
             "code": { "type": ["string"] }
         },
-        "required": ["email", "code"]
+        "required": ["email", "code"],
+        "additionalProperties": false
     },
     verifyMobileOtp: {
         "properties": {
             "mobile": { "type": ["string"] },
             "code": { "type": ["string"] }
         },
-        "required": ["mobile", "code"]
+        "required": ["mobile", "code"],
+        "additionalProperties": false
     },
     register: {
         "properties": {
             "mobile": { "type": ["string"], "maxLength": 15, "minLength": 12 }
         },
-        "required": ["mobile"]
+        "required": ["mobile"],
+        "additionalProperties": false
     },
     forgotPassword: {
         "properties": {
             "email": { "type": ["string"] }
         },
-        "required": ["email"]
+        "required": ["email"],
+        "additionalProperties": false
     }
 }
-
-
