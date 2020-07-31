@@ -1,52 +1,37 @@
-module.exports.setting = function (
-  app,
-  controller,
-  error,
-  auth,
-  middleware,
-  schema
-) {
-  app.route("/admin/setting").get(function (request, response) {
+module.exports.setting = function (app, controller, error, auth, middleware, schema) {
+
+  app.route("/admin/setting").get(auth, function (request, response) {
     try {
-      controller.getAdmin(request, response);
+      controller.getSetting(request, response);
     } catch (err) {
       error(err, response);
     }
   });
 
-  app.route("/admin/setting").post(function (request, response) {
+  app.route("/admin/setting").post(auth, middleware.validateAjv(schema.setting.addSetting), function (request, response) {
     try {
-      controller.addAdmin(request, response);
+      controller.addSetting(request, response);
     } catch (err) {
       error(err, response);
     }
   });
 
-  app
-    .route("/admin/setting")
-    .put(
-      middleware.validateAjv(schema.account.updateAdminEmail),
-      auth,
-      function (request, response) {
-        try {
-          controller.updateAdmin(request, response);
-        } catch (err) {
-          error(err, response);
-        }
-      }
-    );
+  app.route("/admin/setting/:settingId").put(auth, middleware.validateAjv(schema.setting.updateSetting), function (request, response) {
+    try {
+      controller.updateSetting(request, response);
+    } catch (err) {
+      error(err, response);
+    }
+  }
+  );
 
-  app
-    .route("/admin/setting")
-    .delete(
-      middleware.validateAjv(schema.account.deleteAdminEmail),
-      auth,
-      function (request, response) {
-        try {
-          controller.deleteAdmin(request, response);
-        } catch (err) {
-          error(err, response);
-        }
-      }
-    );
+  app.route("/admin/setting/:settingId").delete(auth, function (request, response) {
+    try {
+      controller.deteteSetting(request, response);
+    } catch (err) {
+      error(err, response);
+    }
+  }
+  );
+
 };

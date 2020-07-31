@@ -9,11 +9,10 @@ var notification = new mongoose.Schema({
     sent_date_time: { type: Date, default: new Date() },
     seen: { type: Boolean, default: false },
 
-});
+},
+{
+    timestamps: true,
+}
+);
 
 exports.notification = notification;
-
-
-
-
-

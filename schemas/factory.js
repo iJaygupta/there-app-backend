@@ -7,4 +7,6 @@ module.exports = {
   status: require(modelsPath + "status"),
   common: require(modelsPath + "common"),
   schedule: require(modelsPath + "schedule"),
+  setting: require(modelsPath + "setting")
+
 };

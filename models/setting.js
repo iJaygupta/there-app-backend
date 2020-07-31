@@ -1,16 +1,18 @@
 var mongoose = require("mongoose");
 
-var adminSchema = new mongoose.Schema({
-  name: { type: String },
-  choice: { type: String },
-  address: { type: String },
-  mobile: { type: String },
-  alt_name: { type: String },
-  profile_id: { type: String },
-  password: { type: String },
-  email: { type: String },
+var settingSchema = new mongoose.Schema({
+  isEmailServiceActive: { type: Boolean },
+  isSMSServiceActive: { type: Boolean },
+  allowedLoggedInDevice: { type: Number },
+  accessTokenValidTime: { type: Number },
+  senderEmailId: { type: String },
+  senderEmailPassword: { type: String },
+  cronTimeInterval: { type: Number },
+},
+{
+  timestamps: true,
 });
 
-exports.adminSchema = mongoose.model("admin", adminSchema);
+exports.settingSchema = mongoose.model("setting", settingSchema);
 
-exports.adminSchema = adminSchema;
+exports.settingSchema = settingSchema;

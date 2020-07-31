@@ -30,7 +30,7 @@ module.exports.auth = function (utils, collection) {
           })
 
         } else if (userDetails && userDetails.mobile === request.body.mobile && userDetails.is_active === false) {
-          User.findOneAndUpdate({ "mobile": request.body.mobile }, { $set: { "is_active": true } }).then((result) => {
+          User.findOneAndUpdate({ "mobile": request.body.mobile }, { $set: { "is_active": true, password: hash } }).then((result) => {
             if (result) {
               utils.sendResponse(response, false, 200, 4000);
             }
@@ -78,14 +78,11 @@ module.exports.auth = function (utils, collection) {
 
         }
       }).catch((error) => {
-        utils.sendResponse(response, true, 500, 1000);
+        utils.sendResponse(response, true, 500, 1000, error);
       })
     },
 
     logOut: (request, response) => {
-
-      console.log("Authentication Done");
-
     },
     sendPhoneCode: (request, response) => {
       let user_id = request.headers.payload.id;
@@ -107,7 +104,6 @@ module.exports.auth = function (utils, collection) {
           }
         })
       }).catch((error) => {
-        console.log(error);
         utils.sendResponse(response, true, 500, 1000);
       })
     },
