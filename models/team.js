@@ -1,0 +1,17 @@
+var mongoose = require('mongoose');
+
+var teamSchema = new mongoose.Schema({
+    name: { type: String },
+    designation: { type: String },
+    phone_number: { type: String },
+    image: { type: String },
+    bio: { type: String },
+    order: { type: Number },
+    is_active: { type: Boolean, default: false }
+},
+    {
+        timestamps: true
+    }
+);
+
+exports.team = teamSchema;
