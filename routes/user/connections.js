@@ -2,7 +2,7 @@
 
 exports.connections = function (app, controller, error, auth, middleware) {
 
-    app.route("/user/get-connections").get(auth, function (request, response) {
+    app.route("/user/connections").get(auth, function (request, response) {
         try {
             controller.getConnections(request, response);
         }
@@ -11,7 +11,16 @@ exports.connections = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/add-connection").post(auth, function (request, response) {
+    app.route("/user/connections/block").get(auth, function (request, response) {
+        try {
+            controller.getBlockedConnections(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    })
+
+    app.route("/user/connections").post(auth, function (request, response) {
         try {
             controller.addConnection(request, response);
         }
@@ -20,7 +29,7 @@ exports.connections = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/delete-connection").delete(auth, function (request, response) {
+    app.route("/user/connections").delete(auth, function (request, response) {
         try {
             controller.deleteConnection(request, response);
         }
@@ -29,7 +38,7 @@ exports.connections = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/update-connection").put(auth, function (request, response) {
+    app.route("/user/connections").put(auth, function (request, response) {
         try {
             controller.updateConnections(request, response);
         }
@@ -38,7 +47,7 @@ exports.connections = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/block-connection").patch(auth, function (request, response) {
+    app.route("/user/connections/block").patch(auth, function (request, response) {
         try {
             controller.blockConnection(request, response);
         }
@@ -47,7 +56,7 @@ exports.connections = function (app, controller, error, auth, middleware) {
         }
     })
 
-    app.route("/user/unblock-connection").patch(auth, function (request, response) {
+    app.route("/user/connections/unblock").patch(auth, function (request, response) {
         try {
             controller.unblockBlockConnection(request, response);
         }

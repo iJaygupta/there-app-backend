@@ -11,6 +11,9 @@ const { schedule } = require("./models/schedule");
 const { setting } = require("./models/setting");
 const { message } = require("./models/message");
 const { chatroom } = require("./models/chatroom");
+const { contactus } = require("./models/contactUs");
+const { team } = require("./models/team");
+
 
 const { DATABASE_URL } = process.env;
 
@@ -43,6 +46,8 @@ exports.collection = {
   Schedule: connection.model("schedule", schedule),
   Setting: connection.model("setting", setting),
   Message: connection.model("message", message),
-  Chatroom: connection.model("chatroom", chatroom)
+  Chatroom: connection.model("chatroom", chatroom),
+  ContactUs: connection.model("contactus", contactus),
+  Team: connection.model("team", team),
 
 };

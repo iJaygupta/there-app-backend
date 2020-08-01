@@ -2,7 +2,7 @@
 const axios = require('axios');
 
 module.exports.common = function (utils, collection) {
-  const { Queries, Common } = collection;
+  const { Queries, Common, ContactUs, Team } = collection;
 
   return {
     getLookupData: async (request, response) => {
@@ -66,6 +66,40 @@ module.exports.common = function (utils, collection) {
         utils.sendResponse(response, true, 500, 1000);
       }
     },
+
+    contactUs: async (request, response) => {
+      try {
+        const { email, fullName, phoneNumber, query } = request.body;
+        const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+        if (!emailRegex.test(email)) {
+          let output = "please enter valid email"
+          return utils.sendResponse(response, false, 422, 2000, output);
+        }
+
+        let contactus = new ContactUs({
+          email,
+          fullName,
+          phoneNumber,
+          query
+        });
+        contactus = await contactus.save();
+        utils.sendResponse(response, false, 200, 4075, contactus);
+      }
+      catch (error) {
+        utils.sendResponse(response, true, 500, 1000);
+      }
+    },
+
+    getTeamMember: async (request, response) => {
+      try {
+        let team = await Team.find({});
+        utils.sendResponse(response, false, 200, 4078, team);
+      }
+      catch (error) {
+        utils.sendResponse(response, true, 500, 1000);
+      }
+    }
+
 
   };
 };
