@@ -1,82 +1,88 @@
 
 const resPerPage = process.env.RESPONSE_PER_PAGE || 10;
+
 exports.connections = function (utils, collection) {
+
     const { Connections, User } = collection;
     return {
+        /**
+        * Get List of Connections.
+        *
+        * @param {string}      page
+        * @param {string}      pagination
+        * @param {string}      searchKeyword
+        * @param {string}      is_active
+        * @param {string}      orderBy
+        * @param {string}      sortBy
+        * @param {string}      limit
+        * @param {string}      skip
+        *
+        * @returns {array}
+        */
         getConnections: async function (request, response) {
             try {
-                let user_id = request.headers && request.headers.payload && request.headers.payload.id;
-                let limit, skip, isActive, sortBy, orderBy, page;
-                let populateQuery = { path: "contact_list" };
-                if (request && request.query) {
-                    isActive = request.query.is_active || null;
-                    sortBy = request.query.sortBy || null;
-                    orderBy = request.query.orderBy || null; // 'desc' or 'asc'
-                    page = parseInt(request.query.page) || 1;
-                    searchKeyword = request.query.searchKeyword || null; // search by name
-                }
-                if (!(request.query && request.query.pagination && request.query.page)) {
+                let user_id = request.headers.payload.id;
+                let limit, skip;
+                let isActive = request.query.is_active || null;
+                let sortBy = request.query.sortBy || null;
+                let orderBy = request.query.orderBy || null; // 'desc' or 'asc'
+                let page = parseInt(request.query.page) || 1;
+                let searchKeyword = request.query.searchKeyword || null; // search by name
+
+                let populateQuery = { "path": "contact_list" };
+
+                if (!(request.query.pagination && request.query.page)) {
                     limit = parseInt(request.query.limit) || resPerPage;
                     skip = parseInt(request.query.skip) || 0;
                 } else {
                     limit = resPerPage;
                     skip = (page - 1) * resPerPage
                 }
-                if (isActive) {
-                    isActive = JSON.parse(isActive);
-                    populateQuery['match'] = { 'is_active': isActive }
-                }
+                populateQuery['match'] = {};
+                isActive !== null ? populateQuery['match']['is_active'] = isActive : "";
+                searchKeyword ? populateQuery['match']["name"] = { "$regex": new RegExp(searchKeyword) } : "";
+
                 if (sortBy && (orderBy == 'desc' || orderBy == 'asc')) {
-                    let order = orderBy === 'desc' ? -1 : 1;
                     populateQuery['options'] = {};
                     populateQuery['options']['sort'] = {}
-                    populateQuery['options']['sort'][sortBy] = order;
+                    populateQuery['options']['sort'][sortBy] = (orderBy === 'desc') ? -1 : 1;
                 }
-
-                await Connections.find({ user_id: user_id }).populate(populateQuery).exec((err, data) => {
-                    let res = [];
-                    data.map((elem, i) => {
-                        let result = {}
-                        result['totalRecords'] = elem.contact_list.length;
-                        result.contact_list = elem.contact_list.splice(skip, limit);
-                        result['totalResults'] = result.contact_list.length;
-                        if (searchKeyword) {
-                            let a = [];
-                            result.contact_list.map(el => {
-                                if (el['name'].indexOf(searchKeyword) != -1) a.push(el);
-                            });
-                            result.contact_list = a;
+                let connectionResult = await Connections.find({ user_id: user_id }).populate(populateQuery).exec();
+                if (connectionResult.length) {
+                    connectionResult = connectionResult[0];
+                    let result = {}
+                    result['totalRecords'] = connectionResult.contact_list.length;
+                    result.contact_list = connectionResult.contact_list.splice(skip, limit);
+                    result['totalResults'] = result.contact_list.length;
+                    if (request.query.pagination && request.query.page) {
+                        result["pagination"] = {
+                            "totalRecords": result['totalRecords'],
+                            "totalPages": Math.ceil(result['totalRecords'] / resPerPage),
+                            "currentPage": page,
+                            "resPerPage": resPerPage,
+                            "hasPrevPage": page > 1,
+                            "hasNextPage": page < Math.ceil(result['totalRecords'] / resPerPage),
+                            "previousPage": page > 1 ? page - 1 : null,
+                            "nextPage": page < Math.ceil(result['totalRecords'] / resPerPage) ? page + 1 : null
                         }
-                        if (request.query.pagination && request.query.page) {
-                            result["pagination"] = {
-                                "totalRecords": result['totalRecords'],
-                                "totalPages": Math.ceil(result['totalRecords'] / resPerPage),
-                                "currentPage": page,
-                                "resPerPage": resPerPage,
-                                "hasPrevPage": page > 1,
-                                "hasNextPage": page < Math.ceil(result['totalRecords'] / resPerPage),
-                                "previousPage": page > 1 ? page - 1 : null,
-                                "nextPage": page < Math.ceil(result['totalRecords'] / resPerPage) ? page + 1 : null
-                            }
-                        } else {
-                            result["pagination"] = false;
-                            if (request.query.limit) {
-                                result["limit"] = limit
-                            }
-                            if (request.query.skip) {
-                                result["skip"] = skip
-                            }
+                    } else {
+                        result["pagination"] = false;
+                        if (request.query.limit) {
+                            result["limit"] = limit
                         }
-                        res.push(result);
-                    });
-                    utils.sendResponse(response, false, 200, 4028, res);
-                });
+                        if (request.query.skip) {
+                            result["skip"] = skip
+                        }
+                    }
+                    utils.sendResponse(response, false, 200, 4028, [result]);
+                } else {
+                    return utils.sendResponse(response, false, 422, 5000);
+                }
             }
             catch (error) {
                 utils.sendResponse(response, true, 500, 1000);
             }
         },
-
         getBlockedConnections: async function (request, response) {
             try {
                 let user_id = request.headers && request.headers.payload && request.headers.payload.id;
