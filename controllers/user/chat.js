@@ -77,19 +77,11 @@ module.exports.chat = function (utils, collection) {
             try {
               let user_id = request.headers.payload.id;
             let param = {
-<<<<<<< HEAD
               user_id,
             };
             let chatroomIds = [];
             let chatroom = await Chatroom.updateOne(param , { $push: { "chatroom_Id": chatroomIds} }, { "upsert": true })
             utils.sendResponse(response, false, 200, 4072, chatroom);
-=======
-              user_id: user_Id
-            };
-            let chatroomIds = [];
-            let chatroom = await Chatroom.updateOne(param , { $push: { "chatroom_Id": chatroomIds} }, { "upsert": true })
-            utils.sendResponse(response, false, 200, 4050, chatroom);
->>>>>>> d777a799ab05f6e9a90a3365cf71d5838d7120c1
             } catch (error) {
               utils.sendResponse(response, true, 500, 1000);
             }
