@@ -13,7 +13,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                         try {
                             res.should.have.status(200);
                             res.body.should.have.property('error', false);
-                           
+
                             done();
 
                         } catch (error) {
@@ -128,7 +128,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .send(models.chat.chatRoomUpdate2.data)
                     .end(function (err, res) {
                         try {
-                            res.should.have.status(500);
+                            res.should.have.status(400);
                             res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
@@ -191,176 +191,176 @@ module.exports = function (appUrl, chai, should, assert, models) {
             }
         },
 
-       {
-        description: "Get-Msg Case-1 Chat-User-Controller",
-        callback: function (done) {
+        {
+            description: "Get-Msg Case-1 Chat-User-Controller",
+            callback: function (done) {
 
-            chai.request(appUrl)
-                .get('user/message')
-                .set('Authorization', process.env.token)
-                .end(function (err, res) {
-                    try {
-                        res.should.have.status(200);
-                        res.body.should.have.property('error', false);
-                       
-                        done();
+                chai.request(appUrl)
+                    .get('user/message')
+                    .set('Authorization', process.env.token)
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(200);
+                            res.body.should.have.property('error', false);
 
-                    } catch (error) {
-                        done(error);
-                    }
-                });
+                            done();
+
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+
+        {
+            description: "Get-Msg Case-2 Chat-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .get('user/message')
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(401);
+                            res.body.should.have.property('error', true);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+
+        {
+            description: "Add-Msg Case-1 Chat-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .post('user/message')
+                    .set('Authorization', process.env.token)
+                    .send(models.chat.addMsg1.data)
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(200);
+                            res.body.should.have.property('error', false);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+
+
+        {
+            description: "Add-Msg Case-2 Chat-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .post('user/message')
+                    .send(models.chat.addMsg1.data)
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(401);
+                            res.body.should.have.property('error', true);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+
+        {
+            description: "Update-Msg Case-1 Chat-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .put('user/message/5f1ab8b944fa4e12acf4479b')
+                    .set('Authorization', process.env.token)
+                    .send(models.chat.MsgUpdate1.data)
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(200);
+                            res.body.should.have.property('error', false);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+        {
+            description: "Update-Msg Case-2 Chat-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .put('user/message/5f1ab8b944fa4e12acf4479b')
+                    .set('Authorization', process.env.token)
+                    .send(models.chat.MsgUpdate2.data)
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(400);
+                            res.body.should.have.property('error', true);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+        {
+            description: "Update-Msg Case-3 Chat-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .put('user/message/5f1ab8b944fa4e12acf4479b')
+                    .send(models.chat.MsgUpdate1.data)
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(401);
+                            res.body.should.have.property('error', true);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+        {
+            description: "Delete-Msg Case-1 Chat-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .delete('user/message/5f1ab8e144fa4e12acf4479c')
+                    .set('Authorization', process.env.token)
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(200);
+                            res.body.should.have.property('error', false);
+                            done();
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+        {
+            description: "Delete-Msg Case-2 Chat-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .delete('user/message/5f1ab8e144fa4e12acf4479c')
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(401);
+                            res.body.should.have.property('error', true);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
         }
-    },
-
-    {
-        description: "Get-Msg Case-2 Chat-User-Controller",
-        callback: function (done) {
-
-            chai.request(appUrl)
-                .get('user/message')
-                .end(function (err, res) {
-                    try {
-                        res.should.have.status(401);
-                        res.body.should.have.property('error', true);
-                        done();
-                    } catch (error) {
-                        done(error);
-                    }
-                });
-        }
-    },
-
-    {
-        description: "Add-Msg Case-1 Chat-User-Controller",
-        callback: function (done) {
-
-            chai.request(appUrl)
-                .post('user/message')
-                .set('Authorization', process.env.token)
-                .send(models.chat.addMsg1.data)
-                .end(function (err, res) {
-                    try {
-                        res.should.have.status(200);
-                        res.body.should.have.property('error', false);
-                        done();
-                    } catch (error) {
-                        done(error);
-                    }
-                });
-        }
-    },
-    
-
-    {
-        description: "Add-Msg Case-2 Chat-User-Controller",
-        callback: function (done) {
-
-            chai.request(appUrl)
-                .post('user/message')
-                .send(models.chat.addMsg1.data)
-                .end(function (err, res) {
-                    try {
-                        res.should.have.status(401);
-                        res.body.should.have.property('error', true);
-                        done();
-                    } catch (error) {
-                        done(error);
-                    }
-                });
-        }
-    },
-
-    {
-        description: "Update-Msg Case-1 Chat-User-Controller",
-        callback: function (done) {
-
-            chai.request(appUrl)
-                .put('user/message/5f1ab8b944fa4e12acf4479b')
-                .set('Authorization', process.env.token)
-                .send(models.chat.MsgUpdate1.data)
-                .end(function (err, res) {
-                    try {
-                        res.should.have.status(200);
-                        res.body.should.have.property('error', false);
-                        done();
-                    } catch (error) {
-                        done(error);
-                    }
-                });
-        }
-    },
-    {
-        description: "Update-Msg Case-2 Chat-User-Controller",
-        callback: function (done) {
-
-            chai.request(appUrl)
-                .put('user/message/5f1ab8b944fa4e12acf4479b')
-                .set('Authorization', process.env.token)
-                .send(models.chat. MsgUpdate2.data)
-                .end(function (err, res) {
-                    try {
-                        res.should.have.status(500);
-                        res.body.should.have.property('error', true);
-                        done();
-                    } catch (error) {
-                        done(error);
-                    }
-                });
-        }
-    },
-    {
-        description: "Update-Msg Case-3 Chat-User-Controller",
-        callback: function (done) {
-
-            chai.request(appUrl)
-                .put('user/message/5f1ab8b944fa4e12acf4479b')
-                .send(models.chat.MsgUpdate1.data)
-                .end(function (err, res) {
-                    try {
-                        res.should.have.status(401);
-                        res.body.should.have.property('error', true);
-                        done();
-                    } catch (error) {
-                        done(error);
-                    }
-                });
-        }
-    },
-    {
-        description: "Delete-Msg Case-1 Chat-User-Controller",
-        callback: function (done) {
-
-            chai.request(appUrl)
-                .delete('user/message/5f1ab8e144fa4e12acf4479c')
-                .set('Authorization', process.env.token)
-                .end(function (err, res) {
-                    try {
-                        res.should.have.status(200);
-                        res.body.should.have.property('error', false);
-                        done();
-                        done();
-                    } catch (error) {
-                        done(error);
-                    }
-                });
-        }
-    },
-    {
-        description: "Delete-Msg Case-2 Chat-User-Controller",
-        callback: function (done) {
-
-            chai.request(appUrl)
-                .delete('user/message/5f1ab8e144fa4e12acf4479c')
-                .end(function (err, res) {
-                    try {
-                        res.should.have.status(401);
-                        res.body.should.have.property('error', true);
-                        done();
-                    } catch (error) {
-                        done(error);
-                    }
-                });
-        }
-    }
     ];
 }

@@ -1,4 +1,4 @@
- 
+
 
 
 module.exports = function (appUrl, chai, should, assert, models) {
@@ -14,7 +14,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                         try {
                             res.should.have.status(200);
                             res.body.should.have.property('error', false);
-                           
+
                             done();
                         } catch (error) {
                             done(error);
@@ -49,11 +49,13 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .send(models.schedule.addSchedule1.data)
                     .end(function (err, res) {
                         try {
+                            //conosle.log("+ ", res.body, " +");
                             res.should.have.status(200);
                             res.body.should.have.property('error', false);
+
                             done();
                         } catch (error) {
-                            done(error);
+                            done
                         }
                     });
             }
@@ -95,7 +97,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     });
             }
         },
-        
+
         {
             description: "Update-Schedule Case-1 Schedule-User-Controller",
             callback: function (done) {
@@ -125,7 +127,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .send(models.schedule.scheduleUpdate2.data)
                     .end(function (err, res) {
                         try {
-                            res.should.have.status(500);
+                            res.should.have.status(400);
                             res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
@@ -189,5 +191,3 @@ module.exports = function (appUrl, chai, should, assert, models) {
         }
     ];
 };
-
-
