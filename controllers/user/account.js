@@ -7,27 +7,28 @@ module.exports.account = function (utils, collection) {
     const { User } = collection;
 
     return {
-
-        getUserAccountDetails: (request, response) => {
-            let userId = request.headers.payload.id;
-            User.findById({ _id: userId }).then((userData) => {
+        getUserAccountDetails: async (request, response) => {
+            try {
+                let userId = request.headers.payload.id;
+                let userData = await User.findById({ _id: userId });
                 utils.sendResponse(response, false, 200, 4008, userData);
-            }).catch((error) => {
+            }
+            catch (error) {
                 utils.sendResponse(response, true, 500, 1000);
-            })
+            }
         },
-      
-        updateUserAccountDetails: (request, response) => {
-            let userId = request.headers.payload.id;
-            const options = {new: true};
-            User.updateOne({ _id: userId }, { $set: request.body }, options).then((success) => {
+        updateUserAccountDetails: async (request, response) => {
+            try {
+                let userId = request.headers.payload.id;
+                const options = { new: true };
+                await User.updateOne({ _id: userId }, { $set: request.body }, options);
                 utils.sendResponse(response, false, 200, 4023);
-            }).catch((error) => {
+            }
+            catch (error) {
                 utils.sendResponse(response, true, 500, 1000);
-            }) 
+            }
         },
         updateUserPassword: (request, response) => {
-
             let userId = request.headers.payload.id;
             let oldPassword = request.body.oldPassword;
             let password = request.body.password;

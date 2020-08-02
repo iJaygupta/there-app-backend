@@ -45,52 +45,59 @@ module.exports.schedule = function (utils, collection) {
         utils.sendResponse(response, true, 500, 1000);
       }
     },
-    addUserSchedule: (request, response) => {
-      let user_id = request.headers.payload.id;
-      request.body.user_id = user_id;
-      Schedule.insertMany(request.body)
-        .then((data) => {
-          utils.sendResponse(response, false, 200, 4044, data);
-        })
-        .catch((error) => {
-          utils.sendResponse(response, true, 500, 1000);
+    addUserSchedule: async (request, response) => {
+      try {
+        let user_id = request.headers.payload.id;
+        request.body.user_id = user_id;
+        let scheduleData = new Schedule({
+          user_id,
+          ...request.body
         });
-    },
-    updateUserSchedule: (request, response) => {
-      let validate = utils.validateMongoId(request.params.scheduleId);
-      if (!validate) {
-        return utils.sendResponse(response, true, 422, "MONGONODE422");
+        scheduleData = await scheduleData.save();
+        utils.sendResponse(response, false, 200, 4044, scheduleData);
       }
-      Schedule.findOneAndUpdate(
-        { _id: request.params.scheduleId },
-        { $set: request.body },
-        { new: true }
-      )
-        .then((data) => {
-          if (data == null) {
-            return utils.sendResponse(response, false, 422, 5000);
-          }
-          utils.sendResponse(response, false, 200, 4045, data);
-        })
-        .catch((error) => {
-          utils.sendResponse(response, true, 500, 1000);
-        });
-    },
-    deleteUserSchedule: (request, response) => {
-      let validate = utils.validateMongoId(request.params.scheduleId);
-      if (!validate) {
-        return utils.sendResponse(response, true, 422, "MONGONODE422");
+      catch (error) {
+        utils.sendResponse(response, true, 500, 1000);
       }
-      Schedule.findOneAndDelete({ _id: request.params.scheduleId })
-        .then((data) => {
-          if (data == null) {
-            return utils.sendResponse(response, false, 422, 5000);
-          }
-          utils.sendResponse(response, false, 200, 4046, data);
-        })
-        .catch((error) => {
-          utils.sendResponse(response, true, 500, 1000);
-        });
     },
+
+    updateUserSchedule: async (request, response) => {
+      try {
+        let validate = utils.validateMongoId(request.params.scheduleId);
+        if (!validate) {
+          return utils.sendResponse(response, true, 422, "MONGONODE422");
+        }
+        let scheduleData = await Schedule.findOneAndUpdate(
+          { _id: request.params.scheduleId },
+          { $set: request.body },
+          { new: true }
+        );
+        if (scheduleData == null) {
+          return utils.sendResponse(response, false, 422, 5000);
+        }
+        utils.sendResponse(response, false, 200, 4045, scheduleData);
+      }
+      catch (error) {
+        utils.sendResponse(response, true, 500, 1000);
+      }
+    },
+
+    deleteUserSchedule: async (request, response) => {
+      try {
+        let validate = utils.validateMongoId(request.params.scheduleId);
+        if (!validate) {
+          return utils.sendResponse(response, true, 422, "MONGONODE422");
+        }
+        let scheduleData = await Schedule.findOneAndDelete({ _id: request.params.scheduleId });
+        if (scheduleData == null) {
+          return utils.sendResponse(response, false, 422, 5000);
+        }
+        utils.sendResponse(response, false, 200, 4046, scheduleData);
+      }
+      catch (error) {
+        utils.sendResponse(response, true, 500, 1000);
+      }
+    },
+
   };
 };
