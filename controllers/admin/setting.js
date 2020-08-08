@@ -53,7 +53,6 @@ module.exports.setting = function (utils, collection) {
         }
         utils.sendResponse(response, false, 200, 4063, setting);
       } catch (error) {
-        console.log(error)
         utils.sendResponse(response, true, 500, 1000);
       }
     },

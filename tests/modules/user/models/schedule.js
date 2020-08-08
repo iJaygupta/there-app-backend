@@ -4,25 +4,17 @@
 module.exports = function (appUrl, chai, should, assert, models) {
     return [
         {
-            description: "Get-User-Account-Details Case-1 Account-User-Controller",
+            description: "Get-User-Schedule Case-1 Schedule-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .get('user/account')
+                    .get('user/schedule')
                     .set('Authorization', process.env.token)
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
                             res.body.should.have.property('error', false);
-                            res.body.should.have.property('data')
-                            res.body.data.should.have.property('is_email_verified')
-                            res.body.data.should.have.property('is_phone_verified')
-                            res.body.data.should.have.property('role')
-                            res.body.data.should.have.property('is_active')
-                            res.body.data.should.have.property('_id')
-                            res.body.data.should.have.property('email')
-                            res.body.data.should.have.property('mobile')
-                            res.body.data.should.have.property('registered_on')
+
                             done();
                         } catch (error) {
                             done(error);
@@ -31,11 +23,11 @@ module.exports = function (appUrl, chai, should, assert, models) {
             }
         },
         {
-            description: "Get-User-Account-Details Case-2 Account-User-Controller",
+            description: "Get-User-Schedule Case-2 Schedule-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .get('user/account')
+                    .get('user/schedule')
                     .end(function (err, res) {
                         try {
                             res.should.have.status(401);
@@ -48,13 +40,34 @@ module.exports = function (appUrl, chai, should, assert, models) {
             }
         },
         {
-            description: "Update-User-Account-Details Case-1 Account-User-Controller",
+            description: "Add-User-Schedule Case-1 Schedule-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .put('user/account')
+                    .post('user/schedule')
                     .set('Authorization', process.env.token)
-                    .send(models.account.accountDetailUpdate1.data)
+                    .send(models.schedule.addSchedule1.data)
+                    .end(function (err, res) {
+                        try {
+                            //conosle.log("+ ", res.body, " +");
+                            res.should.have.status(200);
+                            res.body.should.have.property('error', false);
+
+                            done();
+                        } catch (error) {
+                            done
+                        }
+                    });
+            }
+        },
+        {
+            description: "Add-User-Schedule Case-2 Schedule-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .post('user/schedule')
+                    .set('Authorization', process.env.token)
+                    .send(models.schedule.addSchedule2.data)
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
@@ -67,12 +80,12 @@ module.exports = function (appUrl, chai, should, assert, models) {
             }
         },
         {
-            description: "Update-User-Account-Details Case-2 Account-User-Controller",
+            description: "Add-User-Schedule Case-3 Schedule-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .put('user/account')
-                    .send(models.account.accountDetailUpdate1.data)
+                    .post('user/schedule')
+                    .send(models.schedule.addSchedule2.data)
                     .end(function (err, res) {
                         try {
                             res.should.have.status(401);
@@ -84,33 +97,15 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     });
             }
         },
+
         {
-            description: "Update-User-Account-Details Case-3 Account-User-Controller",
+            description: "Update-Schedule Case-1 Schedule-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .put('user/account')
+                    .put('user/schedule/5f0a0332042a7028fce89a57')
                     .set('Authorization', process.env.token)
-                    .send(models.account.accountDetailUpdate2.data)
-                    .end(function (err, res) {
-                        try {
-                            res.should.have.status(400);
-                            res.body.should.have.property('error', true);
-                            done();
-                        } catch (error) {
-                            done(error);
-                        }
-                    });
-            }
-        },
-        {
-            description: "Change-User-Password-Details Case-1 Account-User-Controller",
-            callback: function (done) {
-
-                chai.request(appUrl)
-                    .put('user/change-password')
-                    .set('Authorization', process.env.token)
-                    .send(models.account.updatePassword1.data)
+                    .send(models.schedule.scheduleUpdate1.data)
                     .end(function (err, res) {
                         try {
                             res.should.have.status(200);
@@ -123,12 +118,31 @@ module.exports = function (appUrl, chai, should, assert, models) {
             }
         },
         {
-            description: "Change-User-Password-Details Case-2 Account-User-Controller",
+            description: "Update-Schedule Case-2 Schedule-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .put('user/change-password')
-                    .send(models.account.updatePassword1.data)
+                    .put('user/schedule/5f0a0332042a7028fce89a57')
+                    .set('Authorization', process.env.token)
+                    .send(models.schedule.scheduleUpdate2.data)
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(400);
+                            res.body.should.have.property('error', true);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+        {
+            description: "Update-Schedule Case-3 Schedule-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .put('user/schedule/5f0a0332042a7028fce89a57')
+                    .send(models.schedule.scheduleUpdate1.data)
                     .end(function (err, res) {
                         try {
                             res.should.have.status(401);
@@ -141,17 +155,16 @@ module.exports = function (appUrl, chai, should, assert, models) {
             }
         },
         {
-            description: "Change-User-Password-Details Case-3 Account-User-Controller",
+            description: "Delete-Schedule Case-1 Schedule-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .put('user/change-password')
+                    .delete('user/schedule/5f0a059e042a7028fce89a5c')
                     .set('Authorization', process.env.token)
-                    .send(models.account.updatePassword2.data)
                     .end(function (err, res) {
                         try {
-                            res.should.have.status(400);
-                            res.body.should.have.property('error', true);
+                            res.should.have.status(200);
+                            res.body.should.have.property('error', false);
                             done();
                         } catch (error) {
                             done(error);
@@ -160,16 +173,14 @@ module.exports = function (appUrl, chai, should, assert, models) {
             }
         },
         {
-            description: "Change-User-Password-Details Case-4 Account-User-Controller",
+            description: "Delete-Schedule Case-2 Schedule-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .put('user/change-password')
-                    .set('Authorization', process.env.token)
-                    .send(models.account.updatePassword3.data)
+                    .delete('user/schedule/5f0a059e042a7028fce89a5c')
                     .end(function (err, res) {
                         try {
-                            res.should.have.status(400);
+                            res.should.have.status(401);
                             res.body.should.have.property('error', true);
                             done();
                         } catch (error) {
@@ -177,6 +188,6 @@ module.exports = function (appUrl, chai, should, assert, models) {
                         }
                     });
             }
-        },
+        }
     ];
 };

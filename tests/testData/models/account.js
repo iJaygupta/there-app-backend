@@ -1,22 +1,17 @@
-const { TEST_USER_PASSWORD, TEST_USER_NEW_PASSWORD, TEST_USER_EMAIL, TEST_USER_NAME } = process.env
+const { TEST_USER_PASSWORD, TEST_USER_NEW_PASSWORD, TEST_USER_EMAIL, TEST_USER_NAME } = require("../testConfig");
 
 module.exports = {
 
-    accountDetail1: {
+    accountDetailUpdate1: {
         data: {
+            "name": TEST_USER_NAME,
             "email": TEST_USER_EMAIL
         }
     },
-    accountDetail2: {
-        data: []
-    },
-    accountDetailUpdate1: {
-        data: {
-            "name": TEST_USER_NAME
-        }
-    },
     accountDetailUpdate2: {
-        data: []
+        data: {
+            "wrong": "invalid",
+        }
     },
     updatePassword1: {
         data: {

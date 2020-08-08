@@ -67,7 +67,6 @@ module.exports.account = function (utils, collection) {
               utils.sendResponse(response, false, 200, 5000);
             }
           }).catch(error => {
-            console.log(error)
             return error
           })
 
