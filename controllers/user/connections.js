@@ -1,12 +1,155 @@
 
+const resPerPage = process.env.RESPONSE_PER_PAGE || 10;
+
 exports.connections = function (utils, collection) {
+
     const { Connections, User } = collection;
     return {
-        getConnections: async (request, response) => {
+        /**
+        * Get List of Connections.
+        *
+        * @param {string}      page
+        * @param {string}      pagination
+        * @param {string}      searchKeyword search by name
+        * @param {string}      is_active
+        * @param {string}      orderBy 'desc' or 'asc'
+        * @param {string}      sortBy
+        * @param {string}      limit
+        * @param {string}      skip
+        *
+        * @returns {array}
+        */
+        getConnections: async function (request, response) {
             try {
                 let user_id = request.headers.payload.id;
-                let connection = await Connections.find({ user_id: user_id }).populate("contact_list").populate("blocked_list").exec();
-                utils.sendResponse(response, false, 200, 4028, connection);
+                let limit, skip;
+                let { isActive, sortBy, orderBy, searchKeyword } = request.query;
+                let page = parseInt(request.query.page) || 1;
+
+                let populateQuery = { "path": "contact_list" };
+
+                if (!(request.query.pagination && request.query.page)) {
+                    limit = parseInt(request.query.limit) || resPerPage;
+                    skip = parseInt(request.query.skip) || 0;
+                } else {
+                    limit = resPerPage;
+                    skip = (page - 1) * resPerPage
+                }
+                populateQuery['match'] = {};
+                isActive !== undefined ? populateQuery['match']['is_active'] = isActive : "";
+                searchKeyword ? populateQuery['match']["name"] = { "$regex": new RegExp(searchKeyword) } : "";
+
+                if (sortBy && (orderBy == 'desc' || orderBy == 'asc')) {
+                    populateQuery['options'] = {};
+                    populateQuery['options']['sort'] = {}
+                    populateQuery['options']['sort'][sortBy] = (orderBy === 'desc') ? -1 : 1;
+                }
+                let connectionResult = await Connections.find({ user_id: user_id }).populate(populateQuery).exec();
+                if (connectionResult.length) {
+                    connectionResult = connectionResult[0];
+                    let result = {}
+                    result['totalRecords'] = connectionResult.contact_list.length;
+                    result.contact_list = connectionResult.contact_list.splice(skip, limit);
+                    result['totalResults'] = result.contact_list.length;
+                    if (request.query.pagination && request.query.page) {
+                        result["pagination"] = {
+                            "totalRecords": result['totalRecords'],
+                            "totalPages": Math.ceil(result['totalRecords'] / resPerPage),
+                            "currentPage": page,
+                            "resPerPage": resPerPage,
+                            "hasPrevPage": page > 1,
+                            "hasNextPage": page < Math.ceil(result['totalRecords'] / resPerPage),
+                            "previousPage": page > 1 ? page - 1 : null,
+                            "nextPage": page < Math.ceil(result['totalRecords'] / resPerPage) ? page + 1 : null
+                        }
+                    } else {
+                        result["pagination"] = false;
+                        if (request.query.limit) {
+                            result["limit"] = limit
+                        }
+                        if (request.query.skip) {
+                            result["skip"] = skip
+                        }
+                    }
+                    utils.sendResponse(response, false, 200, 4028, [result]);
+                } else {
+                    return utils.sendResponse(response, false, 422, 5000);
+                }
+            }
+            catch (error) {
+                utils.sendResponse(response, true, 500, 1000);
+            }
+        },
+        /**
+        * Get List of Blocked Connections.
+        *
+        * @param {string}      page
+        * @param {string}      pagination
+        * @param {string}      searchKeyword  search by name
+        * @param {string}      is_active
+        * @param {string}      orderBy
+        * @param {string}      sortBy
+        * @param {string}      limit
+        * @param {string}      skip
+        *
+        * @returns {array}
+        */
+        getBlockedConnections: async function (request, response) {
+            try {
+                let user_id = request.headers.payload.id;
+                let limit, skip;
+                let { isActive, sortBy, orderBy, searchKeyword } = request.query;
+                let page = parseInt(request.query.page) || 1;
+
+                let populateQuery = { "path": "blocked_list" };
+
+                if (!(request.query.pagination && request.query.page)) {
+                    limit = parseInt(request.query.limit) || resPerPage;
+                    skip = parseInt(request.query.skip) || 0;
+                } else {
+                    limit = resPerPage;
+                    skip = (page - 1) * resPerPage
+                }
+                populateQuery['match'] = {};
+                isActive !== undefined ? populateQuery['match']['is_active'] = isActive : "";
+                searchKeyword ? populateQuery['match']["name"] = { "$regex": new RegExp(searchKeyword) } : "";
+
+                if (sortBy && (orderBy == 'desc' || orderBy == 'asc')) {
+                    populateQuery['options'] = {};
+                    populateQuery['options']['sort'] = {}
+                    populateQuery['options']['sort'][sortBy] = (orderBy === 'desc') ? -1 : 1;
+                }
+                let connectionResult = await Connections.find({ user_id: user_id }).populate(populateQuery).exec();
+                if (connectionResult.length) {
+                    connectionResult = connectionResult[0];
+                    let result = {}
+                    result['totalRecords'] = connectionResult.blocked_list.length;
+                    result.blocked_list = connectionResult.blocked_list.splice(skip, limit);
+                    result['totalResults'] = result.blocked_list.length;
+                    if (request.query.pagination && request.query.page) {
+                        result["pagination"] = {
+                            "totalRecords": result['totalRecords'],
+                            "totalPages": Math.ceil(result['totalRecords'] / resPerPage),
+                            "currentPage": page,
+                            "resPerPage": resPerPage,
+                            "hasPrevPage": page > 1,
+                            "hasNextPage": page < Math.ceil(result['totalRecords'] / resPerPage),
+                            "previousPage": page > 1 ? page - 1 : null,
+                            "nextPage": page < Math.ceil(result['totalRecords'] / resPerPage) ? page + 1 : null
+                        }
+                    } else {
+                        result["pagination"] = false;
+                        if (request.query.limit) {
+                            result["limit"] = limit
+                        }
+                        if (request.query.skip) {
+                            result["skip"] = skip
+                        }
+                    }
+                    utils.sendResponse(response, false, 200, 4028, [result]);
+                } else {
+                    return utils.sendResponse(response, false, 422, 5000);
+                }
             }
             catch (error) {
                 utils.sendResponse(response, true, 500, 1000);
@@ -40,10 +183,11 @@ exports.connections = function (utils, collection) {
         prepareQueryForUpdateUserConnections: function (connections) {
             let bulkWriteConnectionQuery = [];
             bulkWriteConnectionQuery = connections.map((el, index) => {
+                el['is_active'] = false;
                 return {
                     updateOne: {
                         "filter": { mobile: el.mobile },
-                        "update": { $set: el },
+                        "update": { $setOnInsert: el },
                         "upsert": true
                     }
                 }
@@ -145,7 +289,7 @@ exports.connections = function (utils, collection) {
                             let res = {
                                 "blocked_connections": validConnections
                             }
-                            if (invalidConnections.length > 0) res["not_found"] = invalidConnections;
+                            if (invalidConnections.length) res["not_found"] = invalidConnections;
                             utils.sendResponse(response, false, 200, 4073, res);
                         } else utils.sendResponse(response, true, 500, 1000);
                     } else {
