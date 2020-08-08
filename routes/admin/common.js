@@ -24,7 +24,6 @@ module.exports.common = function (app, controller, error, auth, middleware, sche
             controller.addTeamMember(request, response);
         }
         catch (err) {
-            console.log(err);
             error(err, response);
         }
     })

@@ -198,7 +198,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                             res.should.have.status(401);
                             res.body.should.have.property('error', true);
                             res.body.should.have.property('msg');
-                            
+
                             done();
 
                         } catch (error) {

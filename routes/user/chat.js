@@ -67,5 +67,5 @@ module.exports.chat = function (app, controller, error, auth, middleware, schema
     }
   });
 
-  
+
 }

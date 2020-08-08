@@ -48,62 +48,6 @@ module.exports = function (appUrl, chai, should, assert, models) {
             }
         },
         {
-            description: "Add-User-Account-Details Case-1 Account-User-Controller",
-            callback: function (done) {
-
-                chai.request(appUrl)
-                    .post('user/account')
-                    .set('Authorization', process.env.token)
-                    .send(models.account.accountDetail1.data)
-                    .end(function (err, res) {
-                        try {
-                            res.should.have.status(200);
-                            res.body.should.have.property('error', false);
-                            done();
-                        } catch (error) {
-                            done(error);
-                        }
-                    });
-            }
-        },
-        {
-            description: "Add-User-Account-Details Case-2 Account-User-Controller",
-            callback: function (done) {
-
-                chai.request(appUrl)
-                    .post('user/account')
-                    .send(models.account.accountDetail1.data)
-                    .end(function (err, res) {
-                        try {
-                            res.should.have.status(401);
-                            res.body.should.have.property('error', true);
-                            done();
-                        } catch (error) {
-                            done(error);
-                        }
-                    });
-            }
-        },
-        {
-            description: "Add-User-Account-Details Case-3 Account-User-Controller",
-            callback: function (done) {
-
-                chai.request(appUrl)
-                    .post('user/account')
-                    .set('Authorization', process.env.token)
-                    .send(models.account.accountDetail2.data)
-                    .end(function (err, res) {
-                        try {
-                            res.should.have.status(400);
-                            res.body.should.have.property('error', true);
-                            done();
-                        } catch (error) {
-                            done(error);
-                        }
-                    });
-            }
-        },
-        {
             description: "Update-User-Account-Details Case-1 Account-User-Controller",
             callback: function (done) {
 
@@ -158,7 +102,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
                         }
                     });
             }
-        }, 
+        },
         {
             description: "Change-User-Password-Details Case-1 Account-User-Controller",
             callback: function (done) {

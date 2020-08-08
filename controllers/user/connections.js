@@ -239,7 +239,6 @@ exports.connections = function (utils, collection) {
                 }
 
             } catch (err) {
-                console.log(err)
                 utils.sendResponse(response, true, 500, 1000, err);
             }
         },
