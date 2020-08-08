@@ -27,7 +27,7 @@ module.exports.auth = function (app, controller, error, auth, middleware, schema
         }
     })
 
-    app.route("/user/forgot-password").post(function (request, response) {
+    app.route("/user/forgot-password").post(middleware.validateAjv(schema.auth.forgotPassword), function (request, response) {
         try {
             controller.forgotPassword(request, response);
         }
@@ -85,6 +85,15 @@ module.exports.auth = function (app, controller, error, auth, middleware, schema
     app.route("/api/v2/user/register").post(middleware.validateAjv(schema.auth.register), function (request, response) {
         try {
             controller.register(request, response);
+        }
+        catch (err) {
+            error(err, response)
+        }
+    })
+    
+    app.route("/api/v2/refresh-token").post(function (request, response) {
+        try {
+            controller.refreshToken(request, response);
         }
         catch (err) {
             error(err, response)

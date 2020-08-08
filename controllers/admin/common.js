@@ -37,7 +37,6 @@ module.exports.common = function (utils, collection) {
                 utils.sendResponse(response, false, 200, 4077, team);
             }
             catch (error) {
-                console.log(error);
                 utils.sendResponse(response, true, 500, 1000);
             }
 

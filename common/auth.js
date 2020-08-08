@@ -1,12 +1,14 @@
 const random = require("randomstring");
 const emailTemplate = require("../lib/templates");
-const moment = require("moment")
+const moment = require("moment");
+const elasticHandler = require("../lib/elasticSearch");
 
 
-exports.putOTPIntoCollection = function (user_id, id, otp, dateTime, type, Session) {
+
+exports.putOTPIntoCollection = function (user_id, id, otp, dateTime, type, Otp) {
     return new Promise((resolve, reject) => {
         let params = (type == "email") ? { user_id: user_id, email: id, email_otp: otp, email_otp_datetime: dateTime } : { user_id: user_id, mobile: id, mobile_otp: otp, mobile_otp_datetime: dateTime };
-        Session.insertMany(params).then((data) => {
+        Otp.insertMany(params).then((data) => {
             resolve(data)
         }).catch((err) => {
             reject(err);
@@ -36,11 +38,11 @@ exports.generateOTP = function (type) {
     return (type == "phone" ? Math.floor(100000 + Math.random() * 900000) : random.generate(6));
 }
 
-exports.getUserOTP = function (user_id, id, type, Session) {
+exports.getUserOTP = function (user_id, id, type, Otp) {
     return new Promise((resolve, reject) => {
         let params = (type == "phone") ? { user_id: user_id, mobile: id } : { user_id: user_id, email: id };
         let sortKey = (type == "phone") ? { mobile_otp_datetime: -1 } : { email_otp_datetime: -1 }
-        Session.find(params).sort(sortKey).limit(1).then((data) => {
+        Otp.find(params).sort(sortKey).limit(1).then((data) => {
             resolve(data);
         }).catch((error) => {
             reject(error);
@@ -75,3 +77,31 @@ const calculateTimeDiff = (lastOTPSentTime) => {
     return duration.asMinutes();
 }
 
+
+exports.addUserDocument = function (userDetails) {
+
+    if (userDetails && userDetails._id) {
+        let userDocument = { 
+            "user_id": userDetails._id,
+            "email": userDetails.email,
+            "mobile": userDetails.mobile,
+            "registered_on": userDetails.registered_on,
+            "user_name": userDetails.name,
+            "roleId": userDetails.roleId,
+            "status": {},
+            "status_visible_to": [],
+            "availability": {},
+            "availability_visible_to": [],
+            "profile_pic":  userDetails.profilePic,
+            "alternate_names": [],
+            "bio": userDetails.bio
+        }
+
+        elasticHandler.addDocument(String(userDetails._id), process.env.ELASTIC_USER_INDEX, process.env.ELASTIC_USER_DOC_TYPE, userDocument)
+            .then((data) => {
+            }).catch((error) => {
+                console.log(error);
+            })
+    }
+
+}
