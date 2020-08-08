@@ -11,7 +11,8 @@ const expect = chai.expect;
 const should = chai.should();
 var appUrl = process.env.HOST + ':' + process.env.PORT + '/';
 chai.use(chaiHttp);
-// require('./modules/user/models');
+const { TEST_USER_MOBILE, TEST_USER_PASSWORD, TEST_USER_EMAIL } = require("./testData/testConfig");
+
 
 
 
@@ -23,11 +24,11 @@ describe(`Testing APIs`, function () {
 
         await chai.request(appUrl)
             .post('user/signup')
-            .send({ mobile: process.env.TEST_USER_MOBILE, email : process.env.TEST_USER_EMAIL,  password: process.env.TEST_USER_PASSWORD })
+            .send({ mobile: TEST_USER_MOBILE, email: TEST_USER_EMAIL, password: TEST_USER_PASSWORD })
 
         let user = await chai.request(appUrl)
             .post('user/login')
-            .send({ mobile: process.env.TEST_USER_MOBILE, password: process.env.TEST_USER_PASSWORD })
+            .send({ mobile: TEST_USER_MOBILE, password: TEST_USER_PASSWORD })
         //saving users token into the global object (process.env)
         process.env.token = (user && user.body && user.body.token && user.body.token.accessToken) ? user.body.token.accessToken : null;
     });
@@ -88,7 +89,7 @@ describe(`Testing APIs`, function () {
             } else {
 
                 if (!fs.existsSync(testDir + process.argv[4])) {
-                    console.log('\n\n ERROR: Please Select a Valid Module Model!!\n',testDir + process.argv[4]);
+                    console.log('\n\n ERROR: Please Select a Valid Module Model!!\n', testDir + process.argv[4]);
 
                 } else {
                     console.log(`\n\n ~~~~~~~~~ TESTING ${process.argv[4].toUpperCase()} MODEL OF ${process.argv[3].toUpperCase()} CONTROLLER ~~~~~~~~~~~  \n\n`);

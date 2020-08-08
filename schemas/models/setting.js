@@ -1,26 +1,27 @@
 module.exports = {
+
   addSetting: {
-    properties: {
-      name: { type: String },
-      address: { type: String },
-      mobile: { type: String },
-      alt_name: { type: String },
-      profile_id: { type: String },
-      password: { type: String },
-      email: { type: String },
+    "properties": {
+      "isEmailServiceActive": { "type": ["boolean"] },
+      "isSMSServiceActive": { "type": ["boolean"] },
+      "allowedLoggedInDevice": { "type": ["number"] },
+      "accessTokenValidTime": { "type": ["number"] },
+      "senderEmailId": { "type": ["string"] },
+      "senderEmailPassword": { "type": ["string"], },
+      "cronTimeInterval": { "type": ["number"] },
     },
-    additionalProperties: false,
+    "additionalProperties": false
   },
   updateSetting: {
-    properties: {
-      name: { type: String },
-      address: { type: String },
-      mobile: { type: String },
-      alt_name: { type: String },
-      profile_id: { type: String },
-      password: { type: String },
-      email: { type: String },
+    "properties": {
+      "isEmailServiceActive": { "type": ["boolean"] },
+      "isSMSServiceActive": { "type": ["boolean"] },
+      "allowedLoggedInDevice": { "type": ["number"] },
+      "accessTokenValidTime": { "type": ["number"] },
+      "senderEmailId": { "type": ["string"] },
+      "senderEmailPassword": { "type": ["string"], },
+      "cronTimeInterval": { "type": ["number"] },
     },
-    additionalProperties: false,
+    "additionalProperties": false
   },
 };

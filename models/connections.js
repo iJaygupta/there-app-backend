@@ -6,16 +6,14 @@ var connectionSchema = new mongoose.Schema({
     email: { type: String },
     mobile: { type: Number },
     updatedDate: { type: Date, default: new Date() },
-    contact_list: [{ type: Schema.Types.ObjectId, ref: "user" }]
+    contact_list: [{ type: Schema.Types.ObjectId, ref: "user" }],
+    blocked_list: [{ type: Schema.Types.ObjectId, ref: "user" }],
+    is_active: { type: Boolean, default: false }
+
 },
-{
-    timestamps: true,
-}
+    {
+        timestamps: true,
+    }
 );
 
 exports.userConnections = connectionSchema;
-
-
-
-
-

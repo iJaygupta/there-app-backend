@@ -1,31 +1,43 @@
 module.exports = {
+  updateUserAccountDetails: {
+    properties: {
+      name: { type: ["string"] },
+      email: { type: ["string"] },
+      choice: { type: ["string"] },
+      address: { type: ["string"] },
+    },
+    additionalProperties: false,
+  },
 
   updateUserPassword: {
-    "type": ["object"],
-    "properties": {
-      "oldPassword": { "type": ["string"], "minLength": 8 },
-      "password": { "type": ["string"], "minLength": 8 },
+    properties: {
+      oldPassword: { type: ["string"], minLength: 8 },
+      password: { type: ["string"], minLength: 8 },
     },
-    "required": ["password", "oldPassword"],
-    "additionalProperties": false
-  },
-  addUserAccountDetails: {
-    "type": ["object"],
-    "properties": {
-      "email": { "type": ["string"] },
-      "name": { "type": ["string"] },
-      "mobile": { "type": ["string"], "maxLength": 12, "minLength": 12 }
-    },
-    "additionalProperties": false
-  },
-  updateUserAccountDetails: {
-    "type": ["object"],
-    "properties": {
-      "name": { "type": ["string"] },
-      "email": { "type": ["string"] },
-      "mobile": { "type": ["string"], "maxLength": 12, "minLength": 12 }
-    },
-    "additionalProperties": false
+    required: ["password", "oldPassword"],
+    additionalProperties: false,
   },
 
-}
+  addUserByAdmin: {
+    properties: {
+      name: { type: ["string"] },
+      mobile: { type: ["string"] },
+      email: { type: ["string"] },
+      choice: { type: ["string"] },
+      address: { type: ["string"] },
+    },
+    required: ["mobile"],
+    additionalProperties: false,
+  },
+
+  updateUserByAdmin: {
+    properties: {
+      name: { type: ["string"] },
+      mobile: { type: ["string"] },
+      email: { type: ["string"] },
+      choice: { type: ["string"] },
+      address: { type: ["string"] },
+    },
+    additionalProperties: false,
+  },
+};
