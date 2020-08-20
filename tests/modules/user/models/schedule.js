@@ -2,43 +2,8 @@
 
 
 module.exports = function (appUrl, chai, should, assert, models) {
+    let scheduleId;
     return [
-        {
-            description: "Get-User-Schedule Case-1 Schedule-User-Controller",
-            callback: function (done) {
-
-                chai.request(appUrl)
-                    .get('user/schedule')
-                    .set('Authorization', process.env.token)
-                    .end(function (err, res) {
-                        try {
-                            res.should.have.status(200);
-                            res.body.should.have.property('error', false);
-
-                            done();
-                        } catch (error) {
-                            done(error);
-                        }
-                    });
-            }
-        },
-        {
-            description: "Get-User-Schedule Case-2 Schedule-User-Controller",
-            callback: function (done) {
-
-                chai.request(appUrl)
-                    .get('user/schedule')
-                    .end(function (err, res) {
-                        try {
-                            res.should.have.status(401);
-                            res.body.should.have.property('error', true);
-                            done();
-                        } catch (error) {
-                            done(error);
-                        }
-                    });
-            }
-        },
         {
             description: "Add-User-Schedule Case-1 Schedule-User-Controller",
             callback: function (done) {
@@ -49,7 +14,6 @@ module.exports = function (appUrl, chai, should, assert, models) {
                     .send(models.schedule.addSchedule1.data)
                     .end(function (err, res) {
                         try {
-                            //conosle.log("+ ", res.body, " +");
                             res.should.have.status(200);
                             res.body.should.have.property('error', false);
 
@@ -99,11 +63,50 @@ module.exports = function (appUrl, chai, should, assert, models) {
         },
 
         {
+            description: "Get-User-Schedule Case-1 Schedule-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .get('user/schedule')
+                    .set('Authorization', process.env.token)
+                    .end(function (err, res) {
+                        try {
+                            scheduleId = res.body.data[0]._id;
+                            res.should.have.status(200);
+                            res.body.should.have.property('error', false);
+
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+        {
+            description: "Get-User-Schedule Case-2 Schedule-User-Controller",
+            callback: function (done) {
+
+                chai.request(appUrl)
+                    .get('user/schedule')
+                    .end(function (err, res) {
+                        try {
+                            res.should.have.status(401);
+                            res.body.should.have.property('error', true);
+                            done();
+                        } catch (error) {
+                            done(error);
+                        }
+                    });
+            }
+        },
+
+
+        {
             description: "Update-Schedule Case-1 Schedule-User-Controller",
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .put('user/schedule/5f0a0332042a7028fce89a57')
+                    .put(`user/schedule/${scheduleId}`)
                     .set('Authorization', process.env.token)
                     .send(models.schedule.scheduleUpdate1.data)
                     .end(function (err, res) {
@@ -122,13 +125,13 @@ module.exports = function (appUrl, chai, should, assert, models) {
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .put('user/schedule/5f0a0332042a7028fce89a57')
+                    .put(`user/schedule/${scheduleId}`)
                     .set('Authorization', process.env.token)
                     .send(models.schedule.scheduleUpdate2.data)
                     .end(function (err, res) {
                         try {
-                            res.should.have.status(400);
-                            res.body.should.have.property('error', true);
+                            res.should.have.status(200);
+                            res.body.should.have.property('error', false);
                             done();
                         } catch (error) {
                             done(error);
@@ -141,7 +144,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .put('user/schedule/5f0a0332042a7028fce89a57')
+                    .put(`user/schedule/${scheduleId}`)
                     .send(models.schedule.scheduleUpdate1.data)
                     .end(function (err, res) {
                         try {
@@ -159,7 +162,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .delete('user/schedule/5f0a059e042a7028fce89a5c')
+                    .delete(`user/schedule/${scheduleId}`)
                     .set('Authorization', process.env.token)
                     .end(function (err, res) {
                         try {
@@ -177,7 +180,7 @@ module.exports = function (appUrl, chai, should, assert, models) {
             callback: function (done) {
 
                 chai.request(appUrl)
-                    .delete('user/schedule/5f0a059e042a7028fce89a5c')
+                    .delete(`user/schedule/${scheduleId}`)
                     .end(function (err, res) {
                         try {
                             res.should.have.status(401);
